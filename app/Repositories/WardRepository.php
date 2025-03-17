@@ -11,7 +11,4 @@ use App\Repositories\Interfaces\WardRepositoryInterface;
  */
 class WardRepository implements WardRepositoryInterface
 {
-    public function getAllPaginate(){
-        return Ward::paginate(15);
-    }
 }

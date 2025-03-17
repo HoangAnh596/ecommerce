@@ -23,6 +23,12 @@
             dataType: 'json',
             success: function(res) {
                 $('.'+option.target).html(res.html);
+                if(districtId != '' && option.target == 'districts') {
+                    $(".districts").val(districtId).trigger('change');
+                }
+                if(wardId != '' && option.target == 'wards') {
+                    $(".wards").val(wardId).trigger('change');
+                }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log('Lỗi: ' + textStatus + '' + errorThrown);
@@ -30,7 +36,14 @@
         })
     }
 
+    HT.loadCity = () => {
+        if(provinceId != '') {
+            $(".provinces").val(provinceId).trigger('change');
+        }
+    }
+
     $(document).ready(function() {
         HT.getLocation();
+        HT.loadCity();
     });
 })(jQuery);

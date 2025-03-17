@@ -22,17 +22,15 @@ class LocationController extends Controller
 
     public function getLocation(Request $request) {
         $get = $request->input();
-        
+
         $html = '';
         if($get['target'] == 'districts') {
             $province = $this->provinceRepository->findById($get['data']['location_id'], ['code', 'name'], ['districts']);
             $html = $this->renderHtml($province->districts);
         }else if($get['target'] == 'wards') {
             $district = $this->districtRepository->findById($get['data']['location_id'], ['code', 'name'], ['wards']);
-            // dd($get['target']);
             $html = $this->renderHtml($district->wards, '[Chọn Phường/Xã]');
         }
-
         $response = [
             'html' => $html
         ];

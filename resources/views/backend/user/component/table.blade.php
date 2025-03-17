@@ -18,7 +18,7 @@
         @foreach($users as $user)
         <tr>
             <td>
-                <input type="checkbox" value="" class="input-checkbox checkBoxItem">
+                <input type="checkbox" value="{{ $user->id }}" class="input-checkbox checkBoxItem">
             </td>
             <td>
                 <span class="image img-cover"><img src="https://storage.googleapis.com/dara-c1b52.appspot.com/daras_ai/media/2a9500aa-74f9-11ee-8902-02420a000165/gooey.ai%20-%20A%20beautiful%20anime%20drawing%20of%20a%20smilin...ibli%20ponyo%20anime%20excited%20anime%20saturated%20colorsn.png" alt=""></span>
@@ -27,12 +27,12 @@
             <td>{{ $user->email }}</td>
             <td>{{ $user->phone }}</td>
             <td>{{ $user->address }}</td>
-            <td class="text-center">
-                <input type="checkbox" class="js-switch" checked />
+            <td class="text-center js-switch-{{ $user->id }}">
+                <input type="checkbox" class="js-switch status" data-field="publish" data-model="User" value="{{ $user->publish }}" data-modelId="{{ $user->id }}" {{ ($user->publish == 1) ? 'checked' : '' }} />
             </td>
             <td class="text-center">
-                <a href="" class="btn btn-success"><i class="fa fa-edit"></i></a>
-                <a href="" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                <a href="{{ route('user.delete', $user->id) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
             </td>
         </tr>
         @endforeach
