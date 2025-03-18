@@ -54,15 +54,7 @@ class UserController extends Controller
     {
         $provinces = $this->provinceRepository->all();
         
-        $config = [
-            'css' => [
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
-            ],
-            'js' => [
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-                'backend/library/location.js',
-            ],
-        ];
+        $config = $this->configData();
         $template = 'backend.user.user.store';
         $config['seo']  = config('apps.user');
         $config['method'] = 'create';
@@ -86,15 +78,7 @@ class UserController extends Controller
         $user = $this->userRepository->findById($id);
         $provinces = $this->provinceRepository->all();
         
-        $config = [
-            'css' => [
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
-            ],
-            'js' => [
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-                'backend/library/location.js',
-            ],
-        ];
+        $config = $this->configData();
         $template = 'backend.user.user.store';
         $config['seo']  = config('apps.user');
         $config['method'] = 'edit';
@@ -133,5 +117,19 @@ class UserController extends Controller
             return redirect()->route('user.index')->with('success', 'Xóa bản ghi thành công');
         }
         return redirect()->route('user.index')->with('errors', 'Xóa bản ghi không thành công. Hãy thử lại');
+    }
+
+    private function configData() {
+        return [
+            'css' => [
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+            ],
+            'js' => [
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+                'backend/library/location.js',
+                'backend/plugins/ckfinder_2/ckfinder.js',
+                'backend/library/finder.js'
+            ],
+        ];
     }
 }
