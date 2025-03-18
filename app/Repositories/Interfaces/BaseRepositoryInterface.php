@@ -10,7 +10,7 @@ interface BaseRepositoryInterface
 {
     public function all();
 
-    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [], int $perpage = 20);
+    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [], int $perpage = 20, array $relattions = []);
 
     public function findById(int $id);
 

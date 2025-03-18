@@ -40,7 +40,7 @@ class UserController extends Controller
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
             ],
         ];
-        $template = 'backend.user.index';
+        $template = 'backend.user.user.index';
         $config['seo']  = config('apps.user');
 
         return view('backend.dashboard.layout', compact(
@@ -63,7 +63,7 @@ class UserController extends Controller
                 'backend/library/location.js',
             ],
         ];
-        $template = 'backend.user.store';
+        $template = 'backend.user.user.store';
         $config['seo']  = config('apps.user');
         $config['method'] = 'create';
 
@@ -95,7 +95,7 @@ class UserController extends Controller
                 'backend/library/location.js',
             ],
         ];
-        $template = 'backend.user.store';
+        $template = 'backend.user.user.store';
         $config['seo']  = config('apps.user');
         $config['method'] = 'edit';
 
@@ -117,7 +117,7 @@ class UserController extends Controller
 
     public function delete($id) {
         $user = $this->userRepository->findById($id);
-        $template = 'backend.user.delete';
+        $template = 'backend.user.user.delete';
         $config['seo']  = config('apps.user');
 
         return view('backend.dashboard.layout', compact(

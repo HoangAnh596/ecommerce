@@ -19,8 +19,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         $this->model = $model;
     }
 
-    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [], int $perpage = 20) {
-        $query = $this->model->select($column)->orderBy('created_at', 'desc')->where(function($query) use ($condition){
+    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [], int $perpage = 20, array $relattions = []) {
+        $query = $this->model->select($column)->where(function($query) use ($condition){
             if(isset($condition['keyword']) && !empty($condition['keyword'])) {
                 $query->where('name', 'LIKE', '%'.$condition['keyword'].'%')
                         ->orWhere('email', 'LIKE', '%'.$condition['keyword'].'%')
@@ -28,14 +28,14 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                         ->orWhere('address', 'LIKE', '%'.$condition['keyword'].'%');
             }
 
-            if(isset($condition['publish']) && $condition['publish'] != -1) {
+            if(isset($condition['publish']) && $condition['publish'] != 0) {
                 $query->where('publish', '=', $condition['publish']);
             }
-        });
+        })->with('user_catalogues');
         if(!empty($join)) {
             $query->join(...$join);
         }
 
-        return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
+        return $query->paginate($perpage)->withQueryString()->withPath(url($extend['path']));
     }
 }

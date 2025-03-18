@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->bigInteger('user_catalogue_id')->default(2);
+        Schema::create('user_catalogues', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->text('description')->nullable();
             $table->tinyInteger('publish')->default(0);
             $table->timestamp('deleted_at')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -23,10 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('user_catalogue_id');
-            $table->dropColumn('publish');
-            $table->dropColumn('deleted_at');
-        });
+        Schema::dropIfExists('user_catalogues');
     }
 };

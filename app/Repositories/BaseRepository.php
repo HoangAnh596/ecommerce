@@ -23,17 +23,27 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->all();
     }
 
-    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [], int $perpage = 20) {
-        $query = $this->model->select($column)
-                        ->orderBy('created_at', 'desc')
-                        ->where(function($query) use ($condition){
-                            $query->where('name', 'LIKE', '%'.$condition['keyword'].'%');
-                        });
+    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [],int $perpage = 20, array $relations = []) {
+        $query = $this->model->select($column)->orderBy('created_at', 'desc')->where(function($query) use ($condition){
+            if(isset($condition['keyword']) && !empty($condition['keyword'])) {
+                $query->where('name', 'LIKE', '%'.$condition['keyword'].'%');
+            }
+            if(isset($condition['publish']) && $condition['publish'] != 0) {
+                $query->where('publish', '=', $condition['publish']);
+            }
+        });
+
+        if(isset($relations) && !empty($relations)) {
+            foreach($relations as $relation) {
+                $query->withCount($relation);
+            }
+        }
+
         if(!empty($join)) {
             $query->join(...$join);
         }
 
-        return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
+        return $query->paginate($perpage)->withQueryString()->withPath(url($extend['path']));
     }
 
     public function create(array $payload= []) {
