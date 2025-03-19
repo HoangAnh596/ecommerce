@@ -13,7 +13,6 @@ class LanguageController extends Controller
 {
     protected $languageService;
     protected $languageRepository;
-    protected $provinceRepository;
 
     public function __construct(
         LanguageService $languageService,

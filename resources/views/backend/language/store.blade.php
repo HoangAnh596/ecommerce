@@ -64,9 +64,3 @@
         </div>
     </div>
 </form>
-
-<script>
-    var provinceId = '{{ (isset($user->province_id)) ? $user->province_id : old('province_id') }}';
-    var districtId = '{{ (isset($user->district_id)) ? $user->district_id : old('district_id') }}';
-    var wardId = '{{ (isset($user->ward_id)) ? $user->ward_id : old('ward_id') }}';
-</script>

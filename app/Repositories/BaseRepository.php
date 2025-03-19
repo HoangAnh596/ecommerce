@@ -23,13 +23,29 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->all();
     }
 
-    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [],int $perpage = 20, array $relations = []) {
-        $query = $this->model->select($column)->orderBy('created_at', 'desc')->where(function($query) use ($condition){
+    public function pagination(
+        array $column = ['*'],
+        array $condition = [],
+        array $join = [],
+        array $extend = [],
+        int $perpage = 20,
+        array $relations = [],
+        array $orderBy = ['id', 'DESC'],
+        array $where = []
+    ){
+        $query = $this->model->select($column)->where(function($query) use ($condition){
             if(isset($condition['keyword']) && !empty($condition['keyword'])) {
                 $query->where('name', 'LIKE', '%'.$condition['keyword'].'%');
             }
+
             if(isset($condition['publish']) && $condition['publish'] != 0) {
                 $query->where('publish', '=', $condition['publish']);
+            }
+
+            if(isset($condition['where']) && count($condition['where'])) {
+                foreach($condition['where'] as $key => $val) {
+                    $query->where($val[0], $val[1], $val[2]);
+                }
             }
         });
 
@@ -39,11 +55,22 @@ class BaseRepository implements BaseRepositoryInterface
             }
         }
 
-        if(!empty($join)) {
-            $query->join(...$join);
+        if(isset($join) && is_array($join) && count($join)) {
+            foreach($join as $key => $value) {
+                $query->join($value[0], $value[1], $value[2], $value[3]);
+            }
         }
 
-        return $query->paginate($perpage)->withQueryString()->withPath(url($extend['path']));
+        if(isset($orderBy) && is_array($orderBy) && count($orderBy)) {
+            $query->orderBy($orderBy[0], $orderBy[1]);
+        }
+
+        return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
+    }
+
+    public function findById(int $modelId, array $column = ['*'], array $relation = []) {
+
+        return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
     public function create(array $payload= []) {
@@ -70,8 +97,8 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->findById($id)->forceDelete();
     }
 
-    public function findById(int $modelId, array $column = ['*'], array $relation = []) {
-
-        return $this->model->select($column)->with($relation)->findOrFail($modelId);
+    public function createLanguagePivot($model, array $payload = [])
+    {
+        return $model->languages()->attach($model->id, $payload);
     }
 }

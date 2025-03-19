@@ -10,7 +10,16 @@ interface BaseRepositoryInterface
 {
     public function all();
 
-    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [], int $perpage = 20, array $relattions = []);
+    public function pagination(
+        array $column = ['*'],
+        array $condition = [],
+        array $join = [],
+        array $extend = [],
+        int $perpage = 20,
+        array $relattions = [],
+        array $orderBy = ['id', 'DESC'],
+        array $where = []
+    );
 
     public function findById(int $id);
 
@@ -21,4 +30,6 @@ interface BaseRepositoryInterface
     public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = []);
 
     public function delete(int $id = 0);
+    
+    public function createLanguagePivot($model, array $payload = []);
 }

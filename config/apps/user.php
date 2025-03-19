@@ -8,8 +8,8 @@ return [
     'create' => [
         'title' => 'Thêm mới thành viên'
     ],
-    'update' => [
-        'title' => 'Thêm mới thành viên'
+    'edit' => [
+        'title' => 'Cập nhật thành viên'
     ],
     'delete' => [
         'title' => 'Xóa thành viên'

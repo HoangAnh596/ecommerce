@@ -17,11 +17,13 @@ return new class extends Migration
             $table->foreign('post_catalogue_id')->references('id')->on('post_catalogues')->onDelete('cascade');
             $table->foreign('language_id')->references('id')->on('languages')->onDelete('cascade');
             $table->string('name');
-            $table->text('description');
-            $table->longText('content');
-            $table->string('meta_title');
-            $table->string('meta_keyword');
-            $table->text('meta_description');
+            $table->string('canonical')->unique();
+            $table->text('description')->nullable();
+            $table->longText('content')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->string('meta_keyword')->nullable();
+            $table->text('meta_description')->nullable();
+            $table->timestamps();
         });
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateLanguageRequest extends FormRequest
+class UpdatePostCatalogueRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,16 +23,16 @@ class UpdateLanguageRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'required|unique:languages,canonical, '.$this->id.''
+            'canonical' => 'required|unique:post_catalogue_language,canonical, '.$this->id.',post_catalogue_id',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Tên ngôn ngữ không được để trống.',
-            'canonical.required' => 'Bạn chưa nhập từ khóa của ngôn ngữ.',
-            'canonical.unique' => 'Từ khóa của ngôn ngữ đã tồn tại. Chọn từ khóa khác.'
+            'name.required' => 'Tiêu đề bài viết không được để trống.',
+            'canonical.required' => 'Đường dẫn không được để trống.',
+            'canonical.unique' => 'Đường dẫn đã tồn tại. Hãy chọn đường dẫn khác.',
         ];
     }
 }
