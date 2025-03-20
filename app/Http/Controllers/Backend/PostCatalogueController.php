@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\PostCatalogueRepositoryInterface as postCatalogu
 use App\Services\Interfaces\PostCatalogueServiceInterface as postCatalogueService;
 use Illuminate\Http\Request;
 use App\Classes\Nestedsetbie;
+use App\Http\Requests\DeletePostCatalogueRequest;
 
 class PostCatalogueController extends Controller
 {
@@ -85,12 +86,14 @@ class PostCatalogueController extends Controller
         $config['seo']  = config('apps.postCatalogue');
         $config['method'] = 'edit';
         $dropdown = $this->nestedset->Dropdown();
+        $album = json_decode($postCatalogue->album);
 
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
             'postCatalogue',
-            'dropdown'
+            'dropdown',
+            'album'
         ));
     }
 
@@ -103,7 +106,7 @@ class PostCatalogueController extends Controller
     }
 
     public function delete($id) {
-        $postCatalogue = $this->postCatalogueRepository->findById($id);
+        $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
         $template = 'backend.post.catalogue.delete';
         $config['seo']  = config('apps.postCatalogue');
 
@@ -114,7 +117,7 @@ class PostCatalogueController extends Controller
         ));
     }
 
-    public function destroy($id) {
+    public function destroy(DeletePostCatalogueRequest $request, $id) {
         if($this->postCatalogueService->destroy($id)){
 
             return redirect()->route('post.catalogue.index')->with('success', 'Xóa bản ghi thành công');

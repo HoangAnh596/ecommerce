@@ -26,12 +26,11 @@ class BaseRepository implements BaseRepositoryInterface
     public function pagination(
         array $column = ['*'],
         array $condition = [],
-        array $join = [],
-        array $extend = [],
         int $perpage = 20,
-        array $relations = [],
+        array $extend = [],
         array $orderBy = ['id', 'DESC'],
-        array $where = []
+        array $join = [],
+        array $relattions = []
     ){
         $query = $this->model->select($column)->where(function($query) use ($condition){
             if(isset($condition['keyword']) && !empty($condition['keyword'])) {

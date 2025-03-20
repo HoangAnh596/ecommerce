@@ -17,6 +17,11 @@
         }
     };
 
+    HT.sortui = () => {
+        $('#sortable').sortable();
+        $('#sortable').disableSelection();
+    }
+
     HT.changeStatus = () => {
         if($('.status').length){
             $(document).on('change', '.status', function(e){
@@ -146,5 +151,6 @@
         HT.checkBoxItem();
         HT.allChecked();
         HT.changeStatusAll();
+        HT.sortui();
     });
 })(jQuery);

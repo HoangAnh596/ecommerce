@@ -12,6 +12,22 @@
         }
     }
 
+    HT.uploadAlbum = () => {
+        $(document).on('click', '.upload-picture', function(e){
+            e.preventDefault();
+            HT.browseServerAlbum();
+        });
+    }
+
+    HT.multipleUploadImageCkeditor = () => {
+        $(document).on('click', '.multipleUploadImageCkeditor', function(e){
+            e.preventDefault();
+            let object = $(this);
+            let target = object.attr('data-target');
+            HT.browseServeCkeditor(object, 'Images', target);
+        });
+    }
+
     HT.ckeditor4 = (elementId, elementHeight) => {
         if(typeof(elementHeight) == 'undefined'){
             elementHeight = 500;
@@ -82,9 +98,70 @@
         finder.popup();
     }
 
+    HT.browseServeCkeditor = (object, type, target) => {
+        if(typeof(type) == 'undefined'){
+            type = 'Images';
+        }
+        var finder = new CKFinder();
+        finder.resourceType = type;
+        finder.selectActionFunction = function( fileUrl, data, allFiles ) {
+            let html = '';
+            for(var i = 0; i < allFiles.length; i++){
+                var image = allFiles[i].url
+                html += '<div class="image-content"><figure>'
+                    html += '<img src="'+image+'" alt="'+image+'">'
+                    html += '<figcaption>Nhập vào mô tả cho ảnh</figcaption>'
+                html += '</figure></div>';
+            }
+            CKEDITOR.instances[target].insertHtml(html)
+        }
+        finder.popup();
+    }
+
+    HT.browseServerAlbum = () => {
+        var type = 'Images';
+        var finder = new CKFinder();
+        
+        finder.resourceType = type;
+        finder.selectActionFunction = function( fileUrl, data, allFiles ) {
+            let html = '';
+            for(var i = 0; i < allFiles.length; i++){
+                var image = allFiles[i].url
+                html += '<li class="ui-state-default">'
+                   html += ' <div class="thumb">'
+                       html += ' <span class="span image img-scaledown">'
+                            html += '<img src="'+image+'" alt="'+image+'">'
+                            html += '<input type="hidden" name="album[]" value="'+image+'">'
+                        html += '</span>'
+                        html += '<button class="delete-image"><i class="fa fa-trash"></i></button>'
+                    html += '</div>'
+                html += '</li>'
+            }
+           
+            $('.click-to-upload').addClass('hidden')
+            $('#sortable').append(html)
+            $('.upload-list').removeClass('hidden')
+        }
+        finder.popup();
+    }
+
+    HT.deletePicture = () => {
+        $(document).on('click', '.delete-image', function(){
+            let _this = $(this)
+            _this.parents('.ui-state-default').remove()
+            if($('.ui-state-default').length == 0){
+                $('.click-to-upload').removeClass('hidden')
+                $('.upload-list').addClass('hidden')
+            }
+        })
+    }
+
     $(document).ready(function(){
         HT.setupCkeditor();
         HT.uploadImageToInput();
         HT.setupImageAvatar();
+        HT.multipleUploadImageCkeditor();
+        HT.uploadAlbum();
+        HT.deletePicture();
     })
 })(jQuery);

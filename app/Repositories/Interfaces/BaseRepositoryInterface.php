@@ -13,12 +13,11 @@ interface BaseRepositoryInterface
     public function pagination(
         array $column = ['*'],
         array $condition = [],
-        array $join = [],
-        array $extend = [],
         int $perpage = 20,
-        array $relattions = [],
+        array $extend = [],
         array $orderBy = ['id', 'DESC'],
-        array $where = []
+        array $join = [],
+        array $relattions = []
     );
 
     public function findById(int $id);
