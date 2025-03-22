@@ -22,7 +22,7 @@
             <td class="text-center">@if($userCatalogue->users_count > 0) {{ $userCatalogue->users_count }} người @endif</td>
             <td>{{ $userCatalogue->description }}</td>
             <td class="text-center js-switch-{{ $userCatalogue->id }}">
-                <input type="checkbox" class="js-switch status" data-field="publish" data-model="UserCatalogue" value="{{ $userCatalogue->publish }}" data-modelId="{{ $userCatalogue->id }}" {{ ($userCatalogue->publish == 2) ? 'checked' : '' }} />
+                <input type="checkbox" class="js-switch status" data-field="publish" data-model="{{ $config['model'] }}" value="{{ $userCatalogue->publish }}" data-modelId="{{ $userCatalogue->id }}" {{ ($userCatalogue->publish == 2) ? 'checked' : '' }} />
             </td>
             <td class="text-center">
                 <a href="{{ route('user.catalogue.edit', $userCatalogue->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
+use PhpParser\Lexer\TokenEmulator\KeywordEmulator;
 
 /**
  * Class BaseRepository
@@ -26,45 +27,25 @@ class BaseRepository implements BaseRepositoryInterface
     public function pagination(
         array $column = ['*'],
         array $condition = [],
-        int $perpage = 20,
+        int $perPage = 20,
         array $extend = [],
         array $orderBy = ['id', 'DESC'],
         array $join = [],
-        array $relattions = []
+        array $relattions = [],
+        array $rawQuery = []
     ){
-        $query = $this->model->select($column)->where(function($query) use ($condition){
-            if(isset($condition['keyword']) && !empty($condition['keyword'])) {
-                $query->where('name', 'LIKE', '%'.$condition['keyword'].'%');
-            }
-
-            if(isset($condition['publish']) && $condition['publish'] != 0) {
-                $query->where('publish', '=', $condition['publish']);
-            }
-
-            if(isset($condition['where']) && count($condition['where'])) {
-                foreach($condition['where'] as $key => $val) {
-                    $query->where($val[0], $val[1], $val[2]);
-                }
-            }
-        });
-
-        if(isset($relations) && !empty($relations)) {
-            foreach($relations as $relation) {
-                $query->withCount($relation);
-            }
-        }
-
-        if(isset($join) && is_array($join) && count($join)) {
-            foreach($join as $key => $value) {
-                $query->join($value[0], $value[1], $value[2], $value[3]);
-            }
-        }
-
-        if(isset($orderBy) && is_array($orderBy) && count($orderBy)) {
-            $query->orderBy($orderBy[0], $orderBy[1]);
-        }
-
-        return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
+        $query = $this->model->select($column);
+        return $query  
+                ->keyword($condition['keyword'] ?? null)
+                ->publish($condition['publish'] ?? null)
+                ->relationCount($relations ?? null)
+                ->customWhere($condition['where'] ?? null)
+                ->customWhereRaw($rawQuery['whereRaw'] ?? null)
+                ->customJoin($join ?? null)
+                ->customGroupBy($extend['groupBy'] ?? null)
+                ->customOrderBy($orderBy ?? null)
+                ->paginate($perPage)
+                ->withQueryString()->withPath(env('APP_URL').$extend['path']);
     }
 
     public function findById(int $modelId, array $column = ['*'], array $relation = []) {
@@ -96,8 +77,8 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->findById($id)->forceDelete();
     }
 
-    public function createLanguagePivot($model, array $payload = [])
+    public function createPivot($model, array $payload = [], string $relation = '')
     {
-        return $model->languages()->attach($model->id, $payload);
+        return $model->{$relation}()->attach($model->id, $payload);
     }
 }

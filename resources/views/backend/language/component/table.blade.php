@@ -26,7 +26,7 @@
             <td class="text-center">{{ $language->canonical }}</td>
             <td>{{ $language->description }}</td>
             <td class="text-center js-switch-{{ $language->id }}">
-                <input type="checkbox" class="js-switch status" data-field="publish" data-model="Language" value="{{ $language->publish }}" data-modelId="{{ $language->id }}" {{ ($language->publish == 2) ? 'checked' : '' }} />
+                <input type="checkbox" class="js-switch status" data-field="publish" data-model="{{ $config['model'] }}" value="{{ $language->publish }}" data-modelId="{{ $language->id }}" {{ ($language->publish == 2) ? 'checked' : '' }} />
             </td>
             <td class="text-center">
                 <a href="{{ route('language.edit', $language->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>

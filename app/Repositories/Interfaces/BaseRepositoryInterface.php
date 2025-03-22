@@ -13,11 +13,12 @@ interface BaseRepositoryInterface
     public function pagination(
         array $column = ['*'],
         array $condition = [],
-        int $perpage = 20,
+        int $perPage = 20,
         array $extend = [],
         array $orderBy = ['id', 'DESC'],
         array $join = [],
-        array $relattions = []
+        array $relattions = [],
+        array $rawQuery = []
     );
 
     public function findById(int $id);
@@ -30,5 +31,5 @@ interface BaseRepositoryInterface
 
     public function delete(int $id = 0);
     
-    public function createLanguagePivot($model, array $payload = []);
+    public function createPivot($model, array $payload = [], string $relation = '');
 }

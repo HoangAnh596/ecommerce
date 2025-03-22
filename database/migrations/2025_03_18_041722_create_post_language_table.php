@@ -17,11 +17,13 @@ return new class extends Migration
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
             $table->foreign('language_id')->references('id')->on('languages')->onDelete('cascade');
             $table->string('name');
+            $table->string('canonical')->unique();
             $table->text('description')->nullable();
             $table->longText('content')->nullable();
             $table->string('meta_title')->nullable();
             $table->string('meta_keyword')->nullable();
             $table->text('meta_description')->nullable();
+            $table->timestamps();
         });
     }
 

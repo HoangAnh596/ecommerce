@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\PostCatalogueController;
+use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\UserCatalogueController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Middleware\LoginMiddleware;
@@ -39,7 +40,7 @@ Route::group(['prefix' => 'user'], function (){
     Route::delete('{id}/destroy', [UserController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('user.destroy')->middleware('admin');
 });
 
-/* User Catalogue */
+/* User Catalogue : Quản lý nhóm thành viên*/
 Route::group(['prefix' => 'user/catalogue'], function (){
     Route::get('index', [UserCatalogueController::class, 'index'])->name('user.catalogue.index')->middleware('admin');
     Route::get('create', [UserCatalogueController::class, 'create'])->name('user.catalogue.create')->middleware('admin');
@@ -50,7 +51,7 @@ Route::group(['prefix' => 'user/catalogue'], function (){
     Route::delete('{id}/destroy', [UserCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('user.catalogue.destroy')->middleware('admin');
 });
 
-/* Languages */
+/* Languages : Quản lý ngôn ngữ*/
 Route::group(['prefix' => 'language'], function (){
     Route::get('index', [LanguageController::class, 'index'])->name('language.index')->middleware('admin');
     Route::get('create', [LanguageController::class, 'create'])->name('language.create')->middleware('admin');
@@ -61,7 +62,18 @@ Route::group(['prefix' => 'language'], function (){
     Route::delete('{id}/destroy', [LanguageController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('language.destroy')->middleware('admin');
 });
 
-/* Post_Catalogue */
+/* Post : Quản lý bài viết */
+Route::group(['prefix' => 'post'], function (){
+    Route::get('index', [PostController::class, 'index'])->name('post.index')->middleware('admin');
+    Route::get('create', [PostController::class, 'create'])->name('post.create')->middleware('admin');
+    Route::post('store', [PostController::class, 'store'])->name('post.store')->middleware('admin');
+    Route::get('{id}/edit', [PostController::class, 'edit'])->where(['id' => '[0-9]+'])->name('post.edit')->middleware('admin');
+    Route::post('{id}/update', [PostController::class, 'update'])->where(['id' => '[0-9]+'])->name('post.update')->middleware('admin');
+    Route::get('{id}/delete', [PostController::class, 'delete'])->where(['id' => '[0-9]+'])->name('post.delete')->middleware('admin');
+    Route::delete('{id}/destroy', [PostController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.destroy')->middleware('admin');
+});
+
+/* Post_Catalogue : Quản lý nhóm bài viết */
 Route::group(['prefix' => 'post/catalogue'], function (){
     Route::get('index', [PostCatalogueController::class, 'index'])->name('post.catalogue.index')->middleware('admin');
     Route::get('create', [PostCatalogueController::class, 'create'])->name('post.catalogue.create')->middleware('admin');
