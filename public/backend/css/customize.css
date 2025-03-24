@@ -288,3 +288,11 @@ input[name="canonical"] {
     color: #333;
     margin-right: 10px;
 }
+.language-item {
+    height: 60px;
+    padding: 0;
+    margin-right: 10px;
+}
+.language-item.active {
+    background-color: #2962ff;
+}

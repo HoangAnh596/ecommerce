@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
-use PhpParser\Lexer\TokenEmulator\KeywordEmulator;
 
 /**
  * Class BaseRepository
@@ -63,6 +62,15 @@ class BaseRepository implements BaseRepositoryInterface
         $model = $this->findById($id);
 
         return $model->update($payload);
+    }
+
+    public function updateByWhere(array $condition = [], array $payload= []) {
+        $query = $this->model->newQuery();
+        foreach ($condition as $key => $value) {
+            $query->where($value[0], $value[1], $value[2]);
+        }
+
+        return $query->update($payload);
     }
 
     public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = []) {

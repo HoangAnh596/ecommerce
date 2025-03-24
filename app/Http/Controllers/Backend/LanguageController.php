@@ -110,6 +110,16 @@ class LanguageController extends Controller
         return redirect()->route('language.index')->with('errors', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
+    public function switchBackendLanguage($id) {
+        $language = $this->languageRepository->findById($id);
+        if($this->languageService->switch($id)){
+            session(['app_locale' => $language->canonical]);
+            \App::setLocale($language->canonical);
+        }
+
+        return redirect()->back();
+    }
+
     private function configData() {
         return [
             'js' => [

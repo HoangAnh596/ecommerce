@@ -6,7 +6,7 @@ return [
         'tableHeading' => 'Danh sách nhóm bài viết'
     ],
     'create' => [
-        'title' => 'Thêm mới nhóm bài viết'
+        'title' => 'Thêm mới nhóm bài viết 123'
     ],
     'edit' => [
         'title' => 'Cập nhật nhóm bài viết'

@@ -120,6 +120,28 @@ class LanguageService implements LanguageServiceInterface
         }
     }
 
+    public function switch($id) {
+        
+        DB::beginTransaction();
+        try {
+            $this->languageRepository->update($id, ['current' => 1]);
+            $payload = ['current' => 0];
+            $where = [
+                ['id', '!=', $id],
+            ];
+            $this->languageRepository->updateByWhere($where, $payload);
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
+
     private function paginateSelect() {
         return ['id', 'name', 'canonical', 'image', 'user_id', 'publish'];
     }
