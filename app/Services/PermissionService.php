@@ -2,22 +2,22 @@
 
 namespace App\Services;
 
-use App\Services\Interfaces\UserCatalogueServiceInterface;
-use App\Repositories\Interfaces\UserCatalogueRepositoryInterface as UserCatalogueRepository;
-use Illuminate\Support\Carbon;
+use App\Services\Interfaces\PermissionServiceInterface;
+use App\Repositories\Interfaces\PermissionRepositoryInterface as PermissionRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class UserCatalogueService
+ * Class PermissionService
  * @package App\Services
  */
-class UserCatalogueService implements UserCatalogueServiceInterface
+class PermissionService implements PermissionServiceInterface
 {
-    protected $userCatalogueRepository;
+    protected $permissionRepository;
 
-    public function __construct(UserCatalogueRepository $userCatalogueRepository)
+    public function __construct(PermissionRepository $permissionRepository)
     {
-        $this->userCatalogueRepository = $userCatalogueRepository;
+        $this->permissionRepository = $permissionRepository;
     }
 
     public function paginate($request){
@@ -26,24 +26,23 @@ class UserCatalogueService implements UserCatalogueServiceInterface
             'keyword' => addslashes($request->input('keyword')),
             'publish' => $request->integer('publish')
         ];
-        $userCatalogues = $this->userCatalogueRepository->pagination(
+        $permissions = $this->permissionRepository->pagination(
             $this->paginateSelect(),
             $condition,
             $perpage,
-            ['path' => 'user/catalogue/index'],
-            ['id', 'DESC'],
-            [],
-            ['users']
+            ['path' => 'permission/index'],
+            ['id', 'DESC']
         );
 
-        return $userCatalogues;
+        return $permissions;
     }
 
     public function create($request) {
         DB::beginTransaction();
         try {
             $payload = $request->except('_token', 'send');
-            $this->userCatalogueRepository->create($payload);
+            $payload['user_id'] = Auth::id();
+            $this->permissionRepository->create($payload);
 
             DB::commit();
             return true;
@@ -60,7 +59,7 @@ class UserCatalogueService implements UserCatalogueServiceInterface
         DB::beginTransaction();
         try {
             $payload = $request->except('_token', 'send');
-            $this->userCatalogueRepository->update($id, $payload);
+            $this->permissionRepository->update($id, $payload);
 
             DB::commit();
             return true;
@@ -76,7 +75,7 @@ class UserCatalogueService implements UserCatalogueServiceInterface
     public function destroy($id) {
         DB::beginTransaction();
         try {
-            $this->userCatalogueRepository->delete($id);
+            $this->permissionRepository->delete($id);
 
             DB::commit();
             return true;
@@ -93,7 +92,7 @@ class UserCatalogueService implements UserCatalogueServiceInterface
         DB::beginTransaction();
         try {
             $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
-            $this->userCatalogueRepository->update($post['modelId'], $payload);
+            $this->permissionRepository->update($post['modelId'], $payload);
 
             DB::commit();
             return true;
@@ -110,7 +109,7 @@ class UserCatalogueService implements UserCatalogueServiceInterface
         DB::beginTransaction();
         try {
             $payload[$post['field']] = $post['value'];
-            $this->userCatalogueRepository->updateByWhereIn('id', $post['id'], $payload);
+            $this->permissionRepository->updateByWhereIn('id', $post['id'], $payload);
 
             DB::commit();
             return true;
@@ -123,22 +122,16 @@ class UserCatalogueService implements UserCatalogueServiceInterface
         }
     }
 
-    public function setPermission($request) {
+    public function switch($id) {
+        
         DB::beginTransaction();
         try {
-            $permissions = $request->input('permission');
-            if (!empty($permissions)) {
-                foreach ($permissions as $key => $val) {
-                    $userCatalogue = $this->userCatalogueRepository->findById($key);
-                    $userCatalogue->permissions()->detach();
-                    $userCatalogue->permissions()->sync($val);
-                }
-            } else {
-                $allUserCatalogues = $this->userCatalogueRepository->all();
-                foreach ($allUserCatalogues as $userCatalogue) {
-                    $userCatalogue->permissions()->detach();
-                }
-            }
+            $this->permissionRepository->update($id, ['current' => 1]);
+            $payload = ['current' => 0];
+            $where = [
+                ['id', '!=', $id],
+            ];
+            $this->permissionRepository->updateByWhere($where, $payload);
 
             DB::commit();
             return true;
@@ -152,6 +145,6 @@ class UserCatalogueService implements UserCatalogueServiceInterface
     }
 
     private function paginateSelect() {
-        return ['id', 'name', 'description', 'publish'];
+        return ['id', 'name', 'canonical'];
     }
 }

@@ -35,7 +35,9 @@
                             </span>
                         </div>
                     </div>
+                    @can('modules', 'user.update')
                     <a href="{{ route('user.create') }}" class="btn btn-primary"><i class="fa fa-plus mr5"></i>Thêm mới thành viên</a>
+                    @endcan
                 </div>
             </div>
         </div>

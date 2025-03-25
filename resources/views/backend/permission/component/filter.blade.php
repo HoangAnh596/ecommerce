@@ -1,4 +1,4 @@
-<form action="{{ route('language.index') }}">
+<form action="{{ route('permission.index') }}">
     <div class="filter-wrapper">
         <div class="uk-flex uk-flex-middle uk-flex-space-between">
             <div class="perpage">
@@ -31,8 +31,8 @@
                             </span>
                         </div>
                     </div>
-                    @can('modules', 'language.create')
-                    <a href="{{ route('language.create') }}" class="btn btn-primary"><i class="fa fa-plus mr5"></i>Thêm mới ngôn ngữ</a>
+                    @can('modules', 'permission.create')
+                    <a href="{{ route('permission.create') }}" class="btn btn-primary"><i class="fa fa-plus mr5"></i>{{ __('messages.permission.create.title') }}</a>
                     @endcan
                 </div>
             </div>

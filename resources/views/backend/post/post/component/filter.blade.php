@@ -37,7 +37,9 @@
                             </span>
                         </div>
                     </div>
+                    @can('modules', 'post.create')
                     <a href="{{ route('post.create') }}" class="btn btn-primary"><i class="fa fa-plus mr5"></i>{{ config('apps.post.create.title') }}</a>
+                    @endcan
                 </div>
             </div>
         </div>

@@ -9,4 +9,6 @@ namespace App\Services\Interfaces;
 interface UserCatalogueServiceInterface
 {
     public function paginate($request);
+    
+    public function setPermission($request);
 }

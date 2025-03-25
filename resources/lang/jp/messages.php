@@ -15,6 +15,21 @@ return [
             'title' => '記事グループを削除'
         ],
     ],
+    'permission' => [
+        'index' => [
+            'title' => '記事グループの管理',
+            'tableHeading' => '記事グループ一覧'
+        ],
+        'create' => [
+            'title' => '新しい記事グループを追加'
+        ],
+        'edit' => [
+            'title' => '記事グループを更新'
+        ],
+        'delete' => [
+            'title' => '記事グループを削除'
+        ],
+    ],
     'parent' => '親カテゴリを選択',
     'parentNotice' => '親カテゴリがない場合はルートを選択してください',
     'image' => '注目画像を選択',

@@ -33,8 +33,8 @@ class PostController extends Controller
     
     public function index(Request $request)
     {
-        $posts = $this->postService->paginate($request);
-        
+        $this->authorize('modules', 'post.index');
+        $posts = $this->postService->paginate($request);       
         $config = [
             'css' => [
                 'backend/css/plugins/switchery/switchery.css',
@@ -60,6 +60,7 @@ class PostController extends Controller
 
     public function create()
     {
+        $this->authorize('modules', 'post.create');
         $config = $this->configData();
         $template = 'backend.post.post.store';
         $config['seo']  = config('apps.post');
@@ -82,6 +83,7 @@ class PostController extends Controller
     }
 
     public function edit($id) {
+        $this->authorize('modules', 'post.update');
         $config = $this->configData();
         $post = $this->postRepository->getPostById($id, $this->language);
         $template = 'backend.post.post.store';
@@ -108,6 +110,7 @@ class PostController extends Controller
     }
 
     public function delete($id) {
+        $this->authorize('modules', 'post.destroy');
         $post = $this->postRepository->getPostById($id, $this->language);
         $template = 'backend.post.post.delete';
         $config['seo']  = config('apps.post');

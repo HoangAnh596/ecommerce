@@ -15,6 +15,21 @@ return [
             'title' => 'Delete Article Group'
         ],
     ],
+    'permission' => [
+        'index' => [
+            'title' => 'Manage Permissions',
+            'tableHeading' => 'Permission List'
+        ],
+        'create' => [
+            'title' => 'Add New Permission'
+        ],
+        'edit' => [
+            'title' => 'Update Permission'
+        ],
+        'delete' => [
+            'title' => 'Delete Permission'
+        ],
+    ],
     'parent' => 'Select parent category',
     'parentNotice' => 'Choose root if there is no parent category',
     'image' => 'Select Featured Image',

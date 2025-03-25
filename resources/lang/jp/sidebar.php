@@ -13,6 +13,10 @@ return [
                 [
                     'title' => 'メンバー',
                     'route' => 'user/index',
+                ],
+                [
+                    'title' => '権限',
+                    'route' => 'permission/index',
                 ]
             ]
         ],

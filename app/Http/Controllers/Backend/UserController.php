@@ -28,8 +28,8 @@ class UserController extends Controller
     
     public function index(Request $request)
     {
+        $this->authorize('modules', 'user.index');
         $users = $this->userService->paginate($request);
-        
         $config = [
             'css' => [
                 'backend/css/plugins/switchery/switchery.css',
@@ -53,8 +53,8 @@ class UserController extends Controller
 
     public function create()
     {
+        $this->authorize('modules', 'user.create');
         $provinces = $this->provinceRepository->all();
-        
         $config = $this->configData();
         $template = 'backend.user.user.store';
         $config['seo']  = config('apps.user');
@@ -76,6 +76,7 @@ class UserController extends Controller
     }
 
     public function edit($id) {
+        $this->authorize('modules', 'user.update');
         $user = $this->userRepository->findById($id);
         $provinces = $this->provinceRepository->all();
         
@@ -101,6 +102,7 @@ class UserController extends Controller
     }
 
     public function delete($id) {
+        $this->authorize('modules', 'user.destroy');
         $user = $this->userRepository->findById($id);
         $template = 'backend.user.user.delete';
         $config['seo']  = config('apps.user');

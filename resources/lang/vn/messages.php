@@ -15,6 +15,85 @@ return [
             'title' => 'Xóa nhóm bài viết'
         ],
     ],
+    'post' => [
+        'index' => [
+            'title' => 'Quản lý bài viết',
+            'tableHeading' => 'Danh sách bài viết'
+        ],
+        'create' => [
+            'title' => 'Thêm mới bài viết'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật bài viết'
+        ],
+        'delete' => [
+            'title' => 'Xóa bài viết'
+        ],
+    ],
+    'user' => [
+        'index' => [
+            'title' => 'Quản lý thành viên',
+            'tableHeading' => 'Danh sách thành viên'
+        ],
+        'create' => [
+            'title' => 'Thêm mới thành viên'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật thành viên'
+        ],
+        'delete' => [
+            'title' => 'Xóa thành viên'
+        ],
+    ],
+    'userCatalogue' => [
+        'index' => [
+            'title' => 'Quản lý nhóm thành viên',
+            'tableHeading' => 'Danh sách nhóm thành viên'
+        ],
+        'create' => [
+            'title' => 'Thêm mới nhóm thành viên'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật nhóm thành viên'
+        ],
+        'delete' => [
+            'title' => 'Xóa nhóm thành viên'
+        ],
+        'permission' => [
+            'title' => 'Cập nhật quyền'
+        ],
+    ],
+    'permission' => [
+        'index' => [
+            'title' => 'Quản lý quyền',
+            'tableHeading' => 'Danh sách quyền'
+        ],
+        'create' => [
+            'title' => 'Thêm mới quyền'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật quyền'
+        ],
+        'delete' => [
+            'title' => 'Xóa quyền'
+        ],
+    ],
+    'language' => [
+        'index' => [
+            'title' => 'Quản lý ngôn ngữ',
+            'tableHeading' => 'Danh sách ngôn ngữ'
+        ],
+        'create' => [
+            'title' => 'Thêm mới ngôn ngữ'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật ngôn ngữ'
+        ],
+        'delete' => [
+            'title' => 'Xóa ngôn ngữ'
+        ],
+    ],
+
     'parent' => 'Chọn danh mục cha',
     'parentNotice' => 'Chọn root nếu không có danh mục cha',
     'image' => 'Chọn ảnh đại diện',

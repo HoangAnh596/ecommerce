@@ -29,8 +29,12 @@
                 <input type="checkbox" class="js-switch status" data-field="publish" data-model="{{ $config['model'] }}" value="{{ $language->publish }}" data-modelId="{{ $language->id }}" {{ ($language->publish == 2) ? 'checked' : '' }} />
             </td>
             <td class="text-center">
+                @can('modules', 'language.update')
                 <a href="{{ route('language.edit', $language->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                @endcan
+                @can('modules', 'language.destroy')
                 <a href="{{ route('language.delete', $language->id) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                @endcan
             </td>
         </tr>
         @endforeach

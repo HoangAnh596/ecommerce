@@ -33,8 +33,12 @@
                 <input type="checkbox" class="js-switch status" data-field="publish" data-model="{{ $config['model'] }}" value="{{ $user->publish }}" data-modelId="{{ $user->id }}" {{ ($user->publish == 2) ? 'checked' : '' }} />
             </td>
             <td class="text-center">
+                @can('modules', 'user.update')
                 <a href="{{ route('user.edit', $user->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                @endcan
+                @can('modules', 'post.destroy')
                 <a href="{{ route('user.delete', $user->id) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                @endcan
             </td>
         </tr>
         @endforeach

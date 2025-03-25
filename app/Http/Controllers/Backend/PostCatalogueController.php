@@ -34,6 +34,7 @@ class PostCatalogueController extends Controller
     
     public function index(Request $request)
     {
+        $this->authorize('modules', 'post.catalogue.index');
         $postCatalogues = $this->postCatalogueService->paginate($request);
         
         $config = [
@@ -59,6 +60,7 @@ class PostCatalogueController extends Controller
 
     public function create()
     {
+        $this->authorize('modules', 'post.catalogue.create');
         $config = $this->configData();
         $template = 'backend.post.catalogue.store';
         $config['seo']  = __('messages.postCatalogue');
@@ -81,6 +83,7 @@ class PostCatalogueController extends Controller
     }
 
     public function edit($id) {
+        $this->authorize('modules', 'post.catalogue.update');
         $config = $this->configData();
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
         $template = 'backend.post.catalogue.store';
@@ -107,6 +110,7 @@ class PostCatalogueController extends Controller
     }
 
     public function delete($id) {
+        $this->authorize('modules', 'post.catalogue.destroy');
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
         $template = 'backend.post.catalogue.delete';
         $config['seo']  = __('messages.postCatalogue');

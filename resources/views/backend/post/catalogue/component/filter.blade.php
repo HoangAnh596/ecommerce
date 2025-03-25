@@ -31,7 +31,9 @@
                             </span>
                         </div>
                     </div>
+                    @can('modules', 'post.catalogue.create')
                     <a href="{{ route('post.catalogue.create') }}" class="btn btn-primary"><i class="fa fa-plus mr5"></i>{{ __('messages.postCatalogue.create.title') }}</a>
+                    @endcan
                 </div>
             </div>
         </div>

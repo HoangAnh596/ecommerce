@@ -18,9 +18,9 @@ class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
     
-    public function all() {
+    public function all(array $relation = []) {
 
-        return $this->model->all();
+        return $this->model->with($relation)->get();
     }
 
     public function pagination(
