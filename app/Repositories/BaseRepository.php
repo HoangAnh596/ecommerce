@@ -30,7 +30,7 @@ class BaseRepository implements BaseRepositoryInterface
         array $extend = [],
         array $orderBy = ['id', 'DESC'],
         array $join = [],
-        array $relattions = [],
+        array $relations = [],
         array $rawQuery = []
     ){
         $query = $this->model->select($column);
@@ -83,6 +83,15 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function forceDelete(int $id = 0) {
         return $this->findById($id)->forceDelete();
+    }
+
+    public function findByCondition(array $condition = []) {
+        $query = $this->model->newQuery();
+        foreach ($condition as $key => $value) {
+            $query->where($value[0], $value[1], $value[2]);
+        }
+
+        return $query->first();
     }
 
     public function createPivot($model, array $payload = [], string $relation = '')

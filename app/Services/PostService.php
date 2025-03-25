@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Services\Interfaces\PostServiceInterface;
 use App\Services\BaseService;
 use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,20 +18,29 @@ use Illuminate\Support\Str;
 class PostService extends BaseService implements PostServiceInterface
 {
     protected $postRepository;
+    protected $routerRepository;
     protected $language;
+    protected $controllerName;
 
-    public function __construct(PostRepository $postRepository){
+    public function __construct(
+        PostRepository $postRepository,
+        RouterRepository $routerRepository,
+    ){
         $this->postRepository = $postRepository;
+        $this->routerRepository = $routerRepository;
         $this->language = $this->currentLanguage();
+        $this->controllerName = 'PostController';
     }
 
     public function paginate($request){
-        $condition['keyword'] = addslashes($request->input('keyword'));
-        $condition['publish'] = $request->integer('publish');
-        $condition['where'] = [
-            ['tb2.language_id', '=', $this->language]
-        ];
         $perpage = $request->integer('perpage');
+        $condition = [
+            'keyword' => addslashes($request->input('keyword')),
+            'publish' => $request->integer('publish'),
+            'where' => [
+                ['tb2.language_id', '=', $this->language]
+            ]
+        ];
         $posts = $this->postRepository->pagination(
             $this->paginateSelect(),
             $condition,
@@ -48,23 +58,13 @@ class PostService extends BaseService implements PostServiceInterface
         return $posts;
     }
 
-    private function paginateSelect() {
-        return [
-            'posts.id',
-            'posts.image',
-            'posts.publish',
-            'posts.order',
-            'tb2.name',
-            'tb2.canonical'
-        ];
-    }
-
     public function create($request) {
         DB::beginTransaction();
         try {
             $post = $this->createPost($request);
             if($post->id > 0) {
                 $this->updateForPost($post, $request);
+                $this->createRouter($post, $request, $this->controllerName); 
                 $post->post_catalogues()->sync($this->catalogue($request));
             }
 
@@ -85,6 +85,7 @@ class PostService extends BaseService implements PostServiceInterface
             $post = $this->postRepository->findById($id);
             if($this->uploadPost($post, $request)){
                 $this->updateForPost($post, $request);
+                $this->updateRouter($post, $request, $this->controllerName);
                 $post->post_catalogues()->sync($this->catalogue($request));
             }
 
@@ -149,16 +150,16 @@ class PostService extends BaseService implements PostServiceInterface
         }
     }
 
-    // private function paginateSelect() {
-    //     return [
-    //         'posts.id',
-    //         'posts.image',
-    //         'posts.publish',
-    //         'posts.order',
-    //         'tb2.name',
-    //         'tb2.canonical'
-    //     ];
-    // }
+    private function paginateSelect() {
+        return [
+            'posts.id',
+            'posts.image',
+            'posts.publish',
+            'posts.order',
+            'tb2.name',
+            'tb2.canonical'
+        ];
+    }
 
     private function whereRaw($request){
         $rawCondition = [];
@@ -203,14 +204,14 @@ class PostService extends BaseService implements PostServiceInterface
     private function createPost($request) {
         $payload = $request->only($this->payload());
         $payload['user_id'] = Auth::id();
-        $payload['album'] = (isset($payload['album']) && !empty($payload['album'])) ? json_encode($payload['album']) : '';
+        $payload['album'] = $this->formatAlbum($request);
 
         return $this->postRepository->create($payload);
     }
 
     private function uploadPost($post, $request) {
         $payload = $request->only($this->payload());
-        $payload['album'] = (isset($payload['album']) && !empty($payload['album'])) ? json_encode($payload['album']) : '';
+        $payload['album'] = $this->formatAlbum($request);
 
         return $this->postRepository->update($post->id, $payload);
     }

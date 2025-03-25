@@ -26,7 +26,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         array $extend = [],
         array $orderBy = ['id', 'DESC'],
         array $join = [],
-        array $relattions = [],
+        array $relations = [],
         array $rawQuery = []
     ){
         $query = $this->model->select($column)->where(function($query) use ($condition){
@@ -45,6 +45,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             $query->join(...$join);
         }
 
-        return $query->paginate($perpage)->withQueryString()->withPath(url($extend['path']));
+        return $query->paginate($perPage)->withQueryString()->withPath(url($extend['path']));
     }
 }

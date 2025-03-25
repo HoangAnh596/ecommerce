@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\PostCatalogueController;
 use App\Http\Controllers\Backend\PostController;
+use App\Http\Controllers\Backend\RouterController;
 use App\Http\Controllers\Backend\UserCatalogueController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Middleware\LoginMiddleware;
@@ -84,6 +85,17 @@ Route::group(['middleware' => ['admin', 'locale']], function (){
         Route::post('{id}/update', [PostCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('post.catalogue.update');
         Route::get('{id}/delete', [PostCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('post.catalogue.delete');
         Route::delete('{id}/destroy', [PostCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.catalogue.destroy');
+    });
+
+    /* Router : Quản lý đường dẫn */
+    Route::group(['prefix' => 'router'], function (){
+        Route::get('index', [RouterController::class, 'index'])->name('router.index');
+        Route::get('create', [RouterController::class, 'create'])->name('router.create');
+        Route::post('store', [RouterController::class, 'store'])->name('router.store');
+        Route::get('{id}/edit', [RouterController::class, 'edit'])->where(['id' => '[0-9]+'])->name('router.edit');
+        Route::post('{id}/update', [RouterController::class, 'update'])->where(['id' => '[0-9]+'])->name('router.update');
+        Route::get('{id}/delete', [RouterController::class, 'delete'])->where(['id' => '[0-9]+'])->name('router.delete');
+        Route::delete('{id}/destroy', [RouterController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('router.destroy');
     });
 });
 
