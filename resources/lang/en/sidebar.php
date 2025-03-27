@@ -2,6 +2,21 @@
 return [
     'module' => [
         [
+            'title' => 'Article',
+            'icon' => 'fa fa-file',
+            'name' => ['post'],
+            'subModule' => [
+                [
+                    'title' => 'Article Groups',
+                    'route' => 'post/catalogue/index',
+                ],
+                [
+                    'title' => 'Article',
+                    'route' => 'post/index',
+                ]
+            ]
+        ],
+        [
             'title' => 'Member',
             'icon' => 'fa fa-user',
             'name' => ['user'],
@@ -17,21 +32,6 @@ return [
                 [
                     'title' => 'Permission',
                     'route' => 'permission/index',
-                ]
-            ]
-        ],
-        [
-            'title' => 'Article',
-            'icon' => 'fa fa-file',
-            'name' => ['post'],
-            'subModule' => [
-                [
-                    'title' => 'Article Groups',
-                    'route' => 'post/catalogue/index',
-                ],
-                [
-                    'title' => 'Article',
-                    'route' => 'post/index',
                 ]
             ]
         ],

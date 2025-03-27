@@ -77,6 +77,8 @@ Route::group(['middleware' => ['admin', 'locale']], function (){
         Route::get('{id}/delete', [LanguageController::class, 'delete'])->where(['id' => '[0-9]+'])->name('language.delete');
         Route::delete('{id}/destroy', [LanguageController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('language.destroy');
         Route::get('{id}/switch', [LanguageController::class, 'switchBackendLanguage'])->where(['id' => '[0-9]+'])->name('language.switch');
+        Route::get('{id}/{languageId}/{model}/translate', [LanguageController::class, 'translate'])->where(['id' => '[0-9]+', 'languageId' => '[0-9]+'])->name('language.translate');
+        Route::post('storeTranslate', [LanguageController::class, 'storeTranslate'])->name('language.storeTranslate');
     });
 
     /* Post : Quản lý bài viết */
@@ -99,17 +101,6 @@ Route::group(['middleware' => ['admin', 'locale']], function (){
         Route::post('{id}/update', [PostCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('post.catalogue.update');
         Route::get('{id}/delete', [PostCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('post.catalogue.delete');
         Route::delete('{id}/destroy', [PostCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.catalogue.destroy');
-    });
-
-    /* Router : Quản lý đường dẫn */
-    Route::group(['prefix' => 'router'], function (){
-        Route::get('index', [RouterController::class, 'index'])->name('router.index');
-        Route::get('create', [RouterController::class, 'create'])->name('router.create');
-        Route::post('store', [RouterController::class, 'store'])->name('router.store');
-        Route::get('{id}/edit', [RouterController::class, 'edit'])->where(['id' => '[0-9]+'])->name('router.edit');
-        Route::post('{id}/update', [RouterController::class, 'update'])->where(['id' => '[0-9]+'])->name('router.update');
-        Route::get('{id}/delete', [RouterController::class, 'delete'])->where(['id' => '[0-9]+'])->name('router.delete');
-        Route::delete('{id}/destroy', [RouterController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('router.destroy');
     });
 });
 

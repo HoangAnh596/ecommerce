@@ -4,10 +4,11 @@
             <th style="width: 30px">
                 <input type="checkbox" value="" id="checkAll" class="input-checkbox">
             </th>
-            <th class="text-center">Tiêu đề</th>
-            <th class="text-center" style="width: 80px">Vị trí</th>
-            <th class="text-center" style="width: 100px">Tình trạng</th>
-            <th class="text-center" style="width: 100px">Thao tác</th>
+            <th class="text-center">{{ __('messages.tableName') }}</th>
+            @include('backend.dashboard.component.languageTh')
+            <th class="text-center" style="width: 80px">{{ __('messages.tableOrder') }}</th>
+            <th class="text-center" style="width: 100px">{{ __('messages.tableStatus') }}</th>
+            <th class="text-center" style="width: 100px">{{ __('messages.tableAction') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -27,7 +28,7 @@
                             <span class="maintitle">{{ $post->name }}</span>
                         </div>
                         <div class="catalogue">
-                            <span class="text-danger">Nhóm hiển thị</span>
+                            <span class="text-danger">{{ __('messages.tableGroup') }}</span>
                             @foreach($post->post_catalogues as $val)
                             @foreach($val->post_catalogue_language as $cat)
                             <a href="{{ route('post.index', ['post_catalogue_id' => $val->id]) }}">{{ $cat->name }}</a>
@@ -37,6 +38,7 @@
                     </div>
                 </div>
             </td>
+            @include('backend.dashboard.component.languageTd', ['model' => $post, 'modeling' => 'Post'])
             <td>
                 <input type="text" name="order" class="form-control sort-order text-right" value="{{ $post->order }}" data-id="{{ $post->id }}" data-model="{{ $config['model'] }}">
             </td>

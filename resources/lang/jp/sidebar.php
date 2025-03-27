@@ -2,6 +2,21 @@
 return [
     'module' => [
         [
+            'title' => '記事',
+            'icon' => 'fa fa-file',
+            'name' => ['post'],
+            'subModule' => [
+                [
+                    'title' => '記事グループ',
+                    'route' => 'post/catalogue/index',
+                ],
+                [
+                    'title' => '記事',
+                    'route' => 'post/index',
+                ]
+            ]
+        ],
+        [
             'title' => 'メンバー',
             'icon' => 'fa fa-user',
             'name' => ['user'],
@@ -17,21 +32,6 @@ return [
                 [
                     'title' => '権限',
                     'route' => 'permission/index',
-                ]
-            ]
-        ],
-        [
-            'title' => '記事',
-            'icon' => 'fa fa-file',
-            'name' => ['post'],
-            'subModule' => [
-                [
-                    'title' => '記事グループ',
-                    'route' => 'post/catalogue/index',
-                ],
-                [
-                    'title' => '記事',
-                    'route' => 'post/index',
                 ]
             ]
         ],

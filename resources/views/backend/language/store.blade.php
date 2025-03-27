@@ -1,13 +1,5 @@
 @include('backend.language.component.breadcrumb', ['title' => $config['seo']['create']['title']])
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+@include('backend.dashboard.component.formError')
 @php
     $url = ($config['method'] == 'create') ? route('language.store') : route('language.update', $language->id);
 @endphp

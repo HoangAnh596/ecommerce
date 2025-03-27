@@ -15,6 +15,21 @@ return [
             'title' => 'Delete Article Group'
         ],
     ],
+    'post' => [
+        'index' => [
+            'title' => 'Manage Article',
+            'tableHeading' => 'Article List'
+        ],
+        'create' => [
+            'title' => 'Add New Article'
+        ],
+        'edit' => [
+            'title' => 'Update Article'
+        ],
+        'delete' => [
+            'title' => 'Delete Article'
+        ],
+    ],
     'permission' => [
         'index' => [
             'title' => 'Manage Permissions',
@@ -51,10 +66,12 @@ return [
     'metaCanonical' => 'https://your-url.html',
     'canonical' => 'URL Path',
     'tableName' => 'Group Name',
+    'tableOrder' => 'Order',
+    'tableGroup' => 'Display Group',
     'tableStatus' => 'Status',
     'tableAction' => 'Actions',
     'publish' => [
-        '0' => 'Select Status',
+        '0' => 'Chose status',
         '1' => 'Unpublished',
         '2' => 'Published'
     ],

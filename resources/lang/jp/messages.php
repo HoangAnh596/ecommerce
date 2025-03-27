@@ -15,6 +15,21 @@ return [
             'title' => '記事グループを削除'
         ],
     ],
+    'post' => [
+        'index' => [
+            'title' => '記事管理',
+            'tableHeading' => '記事一覧'
+        ],
+        'create' => [
+            'title' => '新しい記事を追加'
+        ],
+        'edit' => [
+            'title' => '記事を更新'
+        ],
+        'delete' => [
+            'title' => '記事を削除'
+        ],
+    ],
     'permission' => [
         'index' => [
             'title' => '記事グループの管理',
@@ -51,6 +66,8 @@ return [
     'metaCanonical' => 'https://your-url.html',
     'canonical' => 'URLパス',
     'tableName' => 'グループ名',
+    'tableOrder' => '注文',
+    'tableGroup' => '表示グループ',
     'tableStatus' => 'ステータス',
     'tableAction' => 'アクション',
     'publish' => [

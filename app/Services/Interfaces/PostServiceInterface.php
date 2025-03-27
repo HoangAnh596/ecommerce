@@ -8,7 +8,7 @@ namespace App\Services\Interfaces;
  */
 interface PostServiceInterface
 {
-    public function paginate($request);
+    public function paginate($request, $languageId);
 
-    public function create($request);
+    public function create($request, $languageId);
 }

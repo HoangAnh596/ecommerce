@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\PostRepositoryInterface as postRepository;
 use App\Services\Interfaces\PostServiceInterface as postService;
 use Illuminate\Http\Request;
 use App\Classes\Nestedsetbie;
+use App\Models\Language;
 
 class PostController extends Controller
 {
@@ -21,20 +22,30 @@ class PostController extends Controller
         PostService $postService,
         PostRepository $postRepository
     ){
+        $this->middleware(function($request, $next){
+            $locale = app()->getLocale();
+            $language = Language::where('canonical', $locale)->first();
+            $this->language = $language->id;
+            $this->initialize();
+            return $next($request);
+        });
         $this->postService = $postService;
         $this->postRepository = $postRepository;
+        $this->initialize();
+    }
+
+    private function initialize() {
         $this->nestedset = new Nestedsetbie([
             'table' => 'post_catalogues',
             'foreign_key' => 'post_catalogue_id',
             'language_id' => 1,
         ]);
-        $this->language = $this->currentLanguage();
     }
     
     public function index(Request $request)
     {
         $this->authorize('modules', 'post.index');
-        $posts = $this->postService->paginate($request);       
+        $posts = $this->postService->paginate($request, $this->language);       
         $config = [
             'css' => [
                 'backend/css/plugins/switchery/switchery.css',
@@ -47,7 +58,7 @@ class PostController extends Controller
             'model' => 'Post'
         ];
         $template = 'backend.post.post.index';
-        $config['seo']  = config('apps.post');
+        $config['seo']  = __('messages.post');
         $dropdown = $this->nestedset->Dropdown();
 
         return view('backend.dashboard.layout', compact(
@@ -63,7 +74,7 @@ class PostController extends Controller
         $this->authorize('modules', 'post.create');
         $config = $this->configData();
         $template = 'backend.post.post.store';
-        $config['seo']  = config('apps.post');
+        $config['seo']  = __('messages.post');
         $config['method'] = 'create';
         $dropdown = $this->nestedset->Dropdown();
 
@@ -75,7 +86,7 @@ class PostController extends Controller
     }
 
     public function store(StorePostRequest $request){
-        if($this->postService->create($request)){
+        if($this->postService->create($request, $this->language)){
 
             return redirect()->route('post.index')->with('success', 'Thêm mới bản ghi thành công');
         }
@@ -87,7 +98,7 @@ class PostController extends Controller
         $config = $this->configData();
         $post = $this->postRepository->getPostById($id, $this->language);
         $template = 'backend.post.post.store';
-        $config['seo']  = config('apps.post');
+        $config['seo']  = __('messages.post');
         $config['method'] = 'edit';
         $dropdown = $this->nestedset->Dropdown();
         $album = json_decode($post->album);
@@ -113,7 +124,7 @@ class PostController extends Controller
         $this->authorize('modules', 'post.destroy');
         $post = $this->postRepository->getPostById($id, $this->language);
         $template = 'backend.post.post.delete';
-        $config['seo']  = config('apps.post');
+        $config['seo']  = __('messages.post');
 
         return view('backend.dashboard.layout', compact(
             'template',

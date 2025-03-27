@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLanguageRequest;
+use App\Http\Requests\StoreTranslateRequest;
 use App\Http\Requests\UpdateLanguageRequest;
 use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 use App\Services\Interfaces\LanguageServiceInterface as LanguageService;
@@ -25,7 +26,7 @@ class LanguageController extends Controller
     public function index(Request $request)
     {
         $this->authorize('modules', 'language.index');
-        $languages = $this->languageService->paginate($request);
+        $resLang = $this->languageService->paginate($request);
         $config = [
             'css' => [
                 'backend/css/plugins/switchery/switchery.css',
@@ -43,7 +44,7 @@ class LanguageController extends Controller
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'languages'
+            'resLang'
         ));
     }
 
@@ -123,6 +124,55 @@ class LanguageController extends Controller
         return redirect()->back();
     }
 
+    public function translate($id = 0, $languageId = 0, $model = '') {
+        $this->authorize('modules', 'language.translate');
+        $repositoryInstance = $this->repositoryInstance($model);
+        $languageInstance = $this->repositoryInstance('Language');
+        $currentLanguage = $languageInstance->findByCondition([
+            ['canonical', '=', session('app_locale')]
+        ]);
+
+        $method = 'get'.$model.'ById';
+        $object = $repositoryInstance->{$method}($id, $currentLanguage->id);
+        $objectTranslate = $repositoryInstance->{$method}($id, $languageId);
+        $template = 'backend.language.translate';
+        $config = [
+            'js' => [
+                'backend/plugins/ckeditor/ckeditor.js',
+                'backend/plugins/ckfinder_2/ckfinder.js',
+                'backend/library/finder.js',
+                'backend/library/seo.js',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+            ],
+            'css' => [
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+            ],
+        ];
+        $option = [
+            'id' => $id,
+            'languageId' => $languageId,
+            'model' => $model
+        ];
+        $config['seo']  = config('apps.language');
+
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            'object',
+            'objectTranslate',
+            'option'
+        ));
+    }
+
+    public function storeTranslate(StoreTranslateRequest $request) {
+        $option = $request->input('option');
+        if($this->languageService->saveTranslate($option, $request)){
+
+            return redirect()->back()->with('success', 'Cập nhật bản ghi thành công');
+        }
+        return redirect()->back()->with('errors', 'Có vấn đề xảy ra, Hãy thử lại!');
+    }
+
     private function configData() {
         return [
             'js' => [
@@ -130,5 +180,14 @@ class LanguageController extends Controller
                 'backend/library/finder.js'
             ],
         ];
+    }
+
+    private function repositoryInstance($model) {
+        $repositoryNamespace = '\App\Repositories\\' . ucfirst($model). 'Repository';
+        if(class_exists($repositoryNamespace)) {
+            $repositoryInstance = app($repositoryNamespace);
+        }
+
+        return $repositoryInstance ?? null;
     }
 }

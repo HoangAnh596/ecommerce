@@ -142,6 +142,44 @@ class LanguageService implements LanguageServiceInterface
         }
     }
 
+    public function saveTranslate($option, $request) {
+        DB::beginTransaction();
+        try {
+            $payload = [
+                'name' => $request->input('translate_name'),
+                'description' => $request->input('translate_description'),
+                'content' => $request->input('translate_content'),
+                'meta_title' => $request->input('translate_meta_title'),
+                'meta_keyword' => $request->input('translate_meta_keyword'),
+                'meta_description' => $request->input('translate_meta_description'),
+                'canonical' => $request->input('translate_canonical'),
+                $this->convertModelToField($option['model']) => $option['id'],
+                'language_id' => $option['languageId']
+            ];
+            $repositoryNamespace = '\App\Repositories\\' . ucfirst($option['model']). 'Repository';
+            if(class_exists($repositoryNamespace)) {
+                $repositoryInstance = app($repositoryNamespace);
+            }
+            $model = $repositoryInstance->findById($option['id']);
+            $model->languages()->detach([$option['languageId'], $model->id]);
+            $repositoryInstance->createPivot($model, $payload, 'languages');
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
+
+    private function convertModelToField($model) {
+        $temp = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $model));
+        return $temp.'_id';
+    }
+
     private function paginateSelect() {
         return ['id', 'name', 'canonical', 'image', 'user_id', 'publish'];
     }

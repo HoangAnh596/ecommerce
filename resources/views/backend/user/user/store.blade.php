@@ -164,9 +164,7 @@
                 </div>
             </div>
         </div>
-        <div class="text-right mb15">
-            <button class="btn btn-primary" type="submit" name="send" value="send">Lưu lại</button>
-        </div>
+        @include('backend.dashboard.component.button')
     </div>
 </form>
 

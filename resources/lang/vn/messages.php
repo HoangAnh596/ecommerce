@@ -115,6 +115,8 @@ return [
     'metaCanonical' => 'https://duong-dan-cua-ban.html',
     'canonical' => 'Đường dẫn',
     'tableName' => 'Tên nhóm',
+    'tableOrder' => 'Vị trí',
+    'tableGroup' => 'Nhóm hiển thị',
     'tableStatus' => 'Tình trạng',
     'tableAction' => 'Thao tác',
     'publish' => [
