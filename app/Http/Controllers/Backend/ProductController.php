@@ -3,24 +3,24 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
-use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
-use App\Services\Interfaces\PostServiceInterface as PostService;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
+use App\Services\Interfaces\ProductServiceInterface as ProductService;
 use Illuminate\Http\Request;
 use App\Classes\Nestedsetbie;
 use App\Models\Language;
 
-class PostController extends Controller
+class ProductController extends Controller
 {
-    protected $postService;
-    protected $postRepository;
+    protected $productService;
+    protected $productRepository;
     protected $nestedset;
     protected $language;
 
     public function __construct(
-        PostService $postService,
-        PostRepository $postRepository
+        ProductService $productService,
+        ProductRepository $productRepository
     ){
         $this->middleware(function($request, $next){
             $locale = app()->getLocale();
@@ -29,23 +29,23 @@ class PostController extends Controller
             $this->initialize();
             return $next($request);
         });
-        $this->postService = $postService;
-        $this->postRepository = $postRepository;
+        $this->productService = $productService;
+        $this->productRepository = $productRepository;
         $this->initialize();
     }
 
     private function initialize() {
         $this->nestedset = new Nestedsetbie([
-            'table' => 'post_catalogues',
-            'foreign_key' => 'post_catalogue_id',
+            'table' => 'products',
+            'foreign_key' => 'product_id',
             'language_id' => 1,
         ]);
     }
     
     public function index(Request $request)
     {
-        $this->authorize('modules', 'post.index');
-        $posts = $this->postService->paginate($request, $this->language);       
+        $this->authorize('modules', 'product.index');
+        $products = $this->productService->paginate($request, $this->language);       
         $config = [
             'css' => [
                 'backend/css/plugins/switchery/switchery.css',
@@ -55,26 +55,26 @@ class PostController extends Controller
                 'backend/js/plugins/switchery/switchery.js',
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
             ],
-            'model' => 'Post'
+            'model' => 'Product'
         ];
-        $template = 'backend.post.post.index';
-        $config['seo']  = __('messages.post');
+        $template = 'backend.product.product.index';
+        $config['seo']  = __('messages.product');
         $dropdown = $this->nestedset->Dropdown();
 
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'posts',
+            'products',
             'dropdown'
         ));
     }
 
     public function create()
     {
-        $this->authorize('modules', 'post.create');
+        $this->authorize('modules', 'product.create');
         $config = $this->configData();
-        $template = 'backend.post.post.store';
-        $config['seo']  = __('messages.post');
+        $template = 'backend.product.product.store';
+        $config['seo']  = __('messages.product');
         $config['method'] = 'create';
         $dropdown = $this->nestedset->Dropdown();
 
@@ -85,60 +85,60 @@ class PostController extends Controller
         ));
     }
 
-    public function store(StorePostRequest $request){
-        if($this->postService->create($request, $this->language)){
+    public function store(StoreProductRequest $request){
+        if($this->productService->create($request, $this->language)){
 
-            return redirect()->route('post.index')->with('success', 'Thêm mới bản ghi thành công');
+            return redirect()->route('product.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('post.index')->with('errors', 'Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('product.index')->with('errors', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
     public function edit($id) {
-        $this->authorize('modules', 'post.update');
+        $this->authorize('modules', 'product.update');
         $config = $this->configData();
-        $post = $this->postRepository->getPostById($id, $this->language);
-        $template = 'backend.post.post.store';
-        $config['seo']  = __('messages.post');
+        $product = $this->productRepository->getProductById($id, $this->language);
+        $template = 'backend.product.product.store';
+        $config['seo']  = __('messages.product');
         $config['method'] = 'edit';
         $dropdown = $this->nestedset->Dropdown();
-        $album = json_decode($post->album);
+        $album = json_decode($product->album);
 
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'post',
+            'product',
             'dropdown',
             'album'
         ));
     }
 
-    public function update(UpdatePostRequest $request, $id) {
-        if($this->postService->update($request, $id)){
+    public function update(UpdateProductRequest $request, $id) {
+        if($this->productService->update($request, $id)){
 
-            return redirect()->route('post.index')->with('success', 'Cập nhật bản ghi thành công');
+            return redirect()->route('product.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('post.index')->with('errors', 'Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('product.index')->with('errors', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
     public function delete($id) {
-        $this->authorize('modules', 'post.destroy');
-        $post = $this->postRepository->getPostById($id, $this->language);
-        $template = 'backend.post.post.delete';
-        $config['seo']  = __('messages.post');
+        $this->authorize('modules', 'product.destroy');
+        $product = $this->productRepository->getProductById($id, $this->language);
+        $template = 'backend.product.product.delete';
+        $config['seo']  = __('messages.product');
 
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'post'
+            'product'
         ));
     }
 
     public function destroy($id) {
-        if($this->postService->destroy($id)){
+        if($this->productService->destroy($id)){
 
-            return redirect()->route('post.index')->with('success', 'Xóa bản ghi thành công');
+            return redirect()->route('product.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('post.index')->with('errors', 'Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('product.index')->with('errors', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
     private function configData() {

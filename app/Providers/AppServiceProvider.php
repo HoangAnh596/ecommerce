@@ -9,27 +9,12 @@ class AppServiceProvider extends ServiceProvider
 {
     public $serviceBindings = [
         'App\Services\Interfaces\UserServiceInterface' => 'App\Services\UserService',
-        'App\Repositories\Interfaces\UserRepositoryInterface' => 'App\Repositories\UserRepository',
-        
-        'App\Repositories\Interfaces\ProvinceRepositoryInterface' => 'App\Repositories\ProvinceRepository',
-        'App\Repositories\Interfaces\DistrictRepositoryInterface' => 'App\Repositories\DistrictRepository',
-        
-        'App\Repositories\Interfaces\RouterRepositoryInterface' => 'App\Repositories\RouterRepository',
-        
         'App\Services\Interfaces\UserCatalogueServiceInterface' => 'App\Services\UserCatalogueService',
-        'App\Repositories\Interfaces\UserCatalogueRepositoryInterface' => 'App\Repositories\UserCatalogueRepository',
-
         'App\Services\Interfaces\LanguageServiceInterface' => 'App\Services\LanguageService',
-        'App\Repositories\Interfaces\LanguageRepositoryInterface' => 'App\Repositories\LanguageRepository',
-
         'App\Services\Interfaces\PostCatalogueServiceInterface' => 'App\Services\PostCatalogueService',
-        'App\Repositories\Interfaces\PostCatalogueRepositoryInterface' => 'App\Repositories\PostCatalogueRepository',
-
         'App\Services\Interfaces\PostServiceInterface' => 'App\Services\PostService',
-        'App\Repositories\Interfaces\PostRepositoryInterface' => 'App\Repositories\PostRepository',
-
         'App\Services\Interfaces\PermissionServiceInterface' => 'App\Services\PermissionService',
-        'App\Repositories\Interfaces\PermissionRepositoryInterface' => 'App\Repositories\PermissionRepository',
+        'App\Services\Interfaces\GenerateServiceInterface' => 'App\Services\GenerateService',
     ];
 
     /**
@@ -40,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
         foreach($this->serviceBindings as $interface => $service){
             $this->app->bind($interface, $service);
         }
+        $this->app->register(RepositoryServiceProvider::class);
     }
 
     /**

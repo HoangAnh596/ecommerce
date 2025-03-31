@@ -1,4 +1,4 @@
-@include('backend.language.component.breadcrumb', ['title' => $config['seo']['create']['title']])
+@include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['create']['title']])
 @include('backend.dashboard.component.formError')
 @php
     $url = ($config['method'] == 'create') ? route('language.store') : route('language.update', $language->id);

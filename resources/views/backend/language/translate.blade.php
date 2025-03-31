@@ -1,4 +1,4 @@
-@include('backend.language.component.breadcrumb', ['title' => $config['seo']['create']['title']])
+@include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['create']['title']])
 @include('backend.dashboard.component.formError')
 
 <form action="{{ route('language.storeTranslate') }}" method="POST">

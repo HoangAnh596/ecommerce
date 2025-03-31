@@ -1,4 +1,4 @@
-@include('backend.user.catalogue.component.breadcrumb', ['title' => $config['seo']['permission']['title']])
+@include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['permission']['title']])
 
 <form action="{{ route('user.catalogue.updatePermission') }}" method="POST" class="box">
     @csrf

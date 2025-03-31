@@ -1,4 +1,4 @@
-@include('backend.user.catalogue.component.breadcrumb', ['title' => $config['seo']['create']['title']])
+@include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['create']['title']])
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>

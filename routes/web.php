@@ -4,6 +4,7 @@ use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\GenerateController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\PostCatalogueController;
@@ -79,6 +80,17 @@ Route::group(['middleware' => ['admin', 'locale']], function (){
         Route::get('{id}/switch', [LanguageController::class, 'switchBackendLanguage'])->where(['id' => '[0-9]+'])->name('language.switch');
         Route::get('{id}/{languageId}/{model}/translate', [LanguageController::class, 'translate'])->where(['id' => '[0-9]+', 'languageId' => '[0-9]+'])->name('language.translate');
         Route::post('storeTranslate', [LanguageController::class, 'storeTranslate'])->name('language.storeTranslate');
+    });
+
+    /* Generates : Quản lý Module */
+    Route::group(['prefix' => 'generate'], function (){
+        Route::get('index', [GenerateController::class, 'index'])->name('generate.index');
+        Route::get('create', [GenerateController::class, 'create'])->name('generate.create');
+        Route::post('store', [GenerateController::class, 'store'])->name('generate.store');
+        Route::get('{id}/edit', [GenerateController::class, 'edit'])->where(['id' => '[0-9]+'])->name('generate.edit');
+        Route::post('{id}/update', [GenerateController::class, 'update'])->where(['id' => '[0-9]+'])->name('generate.update');
+        Route::get('{id}/delete', [GenerateController::class, 'delete'])->where(['id' => '[0-9]+'])->name('generate.delete');
+        Route::delete('{id}/destroy', [GenerateController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('generate.destroy');
     });
 
     /* Post : Quản lý bài viết */
