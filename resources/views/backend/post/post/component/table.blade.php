@@ -21,7 +21,7 @@
             <td>
                 <div class="uk-flex uk-flex-middle">
                     <div class="image mr5">
-                        <div class="img-cover image-post"><img src="{{ asset($post->image) }}" alt="{{ $post->name }}"></div>
+                        <div class="img-cover image-list"><img src="{{ asset($post->image) }}" alt="{{ $post->name }}"></div>
                     </div>
                     <div class="main-infor">
                         <div class="name">

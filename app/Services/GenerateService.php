@@ -43,17 +43,19 @@ class GenerateService implements GenerateServiceInterface
         DB::beginTransaction();
         try {
 
-            // $database = $this->makeDatabase($request);
-            // $controller = $this->makeController($request);
-            // $model = $this->makeModel($request);
-            // $repository = $this->makeRepository($request);
-            // $service = $this->makeService($request);
-            // $provider = $this->makeProvider($request);
-            // $makeRequest = $this->makeRequest($request);
-            $this->makeView();
-            // $this->makeRoute();
-            // $this->makeRule();
-            // $this->makeLang();
+            $this->makeDatabase($request);
+            $this->makeController($request);
+            $this->makeModel($request);
+            $this->makeRepository($request);
+            $this->makeService($request);
+            $this->makeProvider($request);
+            $this->makeRequest($request);
+            $this->makeView($request);
+            if($request->input('module_type') == 1) {
+                $this->makeRule($request);
+            }
+            // $makeLang = $this->makeLang($request);
+            $this->makeRoute($request);
 
             $payload = $request->except('_token', 'send');
             $payload['user_id'] = Auth::id();
@@ -127,7 +129,7 @@ class GenerateService implements GenerateServiceInterface
                 FILE::put($migrationPivotPath, $migrationPivotTemplate);
             }
 
-            // ARTISAN::call('migrate');
+            ARTISAN::call('migrate');
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -425,6 +427,115 @@ class GenerateService implements GenerateServiceInterface
 
                 File::put($requestPut, $requestContent);
             }
+
+            return true;
+        } catch (\Exception $e) {
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
+
+    private function makeView($request) {
+        try {
+            $name = $request->input('name');
+            $module = $this->convertModuleToTableName($name);
+            $extractModule = explode('_', $module);
+            $basePath = resource_path("views/backend/{$extractModule[0]}");
+            $folderPath = (count($extractModule) == 2) ? "$basePath/{$extractModule[1]}" : "$basePath/{$extractModule[0]}";
+            $componentPath = "$folderPath/component";
+
+            $this->createDirectory(($folderPath));
+            $this->createDirectory(($componentPath));
+            $viewPath = (count($extractModule) == 2) ? "{$extractModule[0]}.{$extractModule[1]}" : "{$extractModule[0]}";
+            $replacement = [
+                'view' => $viewPath,
+                'module' => lcfirst($name),
+                'Module' => $name
+            ];
+
+            $sourcePath = base_path('app/Templates/views/'.((count($extractModule) == 2) ? 'catalogue' : 'post').'/');
+            $fileArray = ['store.blade.php', 'index.blade.php', 'delete.blade.php'];
+            $componentFile = ['aside.blade.php', 'filter.blade.php', 'table.blade.php'];
+            $this->CopyAndReplaceContent($sourcePath, $folderPath, $fileArray, $replacement);
+            $this->CopyAndReplaceContent("{$sourcePath}component/", $componentPath, $componentFile, $replacement);
+
+            return true;
+        } catch (\Exception $e) {
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
+
+    private function createDirectory($path) {
+        if(!FILE::exists($path)) {
+            FILE::makeDirectory($path, 0755, true);
+        }
+    }
+
+    private function CopyAndReplaceContent(string $sourcePath, string $destinationPath, 
+        array $fileArray, array $replacement
+    ){
+        foreach($fileArray as $key => $val) {
+            $sourceFile = $sourcePath.$val;
+            $destination = "{$destinationPath}/{$val}";
+            $content = file_get_contents($sourceFile);
+            
+            foreach($replacement as $keyReplace => $replace){
+                $content = str_replace('{'.$keyReplace.'}', $replace, $content);
+            }
+            if(!FILE::exists($destination)) {
+                FILE::put($destination, $content);
+            }
+        }
+    }
+
+    private function makeRule($request){
+        $name = $request->input('name');
+        $destination = base_path('app/Rules/Check'.$name.'ChildrenRule.php');
+        $ruleTemplate = base_path('app/Templates/RuleTemplate.php');
+        $content = file_get_contents($ruleTemplate);
+        $content = str_replace('{Module}', $name, $content);
+        if(!FILE::exists($destination)){
+            FILE::put($destination, $content);
+        }
+    }
+
+    private function makeRoute($request) {
+        try {
+            $name = $request->input('name');
+            $module = $this->convertModuleToTableName($name);
+            $moduleExtract = explode('_', $module);
+            $routesPath = base_path('routes/web.php');
+            $content = file_get_contents($routesPath);
+            $routeUrl = (count($moduleExtract) == 2) ? "{$moduleExtract[0]}/$moduleExtract[1]" : $moduleExtract[1];
+            $routeName = (count($moduleExtract) == 2) ? "{$moduleExtract[0]}.$moduleExtract[1]" : $moduleExtract[0];
+            
+            $routeGroup = <<<ROUTE
+            /* UserCatalogue */
+                Route::group(['prefix' => '{$routeUrl}'], function (){
+                    Route::get('index', [{$name}Controller::class, 'index'])->name('{$routeName}.index');
+                    Route::get('create', [{$name}Controller::class, 'create'])->name('{$routeName}.create');
+                    Route::post('store', [{$name}Controller::class, 'store'])->name('{$routeName}.store');
+                    Route::get('{id}/edit', [{$name}Controller::class, 'edit'])->where(['id' => '[0-9]+'])->name('{$routeName}.edit');
+                    Route::post('{id}/update', [{$name}Controller::class, 'update'])->where(['id' => '[0-9]+'])->name('{$routeName}.update');
+                    Route::get('{id}/delete', [{$name}Controller::class, 'delete'])->where(['id' => '[0-9]+'])->name('{$routeName}.delete');
+                    Route::delete('{id}/destroy', [{$name}Controller::class, 'destroy'])->where(['id' => '[0-9]+'])->name('{$routeName}.destroy');
+                });
+
+                //@@new-module@@
+            ROUTE;
+
+            $useController = <<<ROUTE
+            use App\Http\Controllers\Backend\\{$name}Controller;
+            //@@useController@@
+            ROUTE;
+            $content = str_replace('//@@new-module@@', $routeGroup, $content);
+            $content = str_replace('//@@useController@@', $useController, $content);
+            FILE::put($routesPath, $content);
 
             return true;
         } catch (\Exception $e) {
