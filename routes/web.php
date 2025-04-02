@@ -13,6 +13,8 @@ use App\Http\Controllers\Backend\UserCatalogueController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Middleware\LoginMiddleware;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\ProductCatalogueController;
+use App\Http\Controllers\Backend\GalleryCatalogueController;
 //@@useController@@
 
 /*
@@ -113,6 +115,28 @@ Route::group(['middleware' => ['admin', 'locale']], function (){
         Route::post('{id}/update', [PostCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('post.catalogue.update');
         Route::get('{id}/delete', [PostCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('post.catalogue.delete');
         Route::delete('{id}/destroy', [PostCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.catalogue.destroy');
+    });
+
+    /* ProductCatalogue */
+    Route::group(['prefix' => 'product/catalogue'], function (){
+        Route::get('index', [ProductCatalogueController::class, 'index'])->name('product.catalogue.index');
+        Route::get('create', [ProductCatalogueController::class, 'create'])->name('product.catalogue.create');
+        Route::post('store', [ProductCatalogueController::class, 'store'])->name('product.catalogue.store');
+        Route::get('{id}/edit', [ProductCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('product.catalogue.edit');
+        Route::post('{id}/update', [ProductCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('product.catalogue.update');
+        Route::get('{id}/delete', [ProductCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('product.catalogue.delete');
+        Route::delete('{id}/destroy', [ProductCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('product.catalogue.destroy');
+    });
+
+    /* GalleryCatalogue */
+    Route::group(['prefix' => 'gallery/catalogue'], function (){
+        Route::get('index', [GalleryCatalogueController::class, 'index'])->name('gallery.catalogue.index');
+        Route::get('create', [GalleryCatalogueController::class, 'create'])->name('gallery.catalogue.create');
+        Route::post('store', [GalleryCatalogueController::class, 'store'])->name('gallery.catalogue.store');
+        Route::get('{id}/edit', [GalleryCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.edit');
+        Route::post('{id}/update', [GalleryCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.update');
+        Route::get('{id}/delete', [GalleryCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.delete');
+        Route::delete('{id}/destroy', [GalleryCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.destroy');
     });
 
     //@@new-module@@

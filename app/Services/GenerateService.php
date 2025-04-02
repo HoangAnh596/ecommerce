@@ -292,7 +292,7 @@ class GenerateService implements GenerateServiceInterface
             $replaceRepository = [
                 'Module' => $name,
                 'tableName' => $module . 's',
-                'pivotTableName' => $module . '_' . $moduleExtract[0],
+                'pivotTableName' => $module . '_language',
                 'foreignKey' => $module . '_id',
             ];
             $repositoryContent = $repository['service']['layerContent'];

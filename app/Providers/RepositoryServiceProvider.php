@@ -18,6 +18,8 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\Interfaces\PostRepositoryInterface' => 'App\Repositories\PostRepository',
         'App\Repositories\Interfaces\PermissionRepositoryInterface' => 'App\Repositories\PermissionRepository',
         'App\Repositories\Interfaces\GenerateRepositoryInterface' => 'App\Repositories\GenerateRepository',
+        'App\Repositories\Interfaces\ProductCatalogueRepositoryInterface' => 'App\Repositories\ProductCatalogueRepository',
+        'App\Repositories\Interfaces\GalleryCatalogueRepositoryInterface' => 'App\Repositories\GalleryCatalogueRepository',
     ];
 
     /**

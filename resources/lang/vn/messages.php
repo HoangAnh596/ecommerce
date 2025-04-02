@@ -45,6 +45,21 @@ return [
             'title' => 'Xóa bài viết'
         ],
     ],
+    'galleryCatalogue' => [
+        'index' => [
+            'title' => 'Quản lý nhóm hình ảnh',
+            'tableHeading' => 'Danh sách nhóm hình ảnh'
+        ],
+        'create' => [
+            'title' => 'Thêm mới nhóm hình ảnh'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật nhóm hình ảnh'
+        ],
+        'delete' => [
+            'title' => 'Xóa nhóm hình ảnh'
+        ],
+    ],
     'user' => [
         'index' => [
             'title' => 'Quản lý thành viên',
@@ -131,7 +146,7 @@ return [
     'perpage' => 'bản ghi',
     'search' => 'Tìm kiếm',
     'searchInput' => 'Bạn muốn tìm kiếm gì...',
-    'title' => 'Tiêu đề bài viết',
+    'title' => 'Tiêu đề',
     'description' => 'Mô tả ngắn',
     'content' => 'Nội dung',
     'imageMultiple' => 'Upload nhiều ảnh',

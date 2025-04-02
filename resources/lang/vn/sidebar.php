@@ -3,7 +3,7 @@ return [
     'module' => [
         [
             'title' => 'QL Sản phẩm',
-            'icon' => 'fa fa-file',
+            'icon' => 'fa fa-cube',
             'name' => ['product'],
             'subModule' => [
                 [
@@ -28,6 +28,21 @@ return [
                 [
                     'title' => 'QL Bài Viết',
                     'route' => 'post/index',
+                ]
+            ]
+        ],
+        [
+            'title' => 'QL Hình ảnh',
+            'icon' => 'fa fa-image',
+            'name' => ['gallery'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Hình ảnh',
+                    'route' => 'gallery/catalogue/index',
+                ],
+                [
+                    'title' => 'QL Hình ảnh',
+                    'route' => 'gallery/index',
                 ]
             ]
         ],
