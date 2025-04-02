@@ -43,19 +43,19 @@ class GenerateService implements GenerateServiceInterface
         DB::beginTransaction();
         try {
 
-            $this->makeDatabase($request);
-            $this->makeController($request);
-            $this->makeModel($request);
-            $this->makeRepository($request);
+            // $this->makeDatabase($request);
+            // $this->makeController($request);
+            // $this->makeModel($request);
+            // $this->makeRepository($request);
             $this->makeService($request);
-            $this->makeProvider($request);
-            $this->makeRequest($request);
-            $this->makeView($request);
-            if($request->input('module_type') == 1) {
-                $this->makeRule($request);
-            }
+            // $this->makeProvider($request);
+            // $this->makeRequest($request);
+            // $this->makeView($request);
+            // if($request->input('module_type') == 1) {
+            //     $this->makeRule($request);
+            // }
             // $makeLang = $this->makeLang($request);
-            $this->makeRoute($request);
+            // $this->makeRoute($request);
 
             $payload = $request->except('_token', 'send');
             $payload['user_id'] = Auth::id();
@@ -332,6 +332,7 @@ class GenerateService implements GenerateServiceInterface
                 'module' => lcfirst($name),
                 'tableName' => $module . 's',
                 'foreignKey' => $module . '_id',
+                'name' => $moduleExtract[0]
             ];
             $serviceContent = $service['service']['layerContent'];
             $servicePath = $service['service']['layerPathPut'];
@@ -383,20 +384,18 @@ class GenerateService implements GenerateServiceInterface
             $name = $request->input('name');
             $provider = [
                 'providerPath' => base_path('app/Providers/AppServiceProvider.php'),
-                'repositoryProviderPath' => base_path('app/Providers/RepositoryServiceProvider.php')
+                'repositoryProviderPath' => base_path('app/Providers/RepositoryServiceProvider.php'),
             ];
-
-            foreach($provider as $key => $val) {
+            
+            foreach($provider as $key => $val){
                 $content = file_get_contents($val);
-                // $insertLine = "'App\\Services\\Interfaces\\{$name}ServiceInterface' => 'App\\Services\\{$name}Service',";
-                $insertLine = ($key == 0) ? 
-                    "'App\\Services\\Interfaces\\{$name}ServiceInterface' => 'App\\Services\\{$name}Service'," : 
-                    "'App\\Repositories\\Interfaces\\{$name}RepositoryInterface' => 'App\\Repositories\\{$name}Repository',";
+                $insertLine = ($key == 'providerPath') ? "'App\\Services\\Interfaces\\{$name}ServiceInterface' => 'App\\Services\\{$name}Service'," : "'App\\Repositories\\Interfaces\\{$name}RepositoryInterface' => 'App\\Repositories\\{$name}Repository',"; 
+
                 $position = strpos($content, '];');
-                if($position !== false) {
+
+                if($position !== false){
                     $newContent = substr_replace($content, "    ".$insertLine . "\n".'    ', $position, 0);
                 }
-
                 File::put($val, $newContent);
             }
 
@@ -515,7 +514,7 @@ class GenerateService implements GenerateServiceInterface
             $routeName = (count($moduleExtract) == 2) ? "{$moduleExtract[0]}.$moduleExtract[1]" : $moduleExtract[0];
             
             $routeGroup = <<<ROUTE
-            /* UserCatalogue */
+            /* {$name} */
                 Route::group(['prefix' => '{$routeUrl}'], function (){
                     Route::get('index', [{$name}Controller::class, 'index'])->name('{$routeName}.index');
                     Route::get('create', [{$name}Controller::class, 'create'])->name('{$routeName}.create');
@@ -537,6 +536,7 @@ class GenerateService implements GenerateServiceInterface
             $content = str_replace('//@@useController@@', $useController, $content);
             FILE::put($routesPath, $content);
 
+            Artisan::call('route:cache');
             return true;
         } catch (\Exception $e) {
             // Log::error($e->getMessage());

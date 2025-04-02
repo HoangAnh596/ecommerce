@@ -2,6 +2,21 @@
 return [
     'module' => [
         [
+            'title' => 'QL Sản phẩm',
+            'icon' => 'fa fa-file',
+            'name' => ['product'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Sản phẩm',
+                    'route' => 'product/catalogue/index',
+                ],
+                [
+                    'title' => 'QL Sản phẩm',
+                    'route' => 'product/index',
+                ]
+            ]
+        ],
+        [
             'title' => 'QL Bài Viết',
             'icon' => 'fa fa-file',
             'name' => ['post'],

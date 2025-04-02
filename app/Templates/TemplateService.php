@@ -20,8 +20,7 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
     protected ${module}Repository;
     protected $routerRepository;
     protected $nestedset;
-    protected $language;
-    protected $controllerName;
+    protected $controllerName = '{Module}Controller';
 
     public function __construct(
         {Module}Repository ${module}Repository,
@@ -29,11 +28,6 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
     ){
         $this->{module}Repository = ${module}Repository;
         $this->routerRepository = $routerRepository;
-        $this->nestedset = new Nestedsetbie([
-            'table' => '{tableName}',
-            'foreign_key' => '{foreignKey}',
-        ]);
-        $this->controllerName = '{Module}Controller';
     }
 
     public function paginate($request, $languageId){
@@ -49,23 +43,28 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
             $this->paginateSelect(),
             $condition,
             $perpage,
-            ['path' => 'post.catalogue.index'],
+            ['path' => '{name}.catalogue.index'],
             ['{tableName}.lft','ASC'],
             [
-                ['post_catalogue_language as tb2', 'tb2.{foreignKey}', '=', '{tableName}.id'],
+                ['{name}_catalogue_language as tb2', 'tb2.{foreignKey}', '=', '{tableName}.id'],
             ]
         );
 
         return ${module}s;
     }
 
-    public function create($request) {
+    public function create($request, $languageId) {
         DB::beginTransaction();
         try {
             ${module} = $this->create{Module}($request);
             if(${module}->id > 0) {
-                $this->updateLanguageForCatalogue(${module}, $request);
-                $this->createRouter(${module}, $request, $this->controllerName); 
+                $this->updateLanguageForCatalogue(${module}, $request, $languageId);
+                $this->createRouter(${module}, $request, $this->controllerName);
+                $this->nestedset = new Nestedsetbie([
+                    'table' => '{module}_catalogues',
+                    'foreignkey' => '{module}_catalogue_id',
+                    'language_id' => $languageId,
+                ]);
                 $this->nestedset();
             }
             DB::commit();
@@ -79,14 +78,19 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
         }
     }
 
-    public function update($request, $id){
+    public function update($request, $id, $languageId){
         DB::beginTransaction();
         try {
             ${module} = $this->{module}Repository->findById($id);
             $flag = $this->update{Module}(${module}, $request);
             if($flag == true){
-                $this->updateLanguageForCatalogue(${module}, $request);
+                $this->updateLanguageForCatalogue(${module}, $request, $languageId);
                 $this->updateRouter(${module}, $request, $this->controllerName);
+                $this->nestedset = new Nestedsetbie([
+                    'table' => '{module}_catalogues',
+                    'foreignkey' => '{module}_catalogue_id',
+                    'language_id' => $languageId,
+                ]);
                 $this->nestedset();
             }
 
@@ -105,6 +109,11 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
         DB::beginTransaction();
         try {
             $this->{module}Repository->delete($id);
+            $this->nestedset = new Nestedsetbie([
+                'table' => '{module}_catalogues',
+                'foreignkey' => '{module}_catalogue_id',
+                'language_id' => $languageId,
+            ]);
             $this->nestedset();
             
             DB::commit();
@@ -118,11 +127,11 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
         }
     }
 
-    public function updateStatus($post = []) {
+    public function updateStatus(${name} = []) {
         DB::beginTransaction();
         try {
-            $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
-            $this->{module}Repository->update($post['modelId'], $payload);
+            $payload[${name}['field']] = (${name}['value'] == 1) ? 2 : 1;
+            $this->{module}Repository->update(${name}['modelId'], $payload);
 
             DB::commit();
             return true;
@@ -135,11 +144,11 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
         }
     }
 
-    public function updateStatusAll($post) {
+    public function updateStatusAll(${name}) {
         DB::beginTransaction();
         try {
-            $payload[$post['field']] = $post['value'];
-            $this->{module}Repository->updateByWhereIn('id', $post['id'], $payload);
+            $payload[${name}['field']] = ${name}['value'];
+            $this->{module}Repository->updateByWhereIn('id', ${name}['id'], $payload);
 
             DB::commit();
             return true;

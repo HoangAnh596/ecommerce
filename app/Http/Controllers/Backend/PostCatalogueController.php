@@ -135,7 +135,7 @@ class PostCatalogueController extends Controller
     }
 
     public function destroy(DeletePostCatalogueRequest $request, $id) {
-        if($this->postCatalogueService->destroy($id)){
+        if($this->postCatalogueService->destroy($id, $this->language)){
 
             return redirect()->route('post.catalogue.index')->with('success', 'Xóa bản ghi thành công');
         }

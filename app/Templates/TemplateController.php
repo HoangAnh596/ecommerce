@@ -134,7 +134,7 @@ class {ModuleTemplate}Controller extends Controller
     }
 
     public function destroy($id) {
-        if($this->{moduleTemplate}Service->destroy($id)){
+        if($this->{moduleTemplate}Service->destroy($id, $this->language)){
 
             return redirect()->route('{moduleTemplate}.index')->with('success', 'Xóa bản ghi thành công');
         }
