@@ -2,6 +2,21 @@
 return [
     'module' => [
         [
+            'title' => 'Product',
+            'icon' => 'fa fa-file',
+            'name' => ['product'],
+            'subModule' => [
+                [
+                    'title' => 'Product Groups',
+                    'route' => 'product/catalogue/index',
+                ],
+                [
+                    'title' => 'Product',
+                    'route' => 'product/index',
+                ]
+            ]
+        ],
+        [
             'title' => 'Article',
             'icon' => 'fa fa-file',
             'name' => ['post'],

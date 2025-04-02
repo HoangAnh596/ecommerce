@@ -43,19 +43,19 @@ class GenerateService implements GenerateServiceInterface
         DB::beginTransaction();
         try {
 
-            // $this->makeDatabase($request);
-            // $this->makeController($request);
-            // $this->makeModel($request);
-            // $this->makeRepository($request);
+            $this->makeDatabase($request);
+            $this->makeController($request);
+            $this->makeModel($request);
+            $this->makeRepository($request);
             $this->makeService($request);
-            // $this->makeProvider($request);
-            // $this->makeRequest($request);
-            // $this->makeView($request);
-            // if($request->input('module_type') == 1) {
-            //     $this->makeRule($request);
-            // }
+            $this->makeProvider($request);
+            $this->makeRequest($request);
+            $this->makeView($request);
+            if($request->input('module_type') == 1) {
+                $this->makeRule($request);
+            }
+            $this->makeRoute($request);
             // $makeLang = $this->makeLang($request);
-            // $this->makeRoute($request);
 
             $payload = $request->except('_token', 'send');
             $payload['user_id'] = Auth::id();

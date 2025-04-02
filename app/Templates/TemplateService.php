@@ -61,8 +61,8 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
                 $this->updateLanguageForCatalogue(${module}, $request, $languageId);
                 $this->createRouter(${module}, $request, $this->controllerName);
                 $this->nestedset = new Nestedsetbie([
-                    'table' => '{module}_catalogues',
-                    'foreignkey' => '{module}_catalogue_id',
+                    'table' => '{name}_catalogues',
+                    'foreignkey' => '{name}_catalogue_id',
                     'language_id' => $languageId,
                 ]);
                 $this->nestedset();
@@ -87,8 +87,8 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
                 $this->updateLanguageForCatalogue(${module}, $request, $languageId);
                 $this->updateRouter(${module}, $request, $this->controllerName);
                 $this->nestedset = new Nestedsetbie([
-                    'table' => '{module}_catalogues',
-                    'foreignkey' => '{module}_catalogue_id',
+                    'table' => '{name}_catalogues',
+                    'foreignkey' => '{name}_catalogue_id',
                     'language_id' => $languageId,
                 ]);
                 $this->nestedset();
@@ -110,8 +110,8 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
         try {
             $this->{module}Repository->delete($id);
             $this->nestedset = new Nestedsetbie([
-                'table' => '{module}_catalogues',
-                'foreignkey' => '{module}_catalogue_id',
+                'table' => '{name}_catalogues',
+                'foreignkey' => '{name}_catalogue_id',
                 'language_id' => $languageId,
             ]);
             $this->nestedset();
@@ -177,16 +177,16 @@ class {Module}Service extends BaseService implements {Module}ServiceInterface
         return $this->{module}Repository->update(${module}->id, $payload);;
     }
 
-    private function updateLanguageForCatalogue(${module}, $request)
+    private function updateLanguageForCatalogue(${module}, $request, $languageId)
     {
-        $payload = $this->formatLanguagePayload($request);
+        $payload = $this->formatLanguagePayload($request, $languageId);
         ${module}->languages()->detach([$languageId, ${module}->id]);
         $response = $this->{module}Repository->createPivot(${module}, $payload, 'languages');
 
         return $response;
     }
 
-    private function formatLanguagePayload($request)
+    private function formatLanguagePayload($request, $languageId)
     {
         $payload = $request->only($this->payloadLanguage());
         $payload['canonical'] = Str::slug($payload['canonical']);

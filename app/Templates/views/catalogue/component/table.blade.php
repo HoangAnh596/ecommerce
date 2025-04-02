@@ -25,11 +25,11 @@
                 <input type="checkbox" class="js-switch status" data-field="publish" data-model="{{ $config['model'] }}" value="{{ ${module}->publish }}" data-modelId="{{ ${module}->id }}" {{ (${module}->publish == 2) ? 'checked' : '' }} />
             </td>
             <td class="text-center">
-                @can('modules', 'post.catalogue.update')
-                <a href="{{ route('post.catalogue.edit', ${module}->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                @can('modules', '{view}.update')
+                <a href="{{ route('{view}.edit', ${module}->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                 @endcan
-                @can('modules', 'post.catalogue.destroy')
-                <a href="{{ route('post.catalogue.delete', ${module}->id) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                @can('modules', '{view}.destroy')
+                <a href="{{ route('{view}.delete', ${module}->id) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                 @endcan
             </td>
         </tr>

@@ -180,7 +180,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     private function updateLanguageForCatalogue($postCatalogue, $request, $languageId)
     {
         $payload = $this->formatLanguagePayload($request, $languageId);
-        $postCatalogue->languages()->detach([$this->language, $postCatalogue->id]);
+        $postCatalogue->languages()->detach([$languageId, $postCatalogue->id]);
         $response = $this->postCatalogueRepository->createPivot($postCatalogue, $payload, 'languages');
 
         return $response;

@@ -1,5 +1,20 @@
 <?php
 return [
+    'productCatalogue' => [
+        'index' => [
+            'title' => '製品グループの管理',
+            'tableHeading' => '製品グループ一覧'
+        ],
+        'create' => [
+            'title' => '新しい製品グループを追加'
+        ],
+        'edit' => [
+            'title' => '製品グループを更新'
+        ],
+        'delete' => [
+            'title' => '製品グループを削除'
+        ],
+    ],
     'postCatalogue' => [
         'index' => [
             'title' => '記事グループの管理',

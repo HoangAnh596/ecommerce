@@ -2,6 +2,21 @@
 return [
     'module' => [
         [
+            'title' => '製品管理',
+            'icon' => 'fa fa-file',
+            'name' => ['product'],
+            'subModule' => [
+                [
+                    'title' => '製品グループ管理',
+                    'route' => 'product/catalogue/index',
+                ],
+                [
+                    'title' => '製品管理',
+                    'route' => 'product/index',
+                ]
+            ]
+        ],        
+        [
             'title' => '記事',
             'icon' => 'fa fa-file',
             'name' => ['post'],
