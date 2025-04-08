@@ -24,6 +24,7 @@ class Store{Module}Request extends FormRequest
         return [
             'name' => 'required',
             'canonical' => 'required|unique:routers',
+            '{resName}_catalogue_id' => 'gt:0',
         ];
     }
 
@@ -33,6 +34,7 @@ class Store{Module}Request extends FormRequest
             'name.required' => 'Tiêu đề bài viết không được để trống.',
             'canonical.required' => 'Đường dẫn không được để trống.',
             'canonical.unique' => 'Đường dẫn đã tồn tại. Hãy chọn đường dẫn khác.',
+            '{resName}_catalogue_id.gt' => 'Danh mục cha không được để trống.',
         ];
     }
 }

@@ -2,24 +2,24 @@
 
 namespace App\Repositories;
 
-use App\Models\{$class};
-use App\Repositories\Interfaces\{$class}RepositoryInterface;
+use App\Models\{$class}Catalogue;
+use App\Repositories\Interfaces\{$class}CatalogueRepositoryInterface;
 use App\Repositories\BaseRepository;
 
 /**
- * Class {$class}Repository
+ * Class {$class}CatalogueRepository
  * @package App\Repositories
  */
-class {$class}Repository extends BaseRepository implements {$class}RepositoryInterface
+class {$class}CatalogueRepository extends BaseRepository implements {$class}CatalogueRepositoryInterface
 {
     protected $model;
     
-    public function __construct({$class} $model)
+    public function __construct({$class}Catalogue $model)
     {
         $this->model = $model;
     }
 
-    public function get{$class}ById(int $id = 0, $language_id = 0)
+    public function get{$class}CatalogueById(int $id = 0, $language_id = 0)
     {
         return $this->model->select([
                     '{module}_catalogues.id',

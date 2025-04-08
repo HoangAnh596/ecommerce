@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Services\Interfaces\{$class}ServiceInterface;
+use App\Services\Interfaces\ProductServiceInterface;
 use App\Services\BaseService;
-use App\Repositories\Interfaces\{$class}RepositoryInterface as {$class}Repository;
+use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,22 +12,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
- * Class {$class}Service
+ * Class ProductService
  * @package App\Services
  */
-class {$class}Service extends BaseService implements {$class}ServiceInterface
+class ProductService extends BaseService implements ProductServiceInterface
 {
-    protected ${module}Repository;
+    protected $productRepository;
     protected $routerRepository;
     protected $controllerName;
 
     public function __construct(
-        {$class}Repository ${module}Repository,
+        ProductRepository $productRepository,
         RouterRepository $routerRepository,
     ){
-        $this->{module}Repository = ${module}Repository;
+        $this->productRepository = $productRepository;
         $this->routerRepository = $routerRepository;
-        $this->controllerName = '{$class}Controller';
+        $this->controllerName = 'ProductController';
     }
 
     public function paginate($request, $languageId){
@@ -39,31 +39,31 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
                 ['tb2.language_id', '=', $languageId]
             ]
         ];
-        ${module}s = $this->{module}Repository->pagination(
+        $products = $this->productRepository->pagination(
             $this->paginateSelect(),
             $condition,
             $perpage,
-            ['path' => '{module}.index', 'groupBy' => $this->paginateSelect()],
-            ['{module}s.id','ASC'],
+            ['path' => 'product.index', 'groupBy' => $this->paginateSelect()],
+            ['products.id','ASC'],
             [
-                ['{module}_language as tb2', 'tb2.{module}_id', '=', '{module}s.id'],
-                ['{module}_catalogue_{module} as tb3', '{module}s.id', '=', 'tb3.{module}_id']
+                ['product_language as tb2', 'tb2.product_id', '=', 'products.id'],
+                ['product_catalogue_product as tb3', 'products.id', '=', 'tb3.product_id']
             ],
-            ['{module}_catalogues'],
+            ['product_catalogues'],
             $this->whereRaw($request, $languageId)
         );
 
-        return ${module}s;
+        return $products;
     }
 
     public function create($request, $languageId) {
         DB::beginTransaction();
         try {
-            ${module} = $this->create{$class}($request);
-            if(${module}->id > 0) {
-                $this->updateLanguageFor{$class}(${module}, $request, $languageId);
-                $this->createRouter(${module}, $request, $this->controllerName); 
-                ${module}->{module}_catalogues()->sync($this->catalogue($request));
+            $product = $this->createProduct($request);
+            if($product->id > 0) {
+                $this->updateLanguageForProduct($product, $request, $languageId);
+                $this->createRouter($product, $request, $this->controllerName);
+                $product->product_catalogues()->sync($this->catalogue($request));
             }
 
             DB::commit();
@@ -80,11 +80,11 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
     public function update($request, $id, $languageId){
         DB::beginTransaction();
         try {
-            ${module} = $this->{module}Repository->findById($id);
-            if($this->upload{$class}(${module}, $request)){
-                $this->updateLanguageFor{$class}(${module}, $request, $languageId);
-                $this->updateRouter(${module}, $request, $this->controllerName);
-                ${module}->{module}_catalogues()->sync($this->catalogue($request));
+            $product = $this->productRepository->findById($id);
+            if($this->uploadProduct($product, $request)){
+                $this->updateLanguageForProduct($product, $request, $languageId);
+                $this->updateRouter($product, $request, $this->controllerName);
+                $product->product_catalogues()->sync($this->catalogue($request));
             }
 
             DB::commit();
@@ -101,7 +101,7 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
     public function destroy($id) {
         DB::beginTransaction();
         try {
-            $this->{module}Repository->delete($id);
+            $this->productRepository->delete($id);
             
             DB::commit();
             return true;
@@ -114,11 +114,11 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
         }
     }
 
-    public function updateStatus(${module} = []) {
+    public function updateStatus($product = []) {
         DB::beginTransaction();
         try {
-            $payload[${module}['field']] = (${module}['value'] == 1) ? 2 : 1;
-            $this->{module}Repository->update(${module}['modelId'], $payload);
+            $payload[$product['field']] = ($product['value'] == 1) ? 2 : 1;
+            $this->productRepository->update($product['modelId'], $payload);
 
             DB::commit();
             return true;
@@ -131,11 +131,11 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
         }
     }
 
-    public function updateStatusAll(${module}) {
+    public function updateStatusAll($product) {
         DB::beginTransaction();
         try {
-            $payload[${module}['field']] = ${module}['value'];
-            $this->{module}Repository->updateByWhereIn('id', ${module}['id'], $payload);
+            $payload[$product['field']] = $product['value'];
+            $this->productRepository->updateByWhereIn('id', $product['id'], $payload);
 
             DB::commit();
             return true;
@@ -150,10 +150,10 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
 
     private function paginateSelect() {
         return [
-            '{module}s.id',
-            '{module}s.image',
-            '{module}s.publish',
-            '{module}s.order',
+            'products.id',
+            'products.image',
+            'products.publish',
+            'products.order',
             'tb2.name',
             'tb2.canonical'
         ];
@@ -161,18 +161,18 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
 
     private function whereRaw($request, $languageId){
         $rawCondition = [];
-        if($request->integer('{module}_catalogue_id') > 0){
+        if($request->integer('product_catalogue_id') > 0){
             $rawCondition['whereRaw'] =  [
                 [
-                    'tb3.{module}_catalogue_id IN (
+                    'tb3.product_catalogue_id IN (
                         SELECT id
-                        FROM {module}_catalogues
-                        JOIN {module}_catalogue_language ON {module}_catalogues.id = {module}_catalogue_language.{module}_catalogue_id
-                        WHERE lft >= (SELECT lft FROM {module}_catalogues as pc WHERE pc.id = ?)
-                        AND rgt <= (SELECT rgt FROM {module}_catalogues as pc WHERE pc.id = ?)
-                        AND {module}_catalogue_language.language_id = '.$languageId.'
+                        FROM product_catalogues
+                        JOIN product_catalogue_language ON product_catalogues.id = product_catalogue_language.product_catalogue_id
+                        WHERE lft >= (SELECT lft FROM product_catalogues as pc WHERE pc.id = ?)
+                        AND rgt <= (SELECT rgt FROM product_catalogues as pc WHERE pc.id = ?)
+                        AND product_catalogue_language.language_id = '.$languageId.'
                     )',
-                    [$request->integer('{module}_catalogue_id'), $request->integer('{module}_catalogue_id')]
+                    [$request->integer('product_catalogue_id'), $request->integer('product_catalogue_id')]
                 ]
             ];
             
@@ -180,44 +180,44 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
         return $rawCondition;
     }
 
-    private function create{$class}($request) {
+    private function createProduct($request) {
         $payload = $request->only($this->payload());
         $payload['user_id'] = Auth::id();
         $payload['album'] = $this->formatAlbum($request);
 
-        return $this->{module}Repository->create($payload);
+        return $this->productRepository->create($payload);
     }
 
-    private function upload{$class}(${module}, $request) {
+    private function uploadProduct($product, $request) {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);
 
-        return $this->{module}Repository->update(${module}->id, $payload);
+        return $this->productRepository->update($product->id, $payload);
     }
 
-    private function updateLanguageFor{$class}(${module}, $request, $languageId) {
-        $payload = $request->only($this->payload{$class}());
+    private function updateLanguageForProduct($product, $request, $languageId) {
+        $payload = $request->only($this->payloadProduct());
         $payload['canonical'] = Str::slug($payload['canonical']);
         $payload['language_id'] = $languageId;
-        $payload['{module}_id'] = ${module}->id;
-        ${module}->languages()->detach([$languageId, ${module}->id]);
+        $payload['product_id'] = $product->id;
+        $product->languages()->detach([$languageId, $product->id]);
 
-        return $this->{module}Repository->createPivot(${module}, $payload, 'languages');
+        return $this->productRepository->createPivot($product, $payload, 'languages');
     }
 
     private function catalogue($request) {
         if($request->input('catalogue') != null) {
-            return array_unique(array_merge($request->input('catalogue'), [$request->input('{module}_catalogue_id')]));
+            return array_unique(array_merge($request->input('catalogue'), [$request->input('product_catalogue_id')]));
         }
 
-        return $request->{module}_catalogue_id;
+        return $request->product_catalogue_id;
     }
 
     private function payload() {
-        return ['{module}_catalogue_id', 'image', 'album', 'publish', 'follow'];
+        return ['product_catalogue_id', 'image', 'album', 'publish', 'follow'];
     }
 
-    private function payload{$class}() {
+    private function payloadProduct() {
         return ['name', 'canonical', 'description', 'content', 'meta_title', 'meta_description', 'meta_keyword'];
     }
 }

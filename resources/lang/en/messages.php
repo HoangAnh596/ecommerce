@@ -80,7 +80,7 @@ return [
     'metaDescription' => 'You have not set an SEO description',
     'metaCanonical' => 'https://your-url.html',
     'canonical' => 'URL Path',
-    'tableName' => 'Group Name',
+    'tableName' => 'Title',
     'tableOrder' => 'Order',
     'tableGroup' => 'Display Group',
     'tableStatus' => 'Status',

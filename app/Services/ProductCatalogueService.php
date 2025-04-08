@@ -85,6 +85,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             $flag = $this->updateProductCatalogue($productCatalogue, $request);
             if($flag == true){
                 $this->updateLanguageForCatalogue($productCatalogue, $request, $languageId);
+                // dd($productCatalogue);
                 $this->updateRouter($productCatalogue, $request, $this->controllerName);
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'product_catalogues',
@@ -105,7 +106,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         }
     }
 
-    public function destroy($id) {
+    public function destroy($id, $languageId) {
         DB::beginTransaction();
         try {
             $this->productCatalogueRepository->delete($id);

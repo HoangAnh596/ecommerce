@@ -15,6 +15,7 @@ use App\Http\Middleware\LoginMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\ProductCatalogueController;
 use App\Http\Controllers\Backend\GalleryCatalogueController;
+use App\Http\Controllers\Backend\ProductController;
 //@@useController@@
 
 /*
@@ -137,6 +138,17 @@ Route::group(['middleware' => ['admin', 'locale']], function (){
         Route::post('{id}/update', [GalleryCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.update');
         Route::get('{id}/delete', [GalleryCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.delete');
         Route::delete('{id}/destroy', [GalleryCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.destroy');
+    });
+
+    /* Product */
+    Route::group(['prefix' => 'product'], function (){
+        Route::get('index', [ProductController::class, 'index'])->name('product.index');
+        Route::get('create', [ProductController::class, 'create'])->name('product.create');
+        Route::post('store', [ProductController::class, 'store'])->name('product.store');
+        Route::get('{id}/edit', [ProductController::class, 'edit'])->where(['id' => '[0-9]+'])->name('product.edit');
+        Route::post('{id}/update', [ProductController::class, 'update'])->where(['id' => '[0-9]+'])->name('product.update');
+        Route::get('{id}/delete', [ProductController::class, 'delete'])->where(['id' => '[0-9]+'])->name('product.delete');
+        Route::delete('{id}/destroy', [ProductController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('product.destroy');
     });
 
     //@@new-module@@

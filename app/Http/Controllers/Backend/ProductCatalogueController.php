@@ -96,7 +96,7 @@ class ProductCatalogueController extends Controller
     public function edit($id) {
         $this->authorize('modules', 'product.catalogue.update');
         $config = $this->configData();
-        $productCatalogue = $this->productCatalogueRepository->getproductCatalogueById($id, $this->language);
+        $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($id, $this->language);
         $template = 'backend.product.catalogue.store';
         $config['seo']  = __('messages.productCatalogue');
         $config['method'] = 'edit';
@@ -122,7 +122,7 @@ class ProductCatalogueController extends Controller
 
     public function delete($id) {
         $this->authorize('modules', 'product.catalogue.destroy');
-        $productCatalogue = $this->productCatalogueRepository->getproductCatalogueById($id, $this->language);
+        $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($id, $this->language);
         $template = 'backend.product.catalogue.delete';
         $config['seo']  = __('messages.productCatalogue');
 
@@ -133,8 +133,8 @@ class ProductCatalogueController extends Controller
         ));
     }
 
-    public function destroy(DeleteproductCatalogueRequest $request, $id) {
-        if($this->productCatalogueService->destroy($id)){
+    public function destroy(DeleteProductCatalogueRequest $request, $id) {
+        if($this->productCatalogueService->destroy($id, $this->language)){
 
             return redirect()->route('product.catalogue.index')->with('success', 'Xóa bản ghi thành công');
         }

@@ -80,7 +80,7 @@ return [
     'metaDescription' => 'SEO説明が設定されていません',
     'metaCanonical' => 'https://your-url.html',
     'canonical' => 'URLパス',
-    'tableName' => 'グループ名',
+    'tableName' => 'タイトル',
     'tableOrder' => '注文',
     'tableGroup' => '表示グループ',
     'tableStatus' => 'ステータス',

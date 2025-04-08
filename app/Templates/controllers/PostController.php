@@ -37,7 +37,7 @@ class {$class}Controller extends Controller
     private function initialize() {
         $this->nestedset = new Nestedsetbie([
             'table' => '{module}_catalogues',
-            'foreign_key' => '{module}_catalogue_id',
+            'foreignkey' => '{module}_catalogue_id',
             'language_id' => 1,
         ]);
     }
@@ -113,7 +113,7 @@ class {$class}Controller extends Controller
     }
 
     public function update(Update{$class}Request $request, $id) {
-        if($this->{module}Service->update($request, $id)){
+        if($this->{module}Service->update($request, $id, $this->language)){
 
             return redirect()->route('{module}.index')->with('success', 'Cập nhật bản ghi thành công');
         }

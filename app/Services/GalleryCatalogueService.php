@@ -105,7 +105,7 @@ class GalleryCatalogueService extends BaseService implements GalleryCatalogueSer
         }
     }
 
-    public function destroy($id) {
+    public function destroy($id, $languageId) {
         DB::beginTransaction();
         try {
             $this->galleryCatalogueRepository->delete($id);

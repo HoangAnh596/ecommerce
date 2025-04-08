@@ -17,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\GenerateServiceInterface' => 'App\Services\GenerateService',
         'App\Services\Interfaces\ProductCatalogueServiceInterface' => 'App\Services\ProductCatalogueService',
         'App\Services\Interfaces\GalleryCatalogueServiceInterface' => 'App\Services\GalleryCatalogueService',
+        'App\Services\Interfaces\ProductServiceInterface' => 'App\Services\ProductService',
     ];
 
     /**

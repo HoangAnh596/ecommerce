@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Services\Interfaces\{$class}ServiceInterface;
+use App\Services\Interfaces\{$class}CatalogueServiceInterface;
 use App\Services\BaseService;
-use App\Repositories\Interfaces\{$class}RepositoryInterface as {$class}Repository;
+use App\Repositories\Interfaces\{$class}CatalogueRepositoryInterface as {$class}CatalogueRepository;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,18 +12,18 @@ use Illuminate\Support\Str;
 use App\Classes\Nestedsetbie;
 
 /**
- * Class {$class}Service
+ * Class {$class}CatalogueService
  * @package App\Services
  */
-class {$class}Service extends BaseService implements {$class}ServiceInterface
+class {$class}CatalogueService extends BaseService implements {$class}CatalogueServiceInterface
 {
     protected ${module}CatalogueRepository;
     protected $routerRepository;
     protected $nestedset;
-    protected $controllerName = '{$class}Controller';
+    protected $controllerName = '{$class}CatalogueController';
 
     public function __construct(
-        {$class}Repository ${module}CatalogueRepository,
+        {$class}CatalogueRepository ${module}CatalogueRepository,
         RouterRepository $routerRepository,
     ){
         $this->{module}CatalogueRepository = ${module}CatalogueRepository;
@@ -56,7 +56,7 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
     public function create($request, $languageId) {
         DB::beginTransaction();
         try {
-            ${module}Catalogue = $this->create{$class}($request);
+            ${module}Catalogue = $this->create{$class}Catalogue($request);
             if(${module}Catalogue->id > 0) {
                 $this->updateLanguageForCatalogue(${module}Catalogue, $request, $languageId);
                 $this->createRouter(${module}Catalogue, $request, $this->controllerName);
@@ -82,7 +82,7 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
         DB::beginTransaction();
         try {
             ${module}Catalogue = $this->{module}CatalogueRepository->findById($id);
-            $flag = $this->update{$class}(${module}Catalogue, $request);
+            $flag = $this->update{$class}Catalogue(${module}Catalogue, $request);
             if($flag == true){
                 $this->updateLanguageForCatalogue(${module}Catalogue, $request, $languageId);
                 $this->updateRouter(${module}Catalogue, $request, $this->controllerName);
@@ -161,7 +161,7 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
         }
     }
 
-    private function create{$class}($request) {
+    private function create{$class}Catalogue($request) {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);
         $payload['user_id'] = Auth::id();
@@ -169,7 +169,7 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
         return $this->{module}CatalogueRepository->create($payload);;
     }
 
-    private function update{$class}(${module}Catalogue, $request) {
+    private function update{$class}Catalogue(${module}Catalogue, $request) {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);
         $payload['user_id'] = Auth::id();

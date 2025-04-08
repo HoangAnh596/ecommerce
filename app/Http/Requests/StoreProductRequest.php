@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Update{Module}Request extends FormRequest
+class StoreProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,8 @@ class Update{Module}Request extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'required|unique:routers,canonical, '.$this->id.',module_id',
-            '{resName}_catalogue_id' => 'gt:0',
+            'canonical' => 'required|unique:routers',
+            'product_catalogue_id' => 'gt:0',
         ];
     }
 
@@ -34,7 +34,7 @@ class Update{Module}Request extends FormRequest
             'name.required' => 'Tiêu đề bài viết không được để trống.',
             'canonical.required' => 'Đường dẫn không được để trống.',
             'canonical.unique' => 'Đường dẫn đã tồn tại. Hãy chọn đường dẫn khác.',
-            '{resName}_catalogue_id.gt' => 'Danh mục cha không được để trống.',
+            'product_catalogue_id.gt' => 'Danh mục cha không được để trống.',
         ];
     }
 }

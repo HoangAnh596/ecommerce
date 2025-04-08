@@ -96,7 +96,7 @@ class GalleryCatalogueController extends Controller
     public function edit($id) {
         $this->authorize('modules', 'gallery.catalogue.update');
         $config = $this->configData();
-        $galleryCatalogue = $this->galleryCatalogueRepository->getgalleryCatalogueById($id, $this->language);
+        $galleryCatalogue = $this->galleryCatalogueRepository->getGalleryCatalogueById($id, $this->language);
         $template = 'backend.gallery.catalogue.store';
         $config['seo']  = __('messages.galleryCatalogue');
         $config['method'] = 'edit';
@@ -122,7 +122,7 @@ class GalleryCatalogueController extends Controller
 
     public function delete($id) {
         $this->authorize('modules', 'gallery.catalogue.destroy');
-        $galleryCatalogue = $this->galleryCatalogueRepository->getgalleryCatalogueById($id, $this->language);
+        $galleryCatalogue = $this->galleryCatalogueRepository->getGalleryCatalogueById($id, $this->language);
         $template = 'backend.gallery.catalogue.delete';
         $config['seo']  = __('messages.galleryCatalogue');
 
@@ -133,8 +133,8 @@ class GalleryCatalogueController extends Controller
         ));
     }
 
-    public function destroy(DeletegalleryCatalogueRequest $request, $id) {
-        if($this->galleryCatalogueService->destroy($id)){
+    public function destroy(DeleteGalleryCatalogueRequest $request, $id) {
+        if($this->galleryCatalogueService->destroy($id, $this->language)){
 
             return redirect()->route('gallery.catalogue.index')->with('success', 'Xóa bản ghi thành công');
         }

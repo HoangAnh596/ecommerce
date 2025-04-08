@@ -15,6 +15,21 @@ return [
             'title' => 'Xóa nhóm sản phẩm'
         ],
     ],
+    'product' => [
+        'index' => [
+            'title' => 'Quản lý sản phẩm',
+            'tableHeading' => 'Danh sách sản phẩm'
+        ],
+        'create' => [
+            'title' => 'Thêm mới sản phẩm'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật sản phẩm'
+        ],
+        'delete' => [
+            'title' => 'Xóa sản phẩm'
+        ],
+    ],
     'postCatalogue' => [
         'index' => [
             'title' => 'Quản lý nhóm bài viết',
@@ -159,11 +174,12 @@ return [
     'metaDescription' => 'Bạn chưa có tiêu đề SEO',
     'metaCanonical' => 'https://duong-dan-cua-ban.html',
     'canonical' => 'Đường dẫn',
-    'tableName' => 'Tên nhóm',
+    'tableName' => 'Tiêu đề',
     'tableOrder' => 'Vị trí',
     'tableGroup' => 'Nhóm hiển thị',
     'tableStatus' => 'Tình trạng',
     'tableAction' => 'Thao tác',
+    'deleteButton' => 'Xóa',
     'publish' => [
         '0' => 'Chọn tình trạng',
         '1' => 'Không xuất bản',

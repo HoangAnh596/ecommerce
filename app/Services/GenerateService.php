@@ -43,20 +43,18 @@ class GenerateService implements GenerateServiceInterface
         DB::beginTransaction();
         try {
 
-            // $this->makeDatabase($request);
-            // $this->makeController($request);
-            // $this->makeModel($request);
-            // $this->makeRepository($request);
-            // $this->makeService($request);
-            // $this->makeProvider($request);
+            $this->makeDatabase($request);
+            $this->makeController($request);
+            $this->makeModel($request);
+            $this->makeRepository($request);
+            $this->makeService($request);
+            $this->makeProvider($request);
             $this->makeRequest($request);
-            // $this->makeView($request);
-            // if($request->input('module_type') == 'catalogue') {
-            //     $this->makeRule($request);
-            // }
-            // $this->makeRoute($request);
-            // $makeLang = $this->makeLang($request);
-            dd(444);
+            $this->makeView($request);
+            if($request->input('module_type') == 'catalogue') {
+                $this->makeRule($request);
+            }
+            $this->makeRoute($request);
             $payload = $request->except('_token', 'send');
             $payload['user_id'] = Auth::id();
             $this->generateRepository->create($payload);
@@ -108,28 +106,18 @@ class GenerateService implements GenerateServiceInterface
     }
 
     private function makeDatabase($request) {
-        DB::beginTransaction();
-        try {
-            $payload = $request->only('name', 'schema', 'module_type');
-            $moduleExtract = explode('_', $payload['name']);
-            $module = $this->convertModuleToTableName($payload['name']);
-            $this->makeMainTable($payload, $module);
-            if ($request->input('module_type') !== 'difference') {
-                $this->makeLanguageTable($module);
-                if(count($moduleExtract) == 1){
-                    $this->makeRelationTable($module);
-                }
+        $payload = $request->only('name', 'schema', 'module_type');
+        $module = $this->convertModuleToTableName($payload['name']);
+        $moduleExtract = explode('_', $module);
+        $this->makeMainTable($payload, $module);
+        if ($request->input('module_type') !== 'difference') {
+            $this->makeLanguageTable($module);
+            if(count($moduleExtract) == 1){
+                $this->makeRelationTable($module);
             }
-
-            // ARTISAN::call('migrate');
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage().'_'.$e->getLine();
-            die();
-            return false;
         }
+
+        ARTISAN::call('migrate');
     }
 
     private function makeRelationTable($module){
@@ -137,7 +125,7 @@ class GenerateService implements GenerateServiceInterface
         $tableName = $module.'_catalogue_'.$moduleExtract[0];
         $schema = $this->relationSchema($tableName, $module);
         $migarationRelationFile = $this->createMigrationTable($schema, $tableName);
-        $migrationRelationFileName = date('Y_m_d_His', time() + 10) . '_' . 'create_' . $tableName . '_table.php';
+        $migrationRelationFileName = date('Y_m_d_His', time() + 10) . '_create_' . $tableName . '_table.php';
         $migrationRelationPath = database_path('migrations/' . $migrationRelationFileName);
 
         FILE::put($migrationRelationPath, $migarationRelationFile);
@@ -149,13 +137,13 @@ class GenerateService implements GenerateServiceInterface
         $migrationPivotTemplate = $this->createMigrationTable($pivotSchema, $dropPivotTable);
         $migrationPivotFileName = date('Y_m_d_His', time() + 10) . '_' . 'create_' . $module . '_language_table.php';
         $migrationPivotPath = database_path('migrations/' . $migrationPivotFileName);
-        
+   
         FILE::put($migrationPivotPath, $migrationPivotTemplate);
     }
 
     private function makeMainTable($payload, $module){
         $tableName =  $module.'s';
-        $migrationFileName = date('Y_m_d_His') . '_' . 'create_' . $tableName . '_table.php';
+        $migrationFileName = date('Y_m_d_His') . '_create_' . $tableName . '_table.php';
         $migrationPath = database_path('migrations/' . $migrationFileName);
         $migrationTable = $this->createMigrationTable($payload['schema'], $tableName);
 
@@ -228,7 +216,6 @@ class GenerateService implements GenerateServiceInterface
 
     private function makeController($request){
         $payload = $request->only('name', 'module_type');
-
         switch ($payload['module_type']) {
             case 'catalogue':
                 $this->createTemplateController($payload['name'], 'PostCatalogueController');
@@ -237,7 +224,8 @@ class GenerateService implements GenerateServiceInterface
                 $this->createTemplateController($payload['name'], 'PostController');
                 break;
             default:
-                // $this->createSingleController();
+                echo 1;die();
+            break;
         }
     }
 
@@ -247,7 +235,7 @@ class GenerateService implements GenerateServiceInterface
         $module = explode('_', $this->convertModuleToTableName($name));
         $controllerContent = file_get_contents($templateControllerPath);
         $replace = [
-            '$class' => $name,
+            '$class' => ucfirst(current($module)),
             'module' => lcfirst(current($module))
         ];
 
@@ -302,18 +290,27 @@ class GenerateService implements GenerateServiceInterface
     }
 
     private function createCatalogueModel($request, $modelName) {
-        $templateModelPath = base_path('app/Templates/models/PostCatalogue.php');
-        $modelContent = file_get_contents($templateModelPath);
         $module = $this->convertModuleToTableName($request->input('name'));
         $extractModule = explode('_', $module);
-        $replace = [
+
+        $replacements = [
             '$class' => ucfirst($extractModule[0]),
             '$module' => $extractModule[0]
         ];
-        foreach ($replace as $key => $val) {
-            $modelContent = str_replace('{' . $key . '}', $replace[$key], $modelContent);
+        $modelRelationName = $request->input('name') . 'Language.php';
+        $templates = [
+            $modelName => base_path('app/Templates/models/PostCatalogue.php'),
+            $modelRelationName => base_path('app/Templates/models/PostCatalogueLanguage.php')
+        ];
+
+        foreach ($templates as $fileName => $templatePath) {
+            $content = file_get_contents($templatePath);
+            foreach ($replacements as $key => $value) {
+                $content = str_replace('{' . $key . '}', $value, $content);
+            }
+            $this->createModelFile($fileName, $content);
         }
-        $this->createModelFile($modelName, $modelContent);
+
     }
 
     private function createModelFile($modelName, $modelContent) {
@@ -333,8 +330,9 @@ class GenerateService implements GenerateServiceInterface
         ];
             
         $replacement = [
-            '$class' => $name,
-            'module' => lcfirst(current($module))
+            '$class' => ucfirst(current($module)),
+            'module' => lcfirst(current($module)),
+            '$extend' => (count($module) == 2) ? 'Catalogue' : '',
         ];
         foreach($path as $key => $val) {
             $content = file_get_contents($val);
@@ -358,8 +356,9 @@ class GenerateService implements GenerateServiceInterface
         ];
             
         $replacement = [
-            '$class' => $name,
-            'module' => lcfirst(current($module))
+            '$class' => ucfirst(current($module)),
+            'module' => lcfirst(current($module)),
+            '$extend' => (count($module) == 2) ? 'Catalogue' : '',
         ];
         foreach($path as $key => $val) {
             $content = file_get_contents($val);
@@ -369,33 +368,6 @@ class GenerateService implements GenerateServiceInterface
                 : base_path('app/Services/' . $name . 'Service.php');
             FILE::put($contentPath, $newContent);
         }
-    }
-
-    private function initializeServiceLayer($layer = '', $folder = '', $request) {
-        $name = $request->input('name');
-        $option = [
-            $layer.'Name' => $name.$layer,
-            $layer.'InterfaceName' => $name.$layer.'Interface'
-        ];
-
-        $layerInterfaceRead = base_path('app/Templates/Template'.$layer.'Interface.php');
-        $layerInterfaceContent = file_get_contents($layerInterfaceRead);
-        $layerInterfacePath = base_path('app/'.$folder.'/Interfaces/' . $option[$layer.'InterfaceName'] . '.php');
-
-        $layerPathRead = base_path('app/Templates/Template'.$layer.'.php');
-        $layerContent = file_get_contents($layerPathRead);
-        $layerPathPut = base_path('app/'.$folder.'/' . $option[$layer.'Name'] . '.php');
-        
-        return [
-            'interface' => [
-                'layerInterfaceContent' => $layerInterfaceContent,
-                'layerInterfacePath' => $layerInterfacePath
-            ],
-            'service' => [
-                'layerContent' => $layerContent,
-                'layerPathPut' => $layerPathPut
-            ],
-        ];
     }
 
     private function makeProvider($request) {
@@ -428,18 +400,21 @@ class GenerateService implements GenerateServiceInterface
     }
 
     private function makeRequest($request) {
+
         $name = $request->input('name');
+        $resName = lcfirst($name);
         $requestArray = ['Store'.$name.'Request', 'Update'.$name.'Request', 'Delete'.$name.'Request'];
         $requestTemplate = ['TemplateRequestStore', 'TemplateRequestUpdate', 'TemplateRequestDelete'];
         if($request->input('module_type') != 'catalogue') {
             unset($requestArray[2]);
             unset($requestTemplate[2]);
         }
-            
+
         foreach($requestTemplate as $key => $val) {
             $requestPath = base_path('app/Templates/requests/'.$val.'.php');
             $requestContent = file_get_contents($requestPath);
             $requestContent = str_replace('{Module}', $name, $requestContent);
+            $requestContent = str_replace('{resName}', $resName, $requestContent);
             $requestPut = base_path('app/Http/Requests/'.$requestArray[$key].'.php');
 
             File::put($requestPut, $requestContent);
@@ -520,7 +495,7 @@ class GenerateService implements GenerateServiceInterface
             $moduleExtract = explode('_', $module);
             $routesPath = base_path('routes/web.php');
             $content = file_get_contents($routesPath);
-            $routeUrl = (count($moduleExtract) == 2) ? "{$moduleExtract[0]}/$moduleExtract[1]" : $moduleExtract[1];
+            $routeUrl = (count($moduleExtract) == 2) ? "{$moduleExtract[0]}/$moduleExtract[1]" : $moduleExtract[0];
             $routeName = (count($moduleExtract) == 2) ? "{$moduleExtract[0]}.$moduleExtract[1]" : $moduleExtract[0];
             
             $routeGroup = <<<ROUTE
