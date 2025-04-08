@@ -31,7 +31,6 @@ class PostCatalogueController extends Controller
             return $next($request);
         });
 
-
         $this->postCatalogueService = $postCatalogueService;
         $this->postCatalogueRepository = $postCatalogueRepository;
     }

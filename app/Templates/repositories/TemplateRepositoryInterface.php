@@ -3,9 +3,9 @@
 namespace App\Repositories\Interfaces;
 
 /**
- * Interface {Module}RepositoryInterface
+ * Interface {$class}RepositoryInterface
  * @package App\Repositories\Interfaces
  */
-interface {Module}RepositoryInterface
+interface {$class}RepositoryInterface
 {
 }

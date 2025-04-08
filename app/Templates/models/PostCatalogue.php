@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\QueryScopes;
 
-class {ModuleTemplate} extends Model
+class {$class}Catalogue extends Model
 {
     use HasFactory, SoftDeletes, QueryScopes;
 
-    protected $table = '{tableName}';
+    protected $table = '{$module}_catalogues';
 
     protected $fillable = [
         'parent_id',
@@ -28,9 +28,9 @@ class {ModuleTemplate} extends Model
     ];
 
     public function languages(){
-        return $this->belongsToMany(Language::class, '{pivotTable}' , '{foreignKey}', 'language_id')
+        return $this->belongsToMany(Language::class, '{$module}_catalogue_language' , '{$module}_catalogue_id', 'language_id')
         ->withPivot(
-            '{foreignKey}',
+            '{$module}_catalogue_id',
             'language_id',
             'name',
             'canonical',
@@ -42,18 +42,18 @@ class {ModuleTemplate} extends Model
         )->withTimestamps();
     }
 
-    public function {relation}s(){
-        return $this->belongsToMany({relationModel}::class, '{relationPivot}', '{foreignKey}', '{relation}_id');
+    public function {$module}s(){
+        return $this->belongsToMany({$class}::class, '{$module}_catalogue_{$module}', '{$module}_catalogue_id', '{$module}_id');
     }
 
-    public function {module}_language(){
-        return $this->hasMany({pivotModel}::class, '{foreignKey}', 'id');
+    public function {$module}_catalogue_language(){
+        return $this->hasMany({$class}CatalogueLanguage::class, '{$module}_catalogue_id', 'id');
     }
 
     public static function isNodeCheck($id = 0){
-        ${relation}Catalogue = {ModuleTemplate}::find($id);
+        ${$module}Catalogue = {$class}Catalogue::find($id);
         
-        if(${relation}Catalogue->rgt - ${relation}Catalogue->lft !== 1){
+        if(${$module}Catalogue->rgt - ${$module}Catalogue->lft !== 1){
             return false;
         }
 
