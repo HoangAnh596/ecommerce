@@ -62,7 +62,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $product = $this->createProduct($request);
             if($product->id > 0) {
                 $this->updateLanguageForProduct($product, $request, $languageId);
-                $this->createRouter($product, $request, $this->controllerName);
+                $this->createRouter($product, $request, $this->controllerName, $languageId);
                 $product->product_catalogues()->sync($this->catalogue($request));
             }
 
@@ -83,7 +83,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $product = $this->productRepository->findById($id);
             if($this->uploadProduct($product, $request)){
                 $this->updateLanguageForProduct($product, $request, $languageId);
-                $this->updateRouter($product, $request, $this->controllerName);
+                $this->updateRouter($product, $request, $this->controllerName, $languageId);
                 $product->product_catalogues()->sync($this->catalogue($request));
             }
 

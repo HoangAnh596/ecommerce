@@ -113,7 +113,7 @@ class PostController extends Controller
     }
 
     public function update(UpdatePostRequest $request, $id) {
-        if($this->postService->update($request, $id)){
+        if($this->postService->update($request, $id, $this->language)){
 
             return redirect()->route('post.index')->with('success', 'Cập nhật bản ghi thành công');
         }

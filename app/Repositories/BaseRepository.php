@@ -85,6 +85,15 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->findById($id)->forceDelete();
     }
 
+    public function forceDeleteByCondition(array $condition = []) {
+        $query = $this->model->newQuery();
+        foreach ($condition as $key => $value) {
+            $query->where($value[0], $value[1], $value[2]);
+        }
+
+        return $query->forceDelete();
+    }
+
     public function findByCondition(array $condition = []) {
         $query = $this->model->newQuery();
         foreach ($condition as $key => $value) {

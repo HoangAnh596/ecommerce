@@ -15,6 +15,51 @@ return [
             'title' => 'Delete Product Group'
         ],
     ],
+    'product' => [
+        'index' => [
+            'title' => 'Manage Product',
+            'tableHeading' => 'Product List'
+        ],
+        'create' => [
+            'title' => 'Add New Product'
+        ],
+        'edit' => [
+            'title' => 'Update Product'
+        ],
+        'delete' => [
+            'title' => 'Delete Product'
+        ],
+    ],
+    'attributeCatalogue' => [
+        'index' => [
+            'title' => 'Attribute Category Management',
+            'tableHeading' => 'List of Attribute Categories'
+        ],
+        'create' => [
+            'title' => 'Add New Attribute Category'
+        ],
+        'edit' => [
+            'title' => 'Update Attribute Category'
+        ],
+        'delete' => [
+            'title' => 'Delete Attribute Category'
+        ],
+    ],
+    'attribute' => [
+        'index' => [
+            'title' => 'Attribute Management',
+            'tableHeading' => 'List of Attributes'
+        ],
+        'create' => [
+            'title' => 'Add New Attribute'
+        ],
+        'edit' => [
+            'title' => 'Update Attribute'
+        ],
+        'delete' => [
+            'title' => 'Delete Attribute'
+        ],
+    ],
     'postCatalogue' => [
         'index' => [
             'title' => 'Manage Article Groups',

@@ -14,6 +14,9 @@ class Product extends Model
     protected $table = 'products';
 
     protected $fillable = [
+        'code',
+        'made_in',
+        'price',
         'image',
         'album',
         'publish',

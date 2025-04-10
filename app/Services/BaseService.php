@@ -36,31 +36,32 @@ class BaseService implements BaseServiceInterface
         $this->nestedset->Action();
     }
 
-    public function createRouter($model, $request, $controllerName)
+    public function createRouter($model, $request, $controllerName, $languageId)
     {
-        $payload = $this->formatRouterPayload($model, $request, $controllerName);
+        $payload = $this->formatRouterPayload($model, $request, $controllerName, $languageId);
 
         return $this->routerRepository->create($payload);
     }
 
-    public function updateRouter($model, $request, $controllerName)
+    public function updateRouter($model, $request, $controllerName, $languageId)
     {
-        $payload = $this->formatRouterPayload($model, $request, $controllerName);
+        $payload = $this->formatRouterPayload($model, $request, $controllerName, $languageId);
         $condition = [
             ['module_id', '=', $model->id],
-            ['controller', '=', 'App\Http\Controllers\Frontend\\'.$controllerName],
+            ['controllers', '=', 'App\Http\Controllers\Frontend\\'.$controllerName],
         ];
         $router = $this->routerRepository->findByCondition($condition);
         
         return $this->routerRepository->update($router->id, $payload);
     }
 
-    public function formatRouterPayload($model, $request, $controllerName)
+    public function formatRouterPayload($model, $request, $controllerName, $languageId)
     {
         $router = [
             'canonical' => Str::slug($request->string('canonical')),
             'module_id' => $model->id,
-            'controller' => 'App\Http\Controllers\Frontend\\'.$controllerName.''
+            'language_id' => $languageId,
+            'controllers' => 'App\Http\Controllers\Frontend\\'.$controllerName.''
         ];
 
         return $router;

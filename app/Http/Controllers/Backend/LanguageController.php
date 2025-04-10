@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLanguageRequest;
 use App\Http\Requests\StoreTranslateRequest;
+use App\Http\Requests\TranslateRequest;
 use App\Http\Requests\UpdateLanguageRequest;
 use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 use App\Services\Interfaces\LanguageServiceInterface as LanguageService;
@@ -164,7 +165,7 @@ class LanguageController extends Controller
         ));
     }
 
-    public function storeTranslate(StoreTranslateRequest $request) {
+    public function storeTranslate(TranslateRequest $request) {
         $option = $request->input('option');
         if($this->languageService->saveTranslate($option, $request)){
 

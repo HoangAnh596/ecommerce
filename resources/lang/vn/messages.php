@@ -29,6 +29,40 @@ return [
         'delete' => [
             'title' => 'Xóa sản phẩm'
         ],
+        'information' => 'Thông tin chung',
+        'code' => 'Mã sản phẩm',
+        'made_in' => 'Xuất xứ',
+        'price' => 'Giá bán sản phẩm',
+    ],
+    'attributeCatalogue' => [
+        'index' => [
+            'title' => 'Quản lý Loại thuộc tính',
+            'tableHeading' => 'Danh sách Loại thuộc tính'
+        ],
+        'create' => [
+            'title' => 'Thêm mới Loại thuộc tính'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật Loại thuộc tính'
+        ],
+        'delete' => [
+            'title' => 'Xóa Loại thuộc tính'
+        ],
+    ],
+    'attribute' => [
+        'index' => [
+            'title' => 'Quản lý thuộc tính',
+            'tableHeading' => 'Danh sách thuộc tính'
+        ],
+        'create' => [
+            'title' => 'Thêm mới thuộc tính'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật thuộc tính'
+        ],
+        'delete' => [
+            'title' => 'Xóa thuộc tính'
+        ],
     ],
     'postCatalogue' => [
         'index' => [

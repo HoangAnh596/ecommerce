@@ -62,7 +62,7 @@ class PostService extends BaseService implements PostServiceInterface
             $post = $this->createPost($request);
             if($post->id > 0) {
                 $this->updateLanguageForPost($post, $request, $languageId);
-                $this->createRouter($post, $request, $this->controllerName); 
+                $this->createRouter($post, $request, $this->controllerName, $languageId); 
                 $post->post_catalogues()->sync($this->catalogue($request));
             }
 
@@ -77,13 +77,13 @@ class PostService extends BaseService implements PostServiceInterface
         }
     }
 
-    public function update($request, $id){
+    public function update($request, $id, $languageId){
         DB::beginTransaction();
         try {
             $post = $this->postRepository->findById($id);
             if($this->uploadPost($post, $request)){
                 $this->updateLanguageForPost($post, $request, $languageId);
-                $this->updateRouter($post, $request, $this->controllerName);
+                $this->updateRouter($post, $request, $this->controllerName, $languageId);
                 $post->post_catalogues()->sync($this->catalogue($request));
             }
 
@@ -102,7 +102,7 @@ class PostService extends BaseService implements PostServiceInterface
         DB::beginTransaction();
         try {
             $this->postRepository->delete($id);
-            
+
             DB::commit();
             return true;
         } catch (\Exception $e) {

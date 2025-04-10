@@ -62,7 +62,7 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
             ${module} = $this->create{$class}($request);
             if(${module}->id > 0) {
                 $this->updateLanguageFor{$class}(${module}, $request, $languageId);
-                $this->createRouter(${module}, $request, $this->controllerName); 
+                $this->createRouter(${module}, $request, $this->controllerName, $languageId); 
                 ${module}->{module}_catalogues()->sync($this->catalogue($request));
             }
 
@@ -83,7 +83,7 @@ class {$class}Service extends BaseService implements {$class}ServiceInterface
             ${module} = $this->{module}Repository->findById($id);
             if($this->upload{$class}(${module}, $request)){
                 $this->updateLanguageFor{$class}(${module}, $request, $languageId);
-                $this->updateRouter(${module}, $request, $this->controllerName);
+                $this->updateRouter(${module}, $request, $this->controllerName, $languageId);
                 ${module}->{module}_catalogues()->sync($this->catalogue($request));
             }
 

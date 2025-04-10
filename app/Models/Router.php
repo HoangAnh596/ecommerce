@@ -16,6 +16,7 @@ class Router extends Model
     protected $fillable = [
         'canonical',
         'module_id',
-        'controller'
+        'language_id',
+        'controllers'
     ];
 }

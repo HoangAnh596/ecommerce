@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
+use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
 use Illuminate\Http\Request;
 use App\Classes\Nestedsetbie;
@@ -15,12 +16,14 @@ class ProductController extends Controller
 {
     protected $productService;
     protected $productRepository;
+    protected $attributeCatalogue;
     protected $nestedset;
     protected $language;
 
     public function __construct(
         ProductService $productService,
-        ProductRepository $productRepository
+        ProductRepository $productRepository,
+        AttributeCatalogueRepository $attributeCatalogue,
     ){
         $this->middleware(function($request, $next){
             $locale = app()->getLocale();
@@ -31,6 +34,7 @@ class ProductController extends Controller
         });
         $this->productService = $productService;
         $this->productRepository = $productRepository;
+        $this->attributeCatalogue = $attributeCatalogue;
         $this->initialize();
     }
 
@@ -72,6 +76,8 @@ class ProductController extends Controller
     public function create()
     {
         $this->authorize('modules', 'product.create');
+        $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
+        // dd($attributeCatalogue);
         $config = $this->configData();
         $template = 'backend.product.product.store';
         $config['seo']  = __('messages.product');
@@ -81,6 +87,7 @@ class ProductController extends Controller
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
+            'attributeCatalogue',
             'dropdown'
         ));
     }
@@ -148,10 +155,13 @@ class ProductController extends Controller
                 'backend/plugins/ckfinder_2/ckfinder.js',
                 'backend/library/finder.js',
                 'backend/library/seo.js',
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+                'backend/library/variant.js',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+                'backend/plugins/nice-select/js/jquery.nice-select.min.js',
             ],
             'css' => [
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+                'backend/plugins/nice-select/css/nice-select.css',
             ],
         ];
     }

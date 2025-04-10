@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('canonical')->unique();
             $table->unsignedBigInteger('module_id');
-            $table->string('controller');
+            $table->unsignedBigInteger('language_id');
+            $table->string('controllers');
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });

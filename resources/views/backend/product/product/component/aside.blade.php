@@ -45,6 +45,52 @@
         </div>
     </div>
 </div>
+<div class="ibox w">
+    <div class="ibox-title">
+        <h5>{{ __('messages.product.information') }}</h5>
+    </div>
+    <div class="ibox-content">
+        <div class="row mb15">
+            <div class="col-lg-12">
+                <div class="form-row">
+                    <label for="">{{ __('messages.product.code') }}</label>
+                    <input 
+                        type="text"
+                        name="code"
+                        value="{{ old('code', ($product->code) ?? time()) }}"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="row mb15">
+            <div class="col-lg-12">
+                <div class="form-row">
+                    <label for="">{{ __('messages.product.made_in') }}</label>
+                    <input 
+                        type="text"
+                        name="made_in"
+                        value="{{ old('made_in', ($product->made_in) ?? null) }}"
+                        class="form-control "
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="row mb15">
+            <div class="col-lg-12">
+                <div class="form-row">
+                    <label for="">{{ __('messages.product.price') }}</label>
+                    <input 
+                        type="text"
+                        name="price"
+                        value="{{ old('price', (isset($product)) ? number_format($product->price, 0 , ',', '.') : '') }}"
+                        class="form-control int"
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="ibox">
     <div class="ibox-title">
         <h5>Chọn ảnh đại diện</h5>

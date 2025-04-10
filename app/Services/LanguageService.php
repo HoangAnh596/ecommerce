@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Services\Interfaces\LanguageServiceInterface;
-use App\Repositories\Interfaces\LanguageRepositoryInterface as languageRepository;
+use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * Class LanguageService
@@ -14,10 +16,14 @@ use Illuminate\Support\Facades\DB;
 class LanguageService implements LanguageServiceInterface
 {
     protected $languageRepository;
+    protected $routerRepository;
 
-    public function __construct(LanguageRepository $languageRepository)
-    {
+    public function __construct(
+        LanguageRepository $languageRepository,
+        RouterRepository $routerRepository
+    ){
         $this->languageRepository = $languageRepository;
+        $this->routerRepository = $routerRepository;
     }
 
     public function paginate($request){
@@ -156,6 +162,7 @@ class LanguageService implements LanguageServiceInterface
                 $this->convertModelToField($option['model']) => $option['id'],
                 'language_id' => $option['languageId']
             ];
+            $controllerName = $option['model'].'Controller';
             $repositoryNamespace = '\App\Repositories\\' . ucfirst($option['model']). 'Repository';
             if(class_exists($repositoryNamespace)) {
                 $repositoryInstance = app($repositoryNamespace);
@@ -163,6 +170,19 @@ class LanguageService implements LanguageServiceInterface
             $model = $repositoryInstance->findById($option['id']);
             $model->languages()->detach([$option['languageId'], $model->id]);
             $repositoryInstance->createPivot($model, $payload, 'languages');
+
+            $this->routerRepository->forceDeleteByCondition([
+                ['module_id', '=', $option['id']],
+                ['controllers', '=', 'App\Http\Controllers\Frontend\\'.$controllerName],
+                ['language_id', '=', $option['languageId']]
+            ]);
+            $router = [
+                'canonical' => Str::slug($payload['canonical']),
+                'module_id' => $model->id,
+                'language_id' => $option['languageId'],
+                'controllers' => 'App\Http\Controllers\Frontend\\'.$controllerName,
+            ];
+            $this->routerRepository->create($router);
 
             DB::commit();
             return true;

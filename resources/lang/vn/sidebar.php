@@ -4,7 +4,7 @@ return [
         [
             'title' => 'QL Sản phẩm',
             'icon' => 'fa fa-cube',
-            'name' => ['product'],
+            'name' => ['product', 'attribute'],
             'subModule' => [
                 [
                     'title' => 'QL Nhóm Sản phẩm',
@@ -13,7 +13,15 @@ return [
                 [
                     'title' => 'QL Sản phẩm',
                     'route' => 'product/index',
-                ]
+                ],
+                [
+                    'title' => 'QL Loại thuộc tính',
+                    'route' => 'attribute/catalogue/index',
+                ],
+                [
+                    'title' => 'QL Thuộc tính',
+                    'route' => 'attribute/index',
+                ],
             ]
         ],
         [

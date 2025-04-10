@@ -59,7 +59,7 @@ class GalleryCatalogueService extends BaseService implements GalleryCatalogueSer
             $galleryCatalogue = $this->createGalleryCatalogue($request);
             if($galleryCatalogue->id > 0) {
                 $this->updateLanguageForCatalogue($galleryCatalogue, $request, $languageId);
-                $this->createRouter($galleryCatalogue, $request, $this->controllerName);
+                $this->createRouter($galleryCatalogue, $request, $this->controllerName, $languageId);
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'gallery_catalogues',
                     'foreignkey' => 'gallery_catalogue_id',
@@ -85,7 +85,7 @@ class GalleryCatalogueService extends BaseService implements GalleryCatalogueSer
             $flag = $this->updateGalleryCatalogue($galleryCatalogue, $request);
             if($flag == true){
                 $this->updateLanguageForCatalogue($galleryCatalogue, $request, $languageId);
-                $this->updateRouter($galleryCatalogue, $request, $this->controllerName);
+                $this->updateRouter($galleryCatalogue, $request, $this->controllerName, $languageId);
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'gallery_catalogues',
                     'foreignkey' => 'gallery_catalogue_id',
