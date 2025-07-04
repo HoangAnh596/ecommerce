@@ -84,7 +84,7 @@
                         type="text"
                         name="price"
                         value="{{ old('price', (isset($product)) ? number_format($product->price, 0 , ',', '.') : '') }}"
-                        class="form-control int"
+                        class="form-control int" id="priceInput"
                     >
                 </div>
             </div>

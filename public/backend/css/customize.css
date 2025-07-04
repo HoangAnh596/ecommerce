@@ -36,6 +36,10 @@ table .image {
     height: 50px;
     display: block;
 }
+.updateVariant .image {
+    height: 150px !important;
+    display: block;
+}
 .img-cover img {
     width: 100%;
     height: 100%;

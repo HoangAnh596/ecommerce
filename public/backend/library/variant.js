@@ -3,25 +3,22 @@
 	var HT = {}; 
 
     HT.setupProductVariant = () => {
-        // if($('.turnOnVariant').length){
-        //     $(document).on('click', '.turnOnVariant', function(){
-        //         let _this = $(this)
-        //         if(_this.siblings('input:checked').length == 0){
-        //             $('.variant-wrapper').removeClass('hidden')
-        //         }else{
-        //             $('.variant-wrapper').addClass('hidden')
-        //         }
-        //     })
-        // }
-        if ($('.turnOnVariant').length) {
-            $(document).on('click', '.turnOnVariant, .variantInputCheckbox', function () {
-                let checkbox = $('.variantInputCheckbox');
-                if (checkbox.is(':checked')) {
-                    $('.variant-wrapper').removeClass('hidden');
-                } else {
-                    $('.variant-wrapper').addClass('hidden');
+        if($('.turnOnVariant').length){
+            $(document).on('click', '.turnOnVariant', function(){
+                let _this = $(this)
+                let price  = $('input[name=price]').val()
+                let code  = $('input[name=code]').val()
+                // if(price == '' || code == ''){
+                //     alert('Vui lòng nhập giá và mã SKU trước khi tạo phiên bản sản phẩm')
+                //     return false
+                // }
+
+                if(_this.siblings('input:checked').length == 0){
+                    $('.variant-wrapper').removeClass('hidden')
+                }else{
+                    $('.variant-wrapper').addClass('hidden')
                 }
-            });
+            })
         }
     }
 
@@ -43,7 +40,7 @@
         html = html + '<div class="row mb20 variant-item">';
             html = html + '<div class="col-lg-3">';
                 html = html + '<div class="attribute-catalogue">';
-                    html = html + '<select name="" id="" class="choose-attribute niceSelect">';
+                    html = html + '<select name="attributeCatalogue[]" id="" class="choose-attribute niceSelect">';
                         html = html + '<option value="">Chọn Nhóm thuộc tính</option>';
                         for(let i = 0; i < attributeCatalogue.length; i++){
                         html = html + '<option value="'+attributeCatalogue[i].id+'">'+attributeCatalogue[i].name+'</option>';
@@ -72,7 +69,8 @@
                     HT.getSelect2($(this))
                 })
             }else{
-                _this.parents('.col-lg-3').siblings('.col-lg-8').html('<input type="text" name="" disabled="" class="fake-variant form-control">')
+                _this.parents('.col-lg-3').siblings('.col-lg-8')
+                    .html('<input type="text" name="attribute['+attributeCatalogueId+'][]" disabled="" class="fake-variant form-control">')
             }
 
             HT.disabledAttributeCatalogueChoose();
@@ -155,9 +153,6 @@
 
             }
         })
-
-        // let html = HT.renderTableHtml(attributes, attributeTitle, variants);
-        // $('table.variantTable').html(html)
     }
 
     HT.createVariantRow = (attributeItem, variantItem) => {
@@ -181,16 +176,18 @@
         })
 
         $td = $('<td>').addClass('hidden td-variant')
+        let mainPrice = $('input[name=price]').val()
+        let mainSku = $('input[name=code]').val()
         let inputHiddenFields = [
             { name: 'variant[quantity][]', class: 'variant_quantity' },
-            { name: 'variant[sku][]', class: 'variant_sku' },
-            { name: 'variant[price][]', class: 'variant_price' },
+            { name: 'variant[sku][]', class: 'variant_sku', value: mainSku + '-' + classModified },
+            { name: 'variant[price][]', class: 'variant_price', value: mainPrice },
             { name: 'variant[barcode][]', class: 'variant_barcode' },
             { name: 'variant[file_name][]', class: 'variant_filename' },
             { name: 'variant[file_url][]', class: 'variant_fileurl' },
             { name: 'variant[album][]', class: 'variant_album' },
-            { name: 'attribute[name][]', value: attributeString },
-            { name: 'attribute[id][]', value: attributeId },
+            { name: 'productVariant[name][]', value: attributeString },
+            { name: 'productVariant[id][]', value: attributeId },
         ]
 
         $.each(inputHiddenFields, function(_, field){
@@ -202,8 +199,8 @@
         })
 
         $row.append($('<td>').addClass('td-quantity').text('-'))
-            .append($('<td>').addClass('td-price').text('-'))
-            .append($('<td>').addClass('td-sku').text('-'))
+            .append($('<td>').addClass('td-price').text(mainPrice))
+            .append($('<td>').addClass('td-sku').text(mainSku + '-' + classModified))
             .append($td)
         return $row
     }
@@ -223,65 +220,6 @@
         $thead.html($row)
         return $thead
 
-    }
-
-    HT.renderTableHtml = (attributes, attributeTitle, variants) => {
-        let html = ''
-
-        html = html + '<thead>'
-            html = html + '<tr>'
-                html = html + '<td>Hình ảnh</td>'
-                for(let i = 0; i < attributeTitle.length; i++){
-                    html = html + '<td>'+attributeTitle[i]+'</td>'
-                }
-               
-                html = html + '<td>Số lượng</td>'
-                html = html + '<td>Giá tiền</td>'
-                html = html + '<td>SKU</td>'
-            html = html + '</tr>'
-        html = html + '</thead>'
-        html = html + '<tbody>'
-
-            
-            for(let j = 0; j < attributes.length; j++){
-                html = html + '<tr class="variant-row">'
-                    html = html + '<td>'
-                        html = html + '<span class="image img-cover"><img src="https://daks2k3a4ib2z.cloudfront.net/6343da4ea0e69336d8375527/6343da5f04a965c89988b149_1665391198377-image16-p-500.jpg" alt="" class="imageSrc"></span>'
-                    html = html + '</td>'
-                    let attributeArray = []
-                    let attributeIdArray = []
-                    $.each(attributes[j], function(index, value){
-                        html = html + '<td>'+value+'</td>'
-                        attributeArray.push(value)
-                    })
-
-                    $.each(variants[j], function(index, value){
-                        attributeIdArray.push(value)
-                    })
-
-                    let attributeString = attributeArray.join(', ')
-                    let attributeId = attributeIdArray.join(', ')
-                    
-                    html = html + '<td class="td-quantity">-</td>'
-                    html = html + '<td class="td-price">-</td>'
-                    html = html + '<td class="td-sku">-</td>'
-                    html = html + '<td class="hidden td-variant">'
-                        html = html + '<input type="text" name="variant[quantity][]" class="variant_quantity">'
-                        html = html + '<input type="text" name="variant[sku][]" class="variant_sku">'
-                        html = html + '<input type="text" name="variant[price][]" class="variant_price">'
-                        html = html + '<input type="text" name="variant[barcode][]" class="variant_barcode">'
-                        html = html + '<input type="text" name="variant[file_name][]" class="variant_filename">'
-                        html = html + '<input type="text" name="variant[file_url][]" class="variant_fileurl">'
-                        html = html + '<input type="text" name="variant[album][]" class="variant_album">'
-                        html = html + '<input type="text" name="attribute[name][]" value="'+attributeString+'">'
-                        html = html + '<input type="text" name="attribute[id][]" value="'+attributeId+'">'
-                    html = html + '</td>'
-                html = html + '</tr>'
-            }
-            
-        html = html + '</tbody>'
-
-        return html
     }
 
     HT.getSelect2 = (object) => {
@@ -584,7 +522,8 @@
             }
 
             $.each(variant, function(index, value){
-                $('.updateVariantTr').prev().find('.variant_'+index).val(value)
+                // $('.updateVariantTr').prev().find('.variant_'+index).val(value)
+                $('.variant-' + index).val(value)
             })
             
             HT.previewVariantTr(variant)
@@ -604,6 +543,36 @@
         $('.updateVariantTr').prev().find('.imageSrc').attr('src', variant.album[0])
     }
 
+    HT.setupSelectMultiple = () => {
+        if($('.selectVariant').length){
+            $('.selectVariant').each(function(){
+                let _this = $(this)
+                let attributeCatalogueId = _this.attr('data-catid')
+                if(attribute != ''){
+                    $.get('ajax/attribute/loadAttribute', {
+                        attribute: attribute,
+                        attributeCatalogueId: attributeCatalogueId
+                    }, function(json){
+                        if(json.items != 'undefined' && json.items.length){
+                            for(let i = 0; i < json.items.length; i++){
+                                var option = new Option(json.items[i].text, json.items[i].id, true, true);
+                                _this.append(option).trigger('change');
+                            }
+                        }
+                    });
+                }
+
+                HT.getSelect2(_this)
+            })
+            HT.productVariant()
+        }
+    }
+
+    HT.productVariant = () => {
+        variant = JSON.parse(atob(variant))
+        console.log(variant); // derbug data nó chưa có giá trị của price
+    }
+
 	$(document).ready(function(){
         HT.setupProductVariant()
         HT.addVariant()
@@ -617,6 +586,11 @@
         HT.updateVariant()
         HT.cancleVariantUpdate()
         HT.saveVariantUpdate()
+        HT.setupSelectMultiple(
+            // () => {
+            //     HT.productVariant()
+            // }
+        )
 	});
 
 })(jQuery);

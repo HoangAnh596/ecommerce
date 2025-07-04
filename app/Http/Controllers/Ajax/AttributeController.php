@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\AttributeRepositoryInterface  as AttributeRepository;
 use App\Models\Language;
-
+use Faker\Provider\Base;
 
 class AttributeController extends Controller
 {
@@ -37,5 +37,28 @@ class AttributeController extends Controller
         })->all();
        
         return response()->json(array('items' => $attributeMapped)); 
+    }
+
+    public function loadAttribute(Request $request){
+        $payload['attribute'] = json_decode(base64_decode($request->input('attribute')), true);
+        $payload['attributeCatalogueId'] = $request->input('attributeCatalogueId');
+        $attributeArray= $payload['attribute'][$payload['attributeCatalogueId']];
+
+        $attributes = [];
+        if(count($attributeArray)){
+            $attributes = $this->attributeRepository->findAttributeByIdArray($attributeArray, $this->language);
+        }
+
+        $temp = [];
+        if(count($attributes) ){
+            foreach($attributes as $key => $val){
+                $temp[] = [
+                    'id' => $val->id,
+                    'text' => $val->name,
+                ];
+            }
+        }
+        
+        return response()->json(array('items' => $temp));
     }
 }
