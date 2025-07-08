@@ -19,6 +19,8 @@ use App\Http\Controllers\Backend\GalleryCatalogueController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
+use App\Http\Controllers\Backend\SystemController;
+
 //@@useController@@
 
 /*
@@ -36,7 +38,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 /* Backend Routes */
-Route::group(['middleware' => ['admin', 'locale']], function (){
+Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], function (){
     Route::get('dashboard/index', [DashboardController::class, 'index'])->name('dashboard.index');
 
     /* User */
@@ -98,6 +100,15 @@ Route::group(['middleware' => ['admin', 'locale']], function (){
         Route::get('{id}/delete', [GenerateController::class, 'delete'])->where(['id' => '[0-9]+'])->name('generate.delete');
         Route::delete('{id}/destroy', [GenerateController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('generate.destroy');
     });
+
+    /* System : Cấu hình hệ thống */
+    Route::group(['prefix' => 'system'], function (){
+        Route::get('index', [SystemController::class, 'index'])->name('system.index');
+        Route::post('store', [SystemController::class, 'store'])->name('system.store');
+        Route::get('{languageId}/translate', [SystemController::class, 'translate'])->where(['languageId' => '[0-9]+'])->name('system.translate');
+        Route::post('{languageId}/saveTranslate', [SystemController::class, 'saveTranslate'])->where(['languageId' => '[0-9]+'])->name('system.saveTranslate');
+    });
+
 
     /* Post : Quản lý bài viết */
     Route::group(['prefix' => 'post'], function (){

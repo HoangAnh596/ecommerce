@@ -187,6 +187,14 @@ return [
             'title' => 'Xóa Module'
         ],
     ],
+    'system' => [
+        'index' => [
+            'title' => 'Cấu hình hệ thống',
+        ],
+        'create' => [
+            'title' => 'Cài đặt thông tin cấu hình hệ thống'
+        ],
+    ],
 
     'parent' => 'Chọn danh mục cha',
     'parentNotice' => 'Chọn root nếu không có danh mục cha',

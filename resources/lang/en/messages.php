@@ -105,6 +105,14 @@ return [
             'title' => 'Delete Permission'
         ],
     ],
+    'system' => [
+        'index' => [
+            'title' => 'System configuration',
+        ],
+        'create' => [
+            'title' => 'Setup system configuration information'
+        ],
+    ],
     'parent' => 'Select parent category',
     'parentNotice' => 'Choose root if there is no parent category',
     'image' => 'Select Featured Image',

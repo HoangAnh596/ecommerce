@@ -27,6 +27,8 @@ interface BaseRepositoryInterface
 
     public function update(int $id = 0, array $payload = []);
 
+    public function updateOrInsert(array $payload= [], array $condition = []);
+
     public function updateByWhere(array $condition = [], array $payload= []);
 
     public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = []);

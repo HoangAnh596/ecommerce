@@ -76,7 +76,7 @@ return [
         [
             'title' => 'Cấu hình chung',
             'icon' => 'fa fa-file',
-            'name' => ['language', 'generate'],
+            'name' => ['language', 'generate', 'system'],
             'subModule' => [
                 [
                     'title' => 'QL Ngôn ngữ',
@@ -85,6 +85,10 @@ return [
                 [
                     'title' => 'QL Module',
                     'route' => 'generate/index',
+                ],
+                [
+                    'title' => 'Cấu hình hệ thống',
+                    'route' => 'system/index',
                 ],
             ]
         ],
