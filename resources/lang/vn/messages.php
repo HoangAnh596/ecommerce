@@ -195,6 +195,15 @@ return [
             'title' => 'Cài đặt thông tin cấu hình hệ thống'
         ],
     ],
+    'menu' => [
+        'index' => [
+            'title' => 'Quản lý Menu',
+            'tableHeading' => 'Danh sách menu'
+        ],
+        'create' => [
+            'title' => 'Thêm mới Menu'
+        ],
+    ],
 
     'parent' => 'Chọn danh mục cha',
     'parentNotice' => 'Chọn root nếu không có danh mục cha',
