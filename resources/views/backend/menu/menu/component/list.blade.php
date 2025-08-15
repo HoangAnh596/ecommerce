@@ -31,13 +31,8 @@
                         </div>
                         <div id="{{ $key }}" class="panel-collapse collapse">
                             <div class="panel-body">
-                                <form action="" method="get" data-model="{{ $key }}" class="search-model">
-                                    <div class="form-row">
-                                        <input type="text" value="" class="form-control" name="keyword" placeholder="Nhập 2 ký tự để tìm kiếm...">
-                                    </div>
-                                </form>
-                                <div class="menu-list">
-
+                                <input type="text" value="" class="form-control search-menu" name="keyword" placeholder="Nhập 2 ký tự để tìm kiếm...">
+                                <div class="menu-list mt20">
                                 </div>
                             </div>
                         </div>
@@ -58,26 +53,34 @@
                 </div>
                 <div class="hr-line-dashed" style="margin: 10px 0;"></div>
                 <div class="menu-wrapper">
-                    <div class="notification text-center">
+                    @php
+                        $menu = old('menu', ($menuList) ?? null);
+                    @endphp
+                    <div class="notification text-center {{ (is_array($menu) && count($menu)) ? 'none' : ''}}">
                         <h4 style="font-weight:500; font-size:16px; color: #000">Danh sách liên kết này chưa có bất kỳ đường dẫn nào.</h4>
                         <p style="color: #555; margin-top: 10px;">Hãy nhấn vào <span style="color: blue;">"Thêm đường dẫn"</span> để bắt đầu thêm</p>
                     </div>
-                    <!-- <div class="row">
-                        <div class="col-lg-4">
-                            <input type="text" class="form-control" name="menu[name][]" value="">
+                    @if(is_array($menu) && count($menu))
+                    @foreach($menu['name'] as $key => $val)
+                    <div class="row mb10 menu-item">
+                        <div class="col-md-4">
+                            <input type="text" value="{{ $val }}" class="form-control" name="menu[name][]">
                         </div>
-                        <div class="col-lg-4">
-                            <input type="text" class="form-control" name="menu[canonical][]" value="">
+                        <div class="col-md-4">
+                            <input type="text" value="{{ $menu['canonical'][$key] }}" class="form-control" name="menu[canonical][]">
                         </div>
-                        <div class="col-lg-2">
-                            <input type="text" class="form-control" name="menu[order][]" value="">
+                        <div class="col-md-2">
+                            <input type="text" value="{{ $menu['order'][$key] }}" class="form-control int text-right" name="menu[order][]">
                         </div>
                         <div class="col-lg-2">
                             <div class="form-row text-center">
-                                <a href="" class="delete-menu"><img src="{{ asset('backend/close.png') }}" alt=""></a>
+                                <a class="delete-menu"><img src="backend/close.png"></a>
                             </div>
+                            <input type="text" class="hidden" name="menu[id][]" value="{{ $menu['id'][$key] }}">
                         </div>
-                    </div> -->
+                    </div>
+                    @endforeach
+                    @endif
                 </div>
             </div>
         </div>

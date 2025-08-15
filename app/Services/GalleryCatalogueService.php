@@ -127,40 +127,6 @@ class GalleryCatalogueService extends BaseService implements GalleryCatalogueSer
         }
     }
 
-    public function updateStatus($gallery = []) {
-        DB::beginTransaction();
-        try {
-            $payload[$gallery['field']] = ($gallery['value'] == 1) ? 2 : 1;
-            $this->galleryCatalogueRepository->update($gallery['modelId'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatusAll($gallery) {
-        DB::beginTransaction();
-        try {
-            $payload[$gallery['field']] = $gallery['value'];
-            $this->galleryCatalogueRepository->updateByWhereIn('id', $gallery['id'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
     private function createGalleryCatalogue($request) {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);

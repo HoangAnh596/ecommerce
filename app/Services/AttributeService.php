@@ -114,40 +114,6 @@ class AttributeService extends BaseService implements AttributeServiceInterface
         }
     }
 
-    public function updateStatus($attribute = []) {
-        DB::beginTransaction();
-        try {
-            $payload[$attribute['field']] = ($attribute['value'] == 1) ? 2 : 1;
-            $this->attributeRepository->update($attribute['modelId'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatusAll($attribute) {
-        DB::beginTransaction();
-        try {
-            $payload[$attribute['field']] = $attribute['value'];
-            $this->attributeRepository->updateByWhereIn('id', $attribute['id'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
     private function paginateSelect() {
         return [
             'attributes.id',

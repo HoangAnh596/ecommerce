@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
  * Class UserService
  * @package App\Services
  */
-class UserService implements UserServiceInterface
+class UserService extends BaseService implements UserServiceInterface
 {
     protected $userRepository;
 
@@ -87,40 +87,6 @@ class UserService implements UserServiceInterface
         DB::beginTransaction();
         try {
             $this->userRepository->delete($id);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatus($post = []) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
-            $this->userRepository->update($post['modelId'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatusAll($post) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = $post['value'];
-            $this->userRepository->updateByWhereIn('id', $post['id'], $payload);
 
             DB::commit();
             return true;

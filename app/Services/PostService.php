@@ -114,40 +114,6 @@ class PostService extends BaseService implements PostServiceInterface
         }
     }
 
-    public function updateStatus($post = []) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
-            $this->postRepository->update($post['modelId'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatusAll($post) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = $post['value'];
-            $this->postRepository->updateByWhereIn('id', $post['id'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
     private function paginateSelect() {
         return [
             'posts.id',

@@ -6,32 +6,31 @@
             </th>
             <th class="text-center">Tên Menu</th>
             <th class="text-center">Từ khóa</th>
-            <th class="text-center">Ngày tạo</th>
-            <th class="text-center">Người tạo</th>
             <th class="text-center">Tình trạng</th>
             <th class="text-center">Thao tác</th>
         </tr>
     </thead>
     <tbody>
-        @if(isset($menus) && is_object($menus))
-        @foreach($menus as $menu)
+        @if(isset($menuCatalogues) && is_object($menuCatalogues))
+        @foreach($menuCatalogues as $menuCatalogue)
         <tr>
             <td>
-                <input type="checkbox" value="{{ $menu->id }}" class="input-checkbox checkBoxItem">
+                <input type="checkbox" value="{{ $menuCatalogue->id }}" class="input-checkbox checkBoxItem">
             </td>
-            <td>
-                <span class="image img-cover"><img src="https://storage.googleapis.com/dara-c1b52.appspot.com/daras_ai/media/2a9500aa-74f9-11ee-8902-02420a000165/gooey.ai%20-%20A%20beautiful%20anime%20drawing%20of%20a%20smilin...ibli%20ponyo%20anime%20excited%20anime%20saturated%20colorsn.png" alt=""></span>
+            <td>{{ $menuCatalogue->name }}</td>
+            <td>{{ $menuCatalogue->keyword }}</td>
+            <td class="text-center js-switch-{{ $menuCatalogue->id }}">
+                <input type="checkbox" class="js-switch status" 
+                    data-field="publish" data-model="{{ $config['model'] }}" 
+                    value="{{ $menuCatalogue->publish }}" data-modelId="{{ $menuCatalogue->id }}" 
+                    {{ ($menuCatalogue->publish == 2) ? 'checked' : '' }} />
             </td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
             <td class="text-center">
                 @can('modules', 'menu.update')
-                <a href="{{ route('menu.edit', $menu->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                <a href="{{ route('menu.edit', $menuCatalogue->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
                 @endcan
                 @can('modules', 'post.destroy')
-                <a href="{{ route('menu.delete', $menu->id) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                <a href="{{ route('menu.delete', $menuCatalogue->id) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                 @endcan
             </td>
         </tr>

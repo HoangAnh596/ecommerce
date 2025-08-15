@@ -60,8 +60,10 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function update(int $id = 0, array $payload= []) {
         $model = $this->findById($id);
+        $model->fill($payload);
+        $model->save();
 
-        return $model->update($payload);
+        return $model;
     }
 
     public function updateOrInsert(array $payload= [], array $condition = []) {
@@ -98,13 +100,24 @@ class BaseRepository implements BaseRepositoryInterface
         return $query->forceDelete();
     }
 
-    public function findByCondition(array $condition = [], $flag = false) {
+    public function findByCondition($condition = [], $flag = false, $relation = [], array $orderBy = ['id', 'DESC']) {
         $query = $this->model->newQuery();
         foreach ($condition as $key => $value) {
             $query->where($value[0], $value[1], $value[2]);
         }
+        $query->with($relation);
+        $query->orderBy($orderBy[0], $orderBy[1]);
 
         return ($flag == false) ? $query->first() : $query->get();
+    }
+
+    public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '')
+    {
+        return $this->model->whereHas($relation, function($query) use ($condition, $alias){
+            foreach($condition as $key => $val){
+                $query->where($alias.'.'.$key, $val);
+            }
+        })->first();
     }
 
     public function createPivot($model, array $payload = [], string $relation = '')

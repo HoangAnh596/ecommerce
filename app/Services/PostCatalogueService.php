@@ -127,40 +127,6 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         }
     }
 
-    public function updateStatus($post = []) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
-            $this->postCatalogueRepository->update($post['modelId'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatusAll($post) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = $post['value'];
-            $this->postCatalogueRepository->updateByWhereIn('id', $post['id'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
     private function createPostCatalogue($request) {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);

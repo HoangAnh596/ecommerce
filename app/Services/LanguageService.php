@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
  * Class LanguageService
  * @package App\Services
  */
-class LanguageService implements LanguageServiceInterface
+class LanguageService extends BaseService implements LanguageServiceInterface
 {
     protected $languageRepository;
     protected $routerRepository;
@@ -80,40 +80,6 @@ class LanguageService implements LanguageServiceInterface
         DB::beginTransaction();
         try {
             $this->languageRepository->delete($id);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatus($post = []) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
-            $this->languageRepository->update($post['modelId'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatusAll($post) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = $post['value'];
-            $this->languageRepository->updateByWhereIn('id', $post['id'], $payload);
 
             DB::commit();
             return true;

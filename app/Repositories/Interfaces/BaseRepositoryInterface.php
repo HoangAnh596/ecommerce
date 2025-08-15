@@ -38,4 +38,8 @@ interface BaseRepositoryInterface
     public function createPivot($model, array $payload = [], string $relation = '');
 
     public function forceDeleteByCondition(array $condition = []);
+
+    public function findByCondition($condition = [], $flag = false, $relation = [], array $orderBy = ['id', 'DESC']);
+
+    public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '');
 }

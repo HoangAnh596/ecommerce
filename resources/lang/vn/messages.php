@@ -201,7 +201,14 @@ return [
             'tableHeading' => 'Danh sách menu'
         ],
         'create' => [
-            'title' => 'Thêm mới Menu'
+            'title' => 'Thêm mới Menu',
+            'children' => 'Cập nhật menu con cho mục ',
+        ],
+        'show' => [
+            'title' => 'Danh sách Menu'
+        ],
+        'translate' => [
+            'title' => 'Tạo bản dịch {language} cho'
         ],
     ],
 

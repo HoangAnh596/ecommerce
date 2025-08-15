@@ -114,40 +114,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         }
     }
 
-    public function updateStatus($product = []) {
-        DB::beginTransaction();
-        try {
-            $payload[$product['field']] = ($product['value'] == 1) ? 2 : 1;
-            $this->productRepository->update($product['modelId'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatusAll($product) {
-        DB::beginTransaction();
-        try {
-            $payload[$product['field']] = $product['value'];
-            $this->productRepository->updateByWhereIn('id', $product['id'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
     private function paginateSelect() {
         return [
             'products.id',

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
  * Class PermissionService
  * @package App\Services
  */
-class PermissionService implements PermissionServiceInterface
+class PermissionService extends BaseService implements PermissionServiceInterface
 {
     protected $permissionRepository;
 
@@ -76,40 +76,6 @@ class PermissionService implements PermissionServiceInterface
         DB::beginTransaction();
         try {
             $this->permissionRepository->delete($id);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatus($post = []) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
-            $this->permissionRepository->update($post['modelId'], $payload);
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function updateStatusAll($post) {
-        DB::beginTransaction();
-        try {
-            $payload[$post['field']] = $post['value'];
-            $this->permissionRepository->updateByWhereIn('id', $post['id'], $payload);
 
             DB::commit();
             return true;

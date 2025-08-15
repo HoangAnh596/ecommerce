@@ -26,9 +26,9 @@
                     <div class="col-lg-12">
                         @if(count($menuCatalogues))
                         <select class="setupSelect2" name="menu_catalogue_id">
-                            <option value="">[Chọn vị trí hiển thị]</option>
+                            <option value="0">[Chọn vị trí hiển thị]</option>
                             @foreach($menuCatalogues as $key => $val)
-                            <option value="{{ $val->id }}">{{ $val->name }}</option>
+                            <option {{ (isset($menuCatalogue) && $menuCatalogue->id == $val->id) ? 'selected' : '' }} value="{{ $val->id }}">{{ $val->name }}</option>
                             @endforeach
                         </select>
                         @endif

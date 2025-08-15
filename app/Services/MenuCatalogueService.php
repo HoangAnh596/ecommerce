@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
  * Class MenuCatalogueService
  * @package App\Services
  */
-class MenuCatalogueService implements MenuCatalogueServiceInterface
+class MenuCatalogueService extends BaseService implements MenuCatalogueServiceInterface
 {
     protected $menuCatalogueRepository;
 
@@ -21,7 +21,20 @@ class MenuCatalogueService implements MenuCatalogueServiceInterface
     }
 
     public function paginate($request){
-        return [];
+        $perpage = $request->integer('perpage');
+        $condition = [
+            'keyword' => addslashes($request->input('keyword')),
+            'publish' => $request->integer('publish')
+        ];
+        $menuCatalogues = $this->menuCatalogueRepository->pagination(
+            $this->paginateSelect(),
+            $condition,
+            $perpage,
+            ['path' => 'menu/index'],
+            ['id', 'DESC']
+        );
+
+        return $menuCatalogues;
     }
 
     public function create($request) {
@@ -75,5 +88,9 @@ class MenuCatalogueService implements MenuCatalogueServiceInterface
             die();
             return false;
         }
+    }
+
+    private function paginateSelect() {
+        return ['id', 'name', 'keyword', 'publish'];
     }
 }

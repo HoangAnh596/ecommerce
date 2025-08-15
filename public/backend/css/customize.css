@@ -457,3 +457,33 @@ table strong {
     font-size: 12px;
     margin-top: 5px;
 }
+.m0 {
+    margin: 0 !important;
+}
+.m-item {
+    margin-bottom: 10px;
+}
+.m-item label {
+    margin: 0;
+    font-weight: normal;
+    color: blue;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.menu-list .pagination {
+    margin-bottom: 0 !important;
+}
+.none {
+    display: none;
+}
+.create-children-menu {
+    position: absolute;
+    top: 11px;
+    right: 11px;
+}
+.menu-name {
+    min-width: 90px;
+}
+.menu-translate-item .form-row:not(:last-child){
+    margin-bottom: 10px;
+}

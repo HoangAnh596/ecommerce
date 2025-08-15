@@ -9,6 +9,4 @@ namespace App\Services\Interfaces;
 interface MenuServiceInterface
 {
     public function paginate($request);
-
-    public function create($request);
 }
