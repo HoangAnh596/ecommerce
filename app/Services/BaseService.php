@@ -29,6 +29,11 @@ class BaseService implements BaseServiceInterface
         return ($request->input('album') && !empty($request->input('album'))) ? json_encode($request->input('album')) : '';
     }
 
+    public function formatJson($request, $inputName)
+    {
+        return ($request->input($inputName) && !empty($request->input($inputName))) ? json_encode($request->input($inputName)) : '';
+    }
+
     public function nestedset()
     {
         $this->nestedset->Get('level ASC, order ASC');

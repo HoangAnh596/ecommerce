@@ -42,4 +42,6 @@ interface BaseRepositoryInterface
     public function findByCondition($condition = [], $flag = false, $relation = [], array $orderBy = ['id', 'DESC']);
 
     public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '');
+
+    public function createBatch(array $payload = []);
 }

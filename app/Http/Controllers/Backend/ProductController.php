@@ -77,7 +77,6 @@ class ProductController extends Controller
     {
         $this->authorize('modules', 'product.create');
         $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
-        // dd($attributeCatalogue);
         $config = $this->configData();
         $template = 'backend.product.product.store';
         $config['seo']  = __('messages.product');
@@ -102,8 +101,9 @@ class ProductController extends Controller
 
     public function edit($id) {
         $this->authorize('modules', 'product.update');
-        $config = $this->configData();
         $product = $this->productRepository->getProductById($id, $this->language);
+        $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
+        $config = $this->configData();
         $template = 'backend.product.product.store';
         $config['seo']  = __('messages.product');
         $config['method'] = 'edit';
@@ -115,7 +115,8 @@ class ProductController extends Controller
             'config',
             'product',
             'dropdown',
-            'album'
+            'album',
+            'attributeCatalogue'
         ));
     }
 

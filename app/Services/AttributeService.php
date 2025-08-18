@@ -44,7 +44,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             $condition,
             $perpage,
             ['path' => 'attribute.index', 'groupBy' => $this->paginateSelect()],
-            ['attributes.id','ASC'],
+            ['attributes.id','DESC'],
             [
                 ['attribute_language as tb2', 'tb2.attribute_id', '=', 'attributes.id'],
                 ['attribute_catalogue_attribute as tb3', 'attributes.id', '=', 'tb3.attribute_id']

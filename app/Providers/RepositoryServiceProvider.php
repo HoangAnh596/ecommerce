@@ -26,6 +26,9 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\Interfaces\SystemRepositoryInterface' => 'App\Repositories\SystemRepository',
         'App\Repositories\Interfaces\MenuRepositoryInterface' => 'App\Repositories\MenuRepository',
         'App\Repositories\Interfaces\MenuCatalogueRepositoryInterface' => 'App\Repositories\MenuCatalogueRepository',
+        'App\Repositories\Interfaces\ProductVariantRepositoryInterface' => 'App\Repositories\ProductVariantRepository',
+        'App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface' => 'App\Repositories\ProductVariantLanguageRepository',
+        'App\Repositories\Interfaces\ProductVariantAttrRepositoryInterface' => 'App\Repositories\ProductVariantAttrRepository',
     ];
 
     /**

@@ -43,4 +43,11 @@ class Attribute extends Model
     public function attribute_language(){
         return $this->hasMany(AttributeLanguage::class, 'attribute_id');
     }
+
+    public function product_variants() {
+        return $this->belongsToMany(ProductVariant::class, 'product_variant_attribute', 'attribute_id')
+        ->withPivot(
+            'name',
+        )->withTimestamps();
+    }
 }

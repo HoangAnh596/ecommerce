@@ -12,13 +12,16 @@
                     <input type="checkbox" value="1" name="accept" 
                         id="variantCheckbox" 
                         class="variantInputCheckbox"
-                        {{ old('accept') == 1 ? 'checked' : '' }}
+                        {{ (old('accept') == 1 || (isset($product) && count($product->product_variants) > 0)) ? 'checked' : '' }}
                     >
                     <label for="variantCheckbox" class="turnOnVariant">Sản phẩm này có nhiều biến thể. Ví dụ như khác nhau về màu sắc, kích thước</label>
                 </div>
             </div>
         </div>
-        <div class="variant-wrapper {{ old('accept') == 1 ? '' : 'hidden' }}">
+        @php
+            $variantCatalogue = old('attributeCatalogue', (isset($product->attributeCatalogue) ? json_decode($product->attributeCatalogue, TRUE) : []));
+        @endphp
+        <div class="variant-wrapper {{ count($variantCatalogue) ? '' : 'hidden' }}">
             <div class="row variant-container">
                 <div class="col-lg-3">
                     <div class="attribute-title">Chọn thuộc tính</div>
@@ -28,8 +31,8 @@
                 </div>
             </div>
             <div class="variant-body">
-                @if(old('attributeCatalogue'))
-                @foreach(old('attributeCatalogue') as $keyAttr => $valAttr)
+                @if($variantCatalogue && count($variantCatalogue))
+                @foreach($variantCatalogue as $keyAttr => $valAttr)
                 <div class="row mb20 variant-item">
                     <div class="col-lg-3">
                         <div class="attribute-catalogue">
@@ -91,6 +94,6 @@
         ];
     })->values());
 
-    var attribute = '{{ base64_encode(json_encode(old('attribute'))) }}'
-    var variant = '{{ base64_encode(json_encode(old('variant'))) }}'
+    var attribute = '{{ base64_encode(json_encode(old('attribute', (isset($product->attribute) ? json_decode($product->attribute, TRUE) : [])))) }}';
+    var variant = '{{ base64_encode(json_encode(old('variant', (isset($product->variant) ? json_decode($product->variant, TRUE) : [])))) }}';
 </script>

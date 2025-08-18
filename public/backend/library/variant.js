@@ -8,10 +8,10 @@
                 let _this = $(this)
                 let price  = $('input[name=price]').val()
                 let code  = $('input[name=code]').val()
-                // if(price == '' || code == ''){
-                //     alert('Vui lòng nhập giá và mã SKU trước khi tạo phiên bản sản phẩm')
-                //     return false
-                // }
+                if(price == '' || code == ''){
+                    alert('Vui lòng nhập giá và mã SKU trước khi tạo phiên bản sản phẩm')
+                    return false
+                }
 
                 if(_this.siblings('input:checked').length == 0){
                     $('.variant-wrapper').removeClass('hidden')
@@ -522,8 +522,8 @@
             }
 
             $.each(variant, function(index, value){
-                // $('.updateVariantTr').prev().find('.variant_'+index).val(value)
-                $('.variant-' + index).val(value)
+                $('.updateVariantTr').prev().find('.variant_'+index).val(value)
+                // $('.variant_' + index).val(value)
             })
             
             HT.previewVariantTr(variant)
@@ -543,8 +543,9 @@
         $('.updateVariantTr').prev().find('.imageSrc').attr('src', variant.album[0])
     }
 
-    HT.setupSelectMultiple = () => {
+    HT.setupSelectMultiple = (callback) => {
         if($('.selectVariant').length){
+            let count = $('.selectVariant').length
             $('.selectVariant').each(function(){
                 let _this = $(this)
                 let attributeCatalogueId = _this.attr('data-catid')
@@ -559,18 +560,43 @@
                                 _this.append(option).trigger('change');
                             }
                         }
+                        if(--count === 0 && callback){
+                            callback()
+                        }
                     });
                 }
 
                 HT.getSelect2(_this)
             })
-            HT.productVariant()
         }
     }
 
     HT.productVariant = () => {
         variant = JSON.parse(atob(variant))
-        console.log(variant); // derbug data nó chưa có giá trị của price
+        $('.variant-row').each(function(index, value) {
+            let _this = $(this)
+            let inputHiddenFields = [
+                { name: 'variant[quantity][]', class: 'variant_quantity', value: variant.quantity[index]},
+                { name: 'variant[sku][]', class: 'variant_sku', value: variant.sku[index]},
+                { name: 'variant[price][]', class: 'variant_price', value: variant.price[index]},
+                { name: 'variant[barcode][]', class: 'variant_barcode', value: variant.barcode[index]},
+                { name: 'variant[file_name][]', class: 'variant_filename', value: variant.file_name[index]},
+                { name: 'variant[file_url][]', class: 'variant_fileurl', value: variant.file_url[index]},
+                { name: 'variant[album][]', class: 'variant_album', value: variant.album[index] },
+            ]
+
+            for(let i = 0; i < inputHiddenFields.length; i++){
+                _this.find('.' + inputHiddenFields[i].class).val((inputHiddenFields[i].value) ? inputHiddenFields[i].value : 0)
+            }
+
+            let album = variant.album[index]
+            let variantImage = (album) ? album.split(',')[0] : 'https://daks2k3a4ib2z.cloudfront.net/6343da4ea0e69336d8375527/6343da5f04a965c89988b149_1665391198377-image16-p-500.jpg'
+
+            _this.find('.td-quantity').html(HT.addCommas(variant.quantity[index]))
+            _this.find('.td-price').html(HT.addCommas(variant.price[index]))
+            _this.find('.td-sku').html(variant.sku[index])
+            _this.find('.imageSrc').attr('src', variantImage)           
+        })
     }
 
 	$(document).ready(function(){
@@ -587,11 +613,10 @@
         HT.cancleVariantUpdate()
         HT.saveVariantUpdate()
         HT.setupSelectMultiple(
-            // () => {
-            //     HT.productVariant()
-            // }
+            () => {
+                HT.productVariant()
+            }
         )
 	});
 
 })(jQuery);
-
