@@ -117,7 +117,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '')
     {
-        return $this->model->whereHas($relation, function($query) use ($condition, $alias){
+        return $this->model->with('languages')->whereHas($relation, function($query) use ($condition, $alias){
             foreach($condition as $key => $val){
                 $query->where($alias.'.'.$key, $val);
             }
