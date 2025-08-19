@@ -16,13 +16,13 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\PermissionServiceInterface' => 'App\Services\PermissionService',
         'App\Services\Interfaces\GenerateServiceInterface' => 'App\Services\GenerateService',
         'App\Services\Interfaces\ProductCatalogueServiceInterface' => 'App\Services\ProductCatalogueService',
-        'App\Services\Interfaces\GalleryCatalogueServiceInterface' => 'App\Services\GalleryCatalogueService',
         'App\Services\Interfaces\ProductServiceInterface' => 'App\Services\ProductService',
         'App\Services\Interfaces\AttributeCatalogueServiceInterface' => 'App\Services\AttributeCatalogueService',
         'App\Services\Interfaces\AttributeServiceInterface' => 'App\Services\AttributeService',
         'App\Services\Interfaces\SystemServiceInterface' => 'App\Services\SystemService',
         'App\Services\Interfaces\MenuServiceInterface' => 'App\Services\MenuService',
         'App\Services\Interfaces\MenuCatalogueServiceInterface' => 'App\Services\MenuCatalogueService',
+        'App\Services\Interfaces\SlideServiceInterface' => 'App\Services\SlideService',
     ];
 
     /**

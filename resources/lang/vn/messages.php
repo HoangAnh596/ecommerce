@@ -1,5 +1,20 @@
 <?php
 return [
+    'slide' => [
+        'index' => [
+            'title' => 'Quản lý slide',
+            'tableHeading' => 'Danh sách slide'
+        ],
+        'create' => [
+            'title' => 'Thêm mới slide'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật slide'
+        ],
+        'delete' => [
+            'title' => 'Xóa slide'
+        ],
+    ],
     'productCatalogue' => [
         'index' => [
             'title' => 'Quản lý nhóm sản phẩm',
@@ -92,21 +107,6 @@ return [
         ],
         'delete' => [
             'title' => 'Xóa bài viết'
-        ],
-    ],
-    'galleryCatalogue' => [
-        'index' => [
-            'title' => 'Quản lý nhóm hình ảnh',
-            'tableHeading' => 'Danh sách nhóm hình ảnh'
-        ],
-        'create' => [
-            'title' => 'Thêm mới nhóm hình ảnh'
-        ],
-        'edit' => [
-            'title' => 'Cập nhật nhóm hình ảnh'
-        ],
-        'delete' => [
-            'title' => 'Xóa nhóm hình ảnh'
         ],
     ],
     'user' => [

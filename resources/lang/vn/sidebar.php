@@ -40,18 +40,25 @@ return [
             ]
         ],
         [
-            'title' => 'QL Hình ảnh',
-            'icon' => 'fa fa-image',
-            'name' => ['gallery'],
+            'title' => 'QL Banner & Slide',
+            'icon' => 'fa fa-picture-o',
+            'name' => ['slide'],
             'subModule' => [
                 [
-                    'title' => 'QL Nhóm Hình ảnh',
-                    'route' => 'gallery/catalogue/index',
+                    'title' => 'Cài đặt Slide',
+                    'route' => 'slide/index',
                 ],
+            ]
+        ],
+        [
+            'title' => 'QL Menu',
+            'icon' => 'fa fa-bars',
+            'name' => ['menu'],
+            'subModule' => [
                 [
-                    'title' => 'QL Hình ảnh',
-                    'route' => 'gallery/index',
-                ]
+                    'title' => 'Cài đặt Menu',
+                    'route' => 'menu/index',
+                ],
             ]
         ],
         [
@@ -71,17 +78,6 @@ return [
                     'title' => 'QL Quyền',
                     'route' => 'permission/index',
                 ]
-            ]
-        ],
-        [
-            'title' => 'QL Menu',
-            'icon' => 'fa fa-bar',
-            'name' => ['menu'],
-            'subModule' => [
-                [
-                    'title' => 'Cài đặt Menu',
-                    'route' => 'menu/index',
-                ],
             ]
         ],
         [

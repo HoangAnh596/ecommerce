@@ -16,11 +16,11 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Middleware\LoginMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\ProductCatalogueController;
-use App\Http\Controllers\Backend\GalleryCatalogueController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Backend\MenuController;
+use App\Http\Controllers\Backend\SlideController;
 use App\Http\Controllers\Backend\SystemController;
 
 //@@useController@@
@@ -150,6 +150,17 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
         Route::delete('{id}/destroy', [PostCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.catalogue.destroy');
     });
 
+    /* Slide : Quản lý Slide */
+    Route::group(['prefix' => 'slide'], function (){
+        Route::get('index', [SlideController::class, 'index'])->name('slide.index');
+        Route::get('create', [SlideController::class, 'create'])->name('slide.create');
+        Route::post('store', [SlideController::class, 'store'])->name('slide.store');
+        Route::get('{id}/edit', [SlideController::class, 'edit'])->where(['id' => '[0-9]+'])->name('slide.edit');
+        Route::post('{id}/update', [SlideController::class, 'update'])->where(['id' => '[0-9]+'])->name('slide.update');
+        Route::get('{id}/delete', [SlideController::class, 'delete'])->where(['id' => '[0-9]+'])->name('slide.delete');
+        Route::delete('{id}/destroy', [SlideController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('slide.destroy');
+    });
+
     /* ProductCatalogue */
     Route::group(['prefix' => 'product/catalogue'], function (){
         Route::get('index', [ProductCatalogueController::class, 'index'])->name('product.catalogue.index');
@@ -159,17 +170,6 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
         Route::post('{id}/update', [ProductCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('product.catalogue.update');
         Route::get('{id}/delete', [ProductCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('product.catalogue.delete');
         Route::delete('{id}/destroy', [ProductCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('product.catalogue.destroy');
-    });
-
-    /* GalleryCatalogue */
-    Route::group(['prefix' => 'gallery/catalogue'], function (){
-        Route::get('index', [GalleryCatalogueController::class, 'index'])->name('gallery.catalogue.index');
-        Route::get('create', [GalleryCatalogueController::class, 'create'])->name('gallery.catalogue.create');
-        Route::post('store', [GalleryCatalogueController::class, 'store'])->name('gallery.catalogue.store');
-        Route::get('{id}/edit', [GalleryCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.edit');
-        Route::post('{id}/update', [GalleryCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.update');
-        Route::get('{id}/delete', [GalleryCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.delete');
-        Route::delete('{id}/destroy', [GalleryCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('gallery.catalogue.destroy');
     });
 
     /* Product */
