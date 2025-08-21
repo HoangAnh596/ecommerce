@@ -22,7 +22,8 @@ class SlideService extends BaseService implements SlideServiceInterface
         $this->slideRepository = $slideRepository;
     }
 
-    public function paginate($request){
+    public function paginate($request)
+    {
         $perpage = $request->integer('perpage');
         $condition = [
             'keyword' => addslashes($request->input('keyword')),
@@ -41,15 +42,14 @@ class SlideService extends BaseService implements SlideServiceInterface
         return $slides;
     }
 
-    public function create($request) {
+    public function create($request, $languageId)
+    {
         DB::beginTransaction();
         try {
-            $payload = $request->except('_token', 'send', 're_password');
-            if($payload['birthday'] != null) {
-                $payload['birthday'] = $this->convertBirthdayDate($payload['birthday']);
-            }
-            $payload['password'] = Hash::make($payload['password']);
-            
+            $payload = $request->only('name', 'keyword', 'setting', 'short_code');
+            $payload['item'] = $this->handlSlideItem($request, $languageId);
+            $payload['user_id'] = auth()->id();
+
             $this->slideRepository->create($payload);
 
             DB::commit();
@@ -63,13 +63,16 @@ class SlideService extends BaseService implements SlideServiceInterface
         }
     }
 
-    public function update($request, $id){
+    public function update($request, $id, $languageId)
+    {
         DB::beginTransaction();
         try {
-            $payload = $request->except('_token', 'send');
-            if($payload['birthday'] != null) {
-                $payload['birthday'] = $this->convertBirthdayDate($payload['birthday']);
-            }
+            $slide = $this->slideRepository->findById($id);
+            $slideItem = $slide->item;
+            unset($slideItem[$languageId]);
+            $payload = $request->only('name', 'keyword', 'setting', 'short_code');
+            $payload['item'] = $this->handlSlideItem($request, $languageId) + $slideItem;
+
             $this->slideRepository->update($id, $payload);
 
             DB::commit();
@@ -83,7 +86,8 @@ class SlideService extends BaseService implements SlideServiceInterface
         }
     }
 
-    public function destroy($id) {
+    public function destroy($id)
+    {
         DB::beginTransaction();
         try {
             $this->slideRepository->delete($id);
@@ -99,14 +103,39 @@ class SlideService extends BaseService implements SlideServiceInterface
         }
     }
 
-    private function convertBirthdayDate($birthday = '') {
-        $carbonDate  = Carbon::createFromFormat('Y-m-d', $birthday);
-        $birthday = $carbonDate->format('Y-m-d H:i:s');
-        
-        return $birthday;
+    private function handlSlideItem($request, $languageId)
+    {
+        $slide = $request->input('slide');
+        $temp = [];
+        foreach ($slide['image'] as $key => $val) {
+            $temp[$languageId][] = [
+                'image' => $val,
+                'name' => $slide['name'][$key],
+                'description' => $slide['description'][$key],
+                'canonical' => $slide['canonical'][$key],
+                'alt' => $slide['alt'][$key],
+                'window' => (isset($slide['window'][$key])) ? $slide['window'][$key] : '',
+            ];
+        }
+
+        return $temp;
     }
 
-    private function paginateSelect() {
+    public function convertSlideArray(array $slide = []): array
+    {
+        $temp = [];
+        $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt'];
+        foreach ($slide as $key => $val) {
+            foreach ($fields as $field) {
+                $temp[$field][] = $val[$field];
+            }
+        }
+
+        return $temp;
+    }
+
+    private function paginateSelect()
+    {
         return ['id', 'name', 'keyword', 'item', 'publish'];
     }
 }

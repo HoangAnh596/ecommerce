@@ -9,32 +9,23 @@ use App\Traits\QueryScopes;
 
 class Slide extends Model
 {
-    use HasFactory;
-
     use HasFactory, SoftDeletes, QueryScopes;
 
     protected $table = 'slides';
 
     protected $fillable = [
         'name',
-        'description',
         'keyword',
-        'image',
-        'icon',
-        'album',
-        'publish',
-        'follow',
-        'order',
+        'description',
+        'item',
+        'setting',
+        'short_code',
         'user_id',
+        'publish',
     ];
 
-    public function languages(){
-        return $this->belongsToMany(Language::class, 'menu_language' , 'menu_id', 'language_id')
-        ->withPivot(
-            'menu_id',
-            'language_id',
-            'name',
-            'canonical'
-        )->withTimestamps();
-    }
+    protected $casts = [
+        'setting' => 'json',
+        'item' => 'json',
+    ];
 }

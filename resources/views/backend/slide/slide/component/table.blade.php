@@ -23,7 +23,6 @@
             </td>
             <td>{{ $slide->name }}</td>
             <td>{{ $slide->keyword }}</td>
-            <td></td>
             <td class="text-center js-switch-{{ $slide->id }}">
                 <input type="checkbox" class="js-switch status" data-field="publish" data-model="{{ $config['model'] }}" value="{{ $slide->publish }}" data-modelId="{{ $slide->id }}" {{ ($slide->publish == 2) ? 'checked' : '' }} />
             </td>

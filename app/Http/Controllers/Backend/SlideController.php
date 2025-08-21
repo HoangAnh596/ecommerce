@@ -9,12 +9,14 @@ use App\Services\Interfaces\SlideServiceInterface as SlideService;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 use App\Repositories\Interfaces\SlideRepositoryInterface as SlideRepository;
 use Illuminate\Http\Request;
+use App\Models\Language;
 
 class SlideController extends Controller
 {
     protected $slideService;
     protected $slideRepository;
     protected $provinceRepository;
+    protected $language;
 
     public function __construct(
         SlideService $slideService,
@@ -24,6 +26,12 @@ class SlideController extends Controller
         $this->slideService = $slideService;
         $this->provinceRepository = $provinceRepository;
         $this->slideRepository = $slideRepository;
+        $this->middleware(function($request, $next){
+            $locale = app()->getLocale();
+            $language = Language::where('canonical', $locale)->first();
+            $this->language = $language->id;
+            return $next($request);
+        });
     }
 
     public function index(Request $request)
@@ -54,7 +62,6 @@ class SlideController extends Controller
     public function create()
     {
         $this->authorize('modules', 'slide.create');
-        $provinces = $this->provinceRepository->all();
         $config = $this->configData();
         $template = 'backend.slide.slide.store';
         $config['seo']  = __('messages.slide');
@@ -63,13 +70,12 @@ class SlideController extends Controller
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'provinces'
         ));
     }
 
     public function store(StoreSlideRequest $request)
     {
-        if ($this->slideService->create($request)) {
+        if ($this->slideService->create($request, $this->language)) {
 
             return redirect()->route('slide.index')->with('success', 'Thêm mới bản ghi thành công');
         }
@@ -80,7 +86,7 @@ class SlideController extends Controller
     {
         $this->authorize('modules', 'slide.update');
         $slide = $this->slideRepository->findById($id);
-        $provinces = $this->provinceRepository->all();
+        $slideItem = $this->slideService->convertSlideArray($slide->item[$this->language]);
 
         $config = $this->configData();
         $template = 'backend.slide.slide.store';
@@ -90,16 +96,16 @@ class SlideController extends Controller
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'provinces',
-            'slide'
+            'slide',
+            'slideItem'
         ));
     }
 
     public function update(UpdateSlideRequest $request, $id)
     {
-        if ($this->slideService->update($request, $id)) {
+        if ($this->slideService->update($request, $id, $this->language)) {
 
-            return redirect()->route('slide.index')->with('success', 'Cập nhật bản ghi thành công');
+            return redirect()->route('slide.edit', ['id' => $id])->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('slide.index')->with('errors', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
@@ -135,9 +141,8 @@ class SlideController extends Controller
             ],
             'js' => [
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-                'backend/library/location.js',
                 'backend/plugins/ckfinder_2/ckfinder.js',
-                'backend/library/finder.js'
+                'backend/library/slide.js',
             ],
         ];
     }

@@ -10,8 +10,8 @@
                 <div class="panel-head">
                     <div class="panel-title">Thông tin chung</div>
                     <div class="panel-description">
-                        <p>- Bạn đang muốn xóa Slide có tên là: {{ $slide->mail }}</p>
-                        <p>- Lưu ý: Không thể khôi phục thành viên sau khi xóa. Hãy chắc chắn là bạn muốn thực hiện chức năng này.</p>
+                        <p>- Bạn đang muốn xóa Slide có tên là: {{ $slide->name }}</p>
+                        <p>- Lưu ý: Không thể khôi phục Slide sau khi xóa. Hãy chắc chắn là bạn muốn thực hiện chức năng này.</p>
                     </div>
                 </div>
             </div>
@@ -21,14 +21,14 @@
                         <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label">Email <span class="text-danger">(*)</span></label>
-                                    <input type="text" name="email" value="{{ old('email', ($slide->email) ?? '') }}" class="form-control" placeholder="" readonly>
+                                    <label for="" class="control-label">Tên <span class="text-danger">(*)</span></label>
+                                    <input type="text" name="name" value="{{ old('name', ($slide->name) ?? '') }}" class="form-control" placeholder="" readonly>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label">Họ và tên <span class="text-danger">(*)</span></label>
-                                    <input type="text" name="name" value="{{ old('name', ($slide->name) ?? '') }}" class="form-control" placeholder="" readonly>
+                                    <label for="" class="control-label">Từ khóa <span class="text-danger">(*)</span></label>
+                                    <input type="text" name="keyword" value="{{ old('keyword', ($slide->keyword) ?? '') }}" class="form-control" placeholder="" readonly>
                                 </div>
                             </div>
                         </div>
