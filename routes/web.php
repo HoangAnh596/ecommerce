@@ -22,6 +22,7 @@ use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\SlideController;
 use App\Http\Controllers\Backend\SystemController;
+use App\Http\Controllers\Backend\WidgetController;
 
 //@@useController@@
 
@@ -106,6 +107,19 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
         Route::get('{id}/switch', [LanguageController::class, 'switchBackendLanguage'])->where(['id' => '[0-9]+'])->name('language.switch');
         Route::get('{id}/{languageId}/{model}/translate', [LanguageController::class, 'translate'])->where(['id' => '[0-9]+', 'languageId' => '[0-9]+'])->name('language.translate');
         Route::post('storeTranslate', [LanguageController::class, 'storeTranslate'])->name('language.storeTranslate');
+    });
+
+    /* Widget : Quản lý Widget */
+    Route::group(['prefix' => 'widget'], function (){
+        Route::get('index', [WidgetController::class, 'index'])->name('widget.index');
+        Route::get('create', [WidgetController::class, 'create'])->name('widget.create');
+        Route::post('store', [WidgetController::class, 'store'])->name('widget.store');
+        Route::get('{id}/edit', [WidgetController::class, 'edit'])->where(['id' => '[0-9]+'])->name('widget.edit');
+        Route::post('{id}/update', [WidgetController::class, 'update'])->where(['id' => '[0-9]+'])->name('widget.update');
+        Route::get('{id}/delete', [WidgetController::class, 'delete'])->where(['id' => '[0-9]+'])->name('widget.delete');
+        Route::delete('{id}/destroy', [WidgetController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('widget.destroy');
+        Route::get('{languageId}/{id}/translate', [WidgetController::class, 'translate'])->where(['languageId' => '[0-9]+', 'id' => '[0-9]+'])->name('widget.translate');
+        Route::post('saveTranslate', [WidgetController::class, 'saveTranslate'])->name('widget.saveTranslate');
     });
 
     /* Generates : Quản lý Module */
@@ -217,6 +231,7 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
     Route::get('ajax/attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');
     Route::post('ajax/menu/createCatalogue', [AjaxMenuController::class, 'createCatalogue'])->name('ajax.menu.createCatalogue');
     Route::post('ajax/menu/drag', [AjaxMenuController::class, 'drag'])->name('ajax.menu.drag');
+    Route::get('ajax/dashboard/findModelObject', [AjaxDashboardController::class, 'findModelObject'])->name('ajax.dashboard.findModelObject')->middleware('admin');
 });
 
 Route::get('admin', [AuthController::class, 'index'])->name('auth.admin')->middleware(LoginMiddleware::class);

@@ -83,16 +83,20 @@ return [
         [
             'title' => 'Cấu hình chung',
             'icon' => 'fa fa-file',
-            'name' => ['language', 'generate', 'system'],
+            'name' => ['language', 'widget', 'generate', 'system'],
             'subModule' => [
                 [
                     'title' => 'QL Ngôn ngữ',
                     'route' => 'language/index',
                 ],
                 [
-                    'title' => 'QL Module',
-                    'route' => 'generate/index',
+                    'title' => 'QL Widget',
+                    'route' => 'widget/index',
                 ],
+                // [
+                //     'title' => 'QL Module',
+                //     'route' => 'generate/index',
+                // ],
                 [
                     'title' => 'Cấu hình hệ thống',
                     'route' => 'system/index',

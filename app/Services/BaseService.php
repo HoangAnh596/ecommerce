@@ -16,11 +16,13 @@ class BaseService implements BaseServiceInterface
 {
     protected $routerRepository;
 
-    public function __construct(RouterRepository $routerRepository){
+    public function __construct(RouterRepository $routerRepository)
+    {
         $this->routerRepository = $routerRepository;
     }
 
-    public function currentLanguage() {
+    public function currentLanguage()
+    {
         return 1;
     }
 
@@ -53,10 +55,11 @@ class BaseService implements BaseServiceInterface
         $payload = $this->formatRouterPayload($model, $request, $controllerName, $languageId);
         $condition = [
             ['module_id', '=', $model->id],
-            ['controllers', '=', 'App\Http\Controllers\Frontend\\'.$controllerName],
+            ['controllers', '=', 'App\Http\Controllers\Frontend\\' . $controllerName],
         ];
+
         $router = $this->routerRepository->findByCondition($condition);
-        
+
         return $this->routerRepository->update($router->id, $payload);
     }
 
@@ -66,16 +69,17 @@ class BaseService implements BaseServiceInterface
             'canonical' => Str::slug($request->string('canonical')),
             'module_id' => $model->id,
             'language_id' => $languageId,
-            'controllers' => 'App\Http\Controllers\Frontend\\'.$controllerName.''
+            'controllers' => 'App\Http\Controllers\Frontend\\' . $controllerName . ''
         ];
 
         return $router;
     }
 
-    public function updateStatus($post = []) {
+    public function updateStatus($post = [])
+    {
         DB::beginTransaction();
         try {
-            $model = lcfirst($post['model']).'Repository';
+            $model = lcfirst($post['model']) . 'Repository';
             $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
             $this->{$model}->update($post['modelId'], $payload);
 
@@ -90,10 +94,11 @@ class BaseService implements BaseServiceInterface
         }
     }
 
-    public function updateStatusAll($post) {
+    public function updateStatusAll($post)
+    {
         DB::beginTransaction();
         try {
-            $model = lcfirst($post['model']).'Repository';
+            $model = lcfirst($post['model']) . 'Repository';
             $payload[$post['field']] = $post['value'];
             $this->{$model}->updateByWhereIn('id', $post['id'], $payload);
 

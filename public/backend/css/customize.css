@@ -193,7 +193,7 @@ table strong {
 }
 .seo-canonical {
     color: navy;
-    font-weight: 600;
+    font-weight: 400;
 }
 .clearfix:before {
     content: "";
@@ -278,13 +278,13 @@ table strong {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-weight: 600;
+    font-weight: 400;
 }
 .catalogue {
     font-size: 12px;
 }
 .catalogue span {
-    font-weight: 600;
+    font-weight: 400;
 }
 .catalogue a {
     color: #333;
@@ -392,7 +392,7 @@ table strong {
 }
 .updateVariant label{
     margin-bottom: 0;
-    font-weight: 600;
+    font-weight: 400;
     color: #1a0dab;
     margin-bottom: 5px;
 }
@@ -529,9 +529,6 @@ table strong {
 .ibox .ibox-title h5 {
     margin-bottom: 0;
 }
-.ibox-title {
-    padding: 8px;
-}
 .custom-row [class*="col-"] {
     padding-left: 5px;
     padding-right: 5px;
@@ -588,4 +585,86 @@ input[type="checkbox"] {
 }
 .overlay label {
     cursor: pointer;
+}
+nav > li > a {
+    font-weight: normal;
+    font-size: 14px;
+}
+.widgetContent .row {
+    margin-bottom: 0 !important;
+}
+.labelText {
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+.model-item {
+    margin-bottom: 10px;
+}
+.model-item label {
+    margin-bottom: 0;
+    font-weight: 400;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.model-item input {
+    margin: 0;
+}
+.search-model {
+    border-radius: 5px;
+    height: 42px;
+    padding-left: 35px;
+    font-size: 14px;
+    border: 1px solid #e3e9ed;
+    outline: 0;
+}
+.search-model-box {
+    position: relative;
+    margin-top: 40px;
+}
+.search-model-box .fa {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+.search-model-result {
+    margin-top: 20px;
+}
+.search-result-item:not(:last-child) {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e3e9ed;
+}
+.search-result-item .image {
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    margin-right: 10px;
+}
+.search-result-item .name {
+    color: blue;
+}
+.search-result-item .deleted {
+    cursor: pointer;
+}
+.model-list svg {
+    width: 20px;
+    height: 20px;
+}
+.ajax-search-result {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 3px 6px 0 rgba(33 33 33 / 10%);
+    z-index: 100;
+}
+.ajax-search-result button {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    padding: 10px 10px;
+}
+.ajax-search-result button:hover {
+    background: #eff9fd;
 }

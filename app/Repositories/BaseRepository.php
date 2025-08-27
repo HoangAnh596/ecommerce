@@ -17,8 +17,9 @@ class BaseRepository implements BaseRepositoryInterface
     {
         $this->model = $model;
     }
-    
-    public function all(array $relation = []) {
+
+    public function all(array $relation = [])
+    {
 
         return $this->model->with($relation)->get();
     }
@@ -32,37 +33,41 @@ class BaseRepository implements BaseRepositoryInterface
         array $join = [],
         array $relations = [],
         array $rawQuery = []
-    ){
+    ) {
         $query = $this->model->select($column);
-        return $query  
-                ->keyword($condition['keyword'] ?? null)
-                ->publish($condition['publish'] ?? null)
-                ->relationCount($relations ?? null)
-                ->customWhere($condition['where'] ?? null)
-                ->customWhereRaw($rawQuery['whereRaw'] ?? null)
-                ->customJoin($join ?? null)
-                ->customGroupBy($extend['groupBy'] ?? null)
-                ->customOrderBy($orderBy ?? null)
-                ->paginate($perPage)
-                ->withQueryString()->withPath(env('APP_URL').$extend['path']);
+        return $query
+            ->keyword($condition['keyword'] ?? null)
+            ->publish($condition['publish'] ?? null)
+            ->relationCount($relations ?? null)
+            ->customWhere($condition['where'] ?? null)
+            ->customWhereRaw($rawQuery['whereRaw'] ?? null)
+            ->customJoin($join ?? null)
+            ->customGroupBy($extend['groupBy'] ?? null)
+            ->customOrderBy($orderBy ?? null)
+            ->paginate($perPage)
+            ->withQueryString()->withPath(env('APP_URL') . $extend['path']);
     }
 
-    public function findById(int $modelId, array $column = ['*'], array $relation = []) {
+    public function findById(int $modelId, array $column = ['*'], array $relation = [])
+    {
 
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
-    public function create(array $payload= []) {
+    public function create(array $payload = [])
+    {
         $model = $this->model->create($payload);
 
         return $model->fresh();
     }
 
-    public function createBatch(array $payload = []) {
+    public function createBatch(array $payload = [])
+    {
         return $this->model->insert($payload);
     }
 
-    public function update(int $id = 0, array $payload= []) {
+    public function update(int $id = 0, array $payload = [])
+    {
         $model = $this->findById($id);
         $model->fill($payload);
         $model->save();
@@ -70,11 +75,13 @@ class BaseRepository implements BaseRepositoryInterface
         return $model;
     }
 
-    public function updateOrInsert(array $payload= [], array $condition = []) {
+    public function updateOrInsert(array $payload = [], array $condition = [])
+    {
         return $this->model->updateOrInsert($condition, $payload);
     }
 
-    public function updateByWhere(array $condition = [], array $payload= []) {
+    public function updateByWhere(array $condition = [], array $payload = [])
+    {
         $query = $this->model->newQuery();
         foreach ($condition as $key => $value) {
             $query->where($value[0], $value[1], $value[2]);
@@ -83,19 +90,23 @@ class BaseRepository implements BaseRepositoryInterface
         return $query->update($payload);
     }
 
-    public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = []) {
+    public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = [])
+    {
         return $this->model->whereIn($whereInField, $whereIn)->update($payload);
     }
 
-    public function delete(int $id = 0) {
+    public function delete(int $id = 0)
+    {
         return $this->findById($id)->delete();
     }
 
-    public function forceDelete(int $id = 0) {
+    public function forceDelete(int $id = 0)
+    {
         return $this->findById($id)->forceDelete();
     }
 
-    public function forceDeleteByCondition(array $condition = []) {
+    public function forceDeleteByCondition(array $condition = [])
+    {
         $query = $this->model->newQuery();
         foreach ($condition as $key => $value) {
             $query->where($value[0], $value[1], $value[2]);
@@ -104,11 +115,22 @@ class BaseRepository implements BaseRepositoryInterface
         return $query->forceDelete();
     }
 
-    public function findByCondition($condition = [], $flag = false, $relation = [], array $orderBy = ['id', 'DESC']) {
+    public function findByCondition(
+        $condition = [],
+        $flag = false,
+        $relation = [],
+        array $orderBy = ['id', 'ASC'],
+        array $params = [],
+    ) {
         $query = $this->model->newQuery();
         foreach ($condition as $key => $value) {
             $query->where($value[0], $value[1], $value[2]);
         }
+
+        if (isset($params['whereIn'])) {
+            $query->whereIn($params['whereInField'], $params['whereIn']);
+        }
+
         $query->with($relation);
         $query->orderBy($orderBy[0], $orderBy[1]);
 
@@ -117,9 +139,9 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '')
     {
-        return $this->model->with('languages')->whereHas($relation, function($query) use ($condition, $alias){
-            foreach($condition as $key => $val){
-                $query->where($alias.'.'.$key, $val);
+        return $this->model->with('languages')->whereHas($relation, function ($query) use ($condition, $alias) {
+            foreach ($condition as $key => $val) {
+                $query->where($alias . '.' . $key, $val);
             }
         })->first();
     }
@@ -127,5 +149,18 @@ class BaseRepository implements BaseRepositoryInterface
     public function createPivot($model, array $payload = [], string $relation = '')
     {
         return $model->{$relation}()->attach($model->id, $payload);
+    }
+
+    public function findWidgetItem(array $condition = [], int $language_id = 1, string $alias = '')
+    {
+        return $this->model->with([
+            'languages' => function ($query) use ($language_id) {
+                $query->where('language_id', $language_id);
+            },
+        ])->whereHas('languages', function ($query) use ($condition, $alias) {
+            foreach ($condition as $key => $value) {
+                $query->where($alias . '.' . $value[0], $value[1], $value[2]);
+            }
+        })->get();
     }
 }

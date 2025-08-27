@@ -232,7 +232,8 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payload = $request->only($this->payload());
         $payload['user_id'] = Auth::id();
         $payload['album'] = $this->formatAlbum($request);
-        $payload['price'] = convert_price($payload['price']);
+        // $payload['price'] = convert_price($payload['price']);
+        // dd($payload);
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $this->formatJson($request, 'attribute');
         $payload['variant'] = $this->formatJson($request, 'variant');

@@ -2,6 +2,8 @@
     "use strict";
     var HT = {};
     var _token = $('meta[name="csrf_token"]').attr('content');
+    var typingTimer;
+    var doneTypingInterval = 500;
 
     HT.createMenuCatalogue = () => {
         $(document).on('submit', '.create-menu-catalogue', function(e) {
@@ -269,7 +271,6 @@
         $(document).on('keyup', '.search-menu', function(e) {
             e.preventDefault();
             let _this = $(this);
-            let typingTimer;
             let keyword = _this.val();
             let option = {
                 model: _this.parents('.panel-collapse').attr('id'),
@@ -280,7 +281,7 @@
                 let target = _this.siblings('.menu-list');
                 let menuRowClass  = HT.checkedMenuRowExist();
                 HT.sendAjaxGetMenu(option, target, menuRowClass);
-            }, 1000);
+            }, doneTypingInterval);
         })
     }
 

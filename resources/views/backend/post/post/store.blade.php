@@ -17,7 +17,7 @@ $url = ($config['method'] == 'create') ? route('post.store') : route('post.updat
                         </div>
                     </div>
                 </div>
-                @include('backend.dashboard.component.album')
+                @include('backend.dashboard.component.album', ['model' => ($post) ?? null])
                 @include('backend.dashboard.component.seo', ['model' => ($post) ?? null])
             </div>
             <div class="col-lg-3">

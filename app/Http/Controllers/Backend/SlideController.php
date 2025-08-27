@@ -26,7 +26,7 @@ class SlideController extends Controller
         $this->slideService = $slideService;
         $this->provinceRepository = $provinceRepository;
         $this->slideRepository = $slideRepository;
-        $this->middleware(function($request, $next){
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale();
             $language = Language::where('canonical', $locale)->first();
             $this->language = $language->id;
@@ -86,7 +86,10 @@ class SlideController extends Controller
     {
         $this->authorize('modules', 'slide.update');
         $slide = $this->slideRepository->findById($id);
-        $slideItem = $this->slideService->convertSlideArray($slide->item[$this->language]);
+        $slideItem = convertArrayByKey(
+            $slide->item[$this->language],
+            ['image', 'description', 'window', 'canonical', 'name', 'alt']
+        );
 
         $config = $this->configData();
         $template = 'backend.slide.slide.store';

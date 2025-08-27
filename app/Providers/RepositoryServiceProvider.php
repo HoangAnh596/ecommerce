@@ -29,6 +29,7 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface' => 'App\Repositories\ProductVariantLanguageRepository',
         'App\Repositories\Interfaces\ProductVariantAttrRepositoryInterface' => 'App\Repositories\ProductVariantAttrRepository',
         'App\Repositories\Interfaces\SlideRepositoryInterface' => 'App\Repositories\SlideRepository',
+        'App\Repositories\Interfaces\WidgetRepositoryInterface' => 'App\Repositories\WidgetRepository',
     ];
 
     /**

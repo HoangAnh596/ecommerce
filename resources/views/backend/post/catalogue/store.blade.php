@@ -17,7 +17,7 @@ $url = ($config['method'] == 'create') ? route('post.catalogue.store') : route('
                         </div>
                     </div>
                 </div>
-                @include('backend.dashboard.component.album')
+                @include('backend.dashboard.component.album', ['model' => ($postCatalogue) ?? null])
                 @include('backend.dashboard.component.seo', ['model' => ($postCatalogue) ?? null])
             </div>
             <div class="col-lg-3">

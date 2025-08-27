@@ -1,5 +1,21 @@
 <?php
 return [
+    'widget' => [
+        'index' => [
+            'title' => 'Quản lý widget',
+            'tableHeading' => 'Danh sách widget'
+        ],
+        'create' => [
+            'title' => 'Thêm mới widget',
+            'translate' => 'Tạo bản dịch {language} cho Widget'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật widget'
+        ],
+        'delete' => [
+            'title' => 'Xóa widget'
+        ],
+    ],
     'slide' => [
         'index' => [
             'title' => 'Quản lý slide',

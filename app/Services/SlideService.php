@@ -72,6 +72,7 @@ class SlideService extends BaseService implements SlideServiceInterface
             unset($slideItem[$languageId]);
             $payload = $request->only('name', 'keyword', 'setting', 'short_code');
             $payload['item'] = $this->handlSlideItem($request, $languageId) + $slideItem;
+            $payload['user_id'] = auth()->id();
 
             $this->slideRepository->update($id, $payload);
 
@@ -116,19 +117,6 @@ class SlideService extends BaseService implements SlideServiceInterface
                 'alt' => $slide['alt'][$key],
                 'window' => (isset($slide['window'][$key])) ? $slide['window'][$key] : '',
             ];
-        }
-
-        return $temp;
-    }
-
-    public function convertSlideArray(array $slide = []): array
-    {
-        $temp = [];
-        $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt'];
-        foreach ($slide as $key => $val) {
-            foreach ($fields as $field) {
-                $temp[$field][] = $val[$field];
-            }
         }
 
         return $temp;
