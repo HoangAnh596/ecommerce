@@ -2,6 +2,21 @@
 return [
     'module' => [
         [
+            'title' => 'QL Bài Viết',
+            'icon' => 'fa fa-file',
+            'name' => ['post'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Bài Viết',
+                    'route' => 'post/catalogue/index',
+                ],
+                [
+                    'title' => 'QL Bài Viết',
+                    'route' => 'post/index',
+                ]
+            ]
+        ],
+        [
             'title' => 'QL Sản phẩm',
             'icon' => 'fa fa-cube',
             'name' => ['product', 'attribute'],
@@ -25,18 +40,18 @@ return [
             ]
         ],
         [
-            'title' => 'QL Bài Viết',
-            'icon' => 'fa fa-file',
-            'name' => ['post'],
+            'title' => 'QL Marketing',
+            'icon' => 'fa fa-money',
+            'name' => ['promotion'],
             'subModule' => [
                 [
-                    'title' => 'QL Nhóm Bài Viết',
-                    'route' => 'post/catalogue/index',
+                    'title' => 'QL Khuyến mại',
+                    'route' => 'promotion/index',
                 ],
-                [
-                    'title' => 'QL Bài Viết',
-                    'route' => 'post/index',
-                ]
+                // [
+                //     'title' => 'QL Mã giảm giá',
+                //     'route' => 'coupon/index',
+                // ],
             ]
         ],
         [

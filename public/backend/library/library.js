@@ -181,6 +181,15 @@
         return str;
     }
 
+    HT.setupDatepicker = () => {
+        $('.datepicker').datetimepicker({
+            format:'d/m/Y H:i',
+            timepicker: true,
+            value: new Date(),
+            minDate: new Date()
+        });
+    }
+
     $(document).ready(function() {
         HT.switchery();
         HT.select2();
@@ -191,5 +200,6 @@
         HT.changeStatusAll();
         HT.sortui();
         HT.int();
+        HT.setupDatepicker();
     });
 })(jQuery);

@@ -23,6 +23,7 @@ use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\SlideController;
 use App\Http\Controllers\Backend\SystemController;
 use App\Http\Controllers\Backend\WidgetController;
+use App\Http\Controllers\Backend\PromotionController;
 
 //@@useController@@
 
@@ -120,6 +121,17 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
         Route::delete('{id}/destroy', [WidgetController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('widget.destroy');
         Route::get('{languageId}/{id}/translate', [WidgetController::class, 'translate'])->where(['languageId' => '[0-9]+', 'id' => '[0-9]+'])->name('widget.translate');
         Route::post('saveTranslate', [WidgetController::class, 'saveTranslate'])->name('widget.saveTranslate');
+    });
+
+    /* Promotion : Quản lý Khuyến mại */
+    Route::group(['prefix' => 'promotion'], function (){
+        Route::get('index', [PromotionController::class, 'index'])->name('promotion.index');
+        Route::get('create', [PromotionController::class, 'create'])->name('promotion.create');
+        Route::post('store', [PromotionController::class, 'store'])->name('promotion.store');
+        Route::get('{id}/edit', [PromotionController::class, 'edit'])->where(['id' => '[0-9]+'])->name('promotion.edit');
+        Route::post('{id}/update', [PromotionController::class, 'update'])->where(['id' => '[0-9]+'])->name('promotion.update');
+        Route::get('{id}/delete', [PromotionController::class, 'delete'])->where(['id' => '[0-9]+'])->name('promotion.delete');
+        Route::delete('{id}/destroy', [PromotionController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('promotion.destroy');
     });
 
     /* Generates : Quản lý Module */

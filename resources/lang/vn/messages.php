@@ -1,5 +1,21 @@
 <?php
 return [
+    'promotion' => [
+        'index' => [
+            'title' => 'Quản lý khuyến mại',
+            'tableHeading' => 'Danh sách khuyến mại'
+        ],
+        'create' => [
+            'title' => 'Thêm mới khuyến mại',
+            'translate' => 'Tạo bản dịch {language} cho khuyến mại'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật khuyến mại'
+        ],
+        'delete' => [
+            'title' => 'Xóa khuyến mại'
+        ],
+    ],
     'widget' => [
         'index' => [
             'title' => 'Quản lý widget',
