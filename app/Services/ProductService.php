@@ -73,7 +73,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                 $this->createRouter($product, $request, $this->controllerName, $languageId);
                 $product->product_catalogues()->sync($this->catalogue($request));
 
-                $this->createVariant($product, $request, $languageId);
+                if($request->input('attribute')){
+                    $this->createVariant($product, $request, $languageId);
+                }
             }
 
             DB::commit();
@@ -101,7 +103,10 @@ class ProductService extends BaseService implements ProductServiceInterface
                     $variant->attributes()->detach();
                     $variant->delete();
                 });
-                $this->createVariant($product, $request, $languageId);
+
+                if($request->input('attribute')){
+                    $this->createVariant($product, $request, $languageId);
+                }
             }
 
             DB::commit();
@@ -232,8 +237,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payload = $request->only($this->payload());
         $payload['user_id'] = Auth::id();
         $payload['album'] = $this->formatAlbum($request);
-        // $payload['price'] = convert_price($payload['price']);
-        // dd($payload);
+        $payload['price'] = convert_price(($payload['price']) ?? 0);
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $this->formatJson($request, 'attribute');
         $payload['variant'] = $this->formatJson($request, 'variant');

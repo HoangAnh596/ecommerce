@@ -20,6 +20,9 @@
         </div>
         @php
             $variantCatalogue = old('attributeCatalogue', (isset($product->attributeCatalogue) ? json_decode($product->attributeCatalogue, TRUE) : []));
+            if (!is_array($variantCatalogue)) {
+                $variantCatalogue = [];
+            }
         @endphp
         <div class="variant-wrapper {{ count($variantCatalogue) ? '' : 'hidden' }}">
             <div class="row variant-container">

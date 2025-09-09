@@ -449,7 +449,7 @@
                                     html = html + '</div>'
                                     html = html + '<div class="col-lg-3">'
                                         html = html + '<label for="" class="control-label">Giá</label>'
-                                        html = html + '<input type="text" name="variant_price" value="'+ HT.addCommas(variantData.variant_price) +'" class="form-control int">'
+                                        html = html + '<input type="text" name="variant_price" value="'+ addCommas(variantData.variant_price) +'" class="form-control int">'
                                     html = html + '</div>'
                                     html = html + '<div class="col-lg-3">'
                                         html = html + '<label for="" class="control-label">Barcode</label>'
@@ -492,18 +492,6 @@
 
     HT.closeUpdateVariantBox = () => {
         $('.updateVariantTr').remove()
-    }
-
-    HT.addCommas = (nStr) => { 
-        nStr = String(nStr);
-        nStr = nStr.replace(/\./gi, "");
-        let str ='';
-        for (let i = nStr.length; i > 0; i -= 3){
-            let a = ( (i-3) < 0 ) ? 0 : (i-3);
-            str= nStr.slice(a,i) + '.' + str;
-        }
-        str= str.slice(0,str.length-1);
-        return str;
     }
     
     HT.saveVariantUpdate = () => {
@@ -592,8 +580,8 @@
             let album = variant.album[index]
             let variantImage = (album) ? album.split(',')[0] : 'https://daks2k3a4ib2z.cloudfront.net/6343da4ea0e69336d8375527/6343da5f04a965c89988b149_1665391198377-image16-p-500.jpg'
 
-            _this.find('.td-quantity').html(HT.addCommas(variant.quantity[index]))
-            _this.find('.td-price').html(HT.addCommas(variant.price[index]))
+            _this.find('.td-quantity').html(addCommas(variant.quantity[index]))
+            _this.find('.td-price').html(addCommas(variant.price[index]))
             _this.find('.td-sku').html(variant.sku[index])
             _this.find('.imageSrc').attr('src', variantImage)           
         })

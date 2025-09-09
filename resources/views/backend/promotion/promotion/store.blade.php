@@ -58,9 +58,15 @@ $url = ($config['method'] == 'create') ? route('promotion.store') : route('promo
                     <div class="ibox-content">
                         <div class="form-row">
                             <div class="fix-label" for="">Chọn hình thức khuyến mãi</div>
-                            <select name="" class="setupSelect2" id="">
+                            <select class="setupSelect2 promotionMethod">
                                 <option value="">Chọn hình thức</option>
+                                @foreach(__('module.promotion') as $key => $val)
+                                <option value="{{ $key }}">{{ $val }}</option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="promotion-container">
+                            
                         </div>
                     </div>
                 </div>
@@ -150,3 +156,5 @@ $url = ($config['method'] == 'create') ? route('promotion.store') : route('promo
         @include('backend.dashboard.component.button')
     </div>
 </form>
+@include('backend.promotion.promotion.component.popup')
+<input type="hidden" class="input-product-and-quantity" value="{{ json_encode(__('module.item')) }}">

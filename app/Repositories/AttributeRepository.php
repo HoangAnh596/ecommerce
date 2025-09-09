@@ -13,7 +13,7 @@ use App\Repositories\BaseRepository;
 class AttributeRepository extends BaseRepository implements AttributeRepositoryInterface
 {
     protected $model;
-    
+
     public function __construct(Attribute $model)
     {
         $this->model = $model;
@@ -22,33 +22,44 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
     public function getAttributeById(int $id = 0, $language_id = 0)
     {
         return $this->model->select([
-                'attributes.id',
-                'attributes.attribute_catalogue_id',
-                'attributes.image',
-                'attributes.icon',
-                'attributes.album',
-                'attributes.publish',
-                'attributes.follow',
-                'tb2.name',
-                'tb2.description',
-                'tb2.content',
-                'tb2.meta_title',
-                'tb2.meta_keyword',
-                'tb2.meta_description',
-                'tb2.canonical',
-            ])
-        ->join('attribute_language as tb2', 'tb2.attribute_id', '=', 'attributes.id')
-        ->with('attribute_catalogues')
-        ->where('tb2.language_id', '=', $language_id)
-        ->find($id);
+            'attributes.id',
+            'attributes.attribute_catalogue_id',
+            'attributes.image',
+            'attributes.icon',
+            'attributes.album',
+            'attributes.publish',
+            'attributes.follow',
+            'tb2.name',
+            'tb2.description',
+            'tb2.content',
+            'tb2.meta_title',
+            'tb2.meta_keyword',
+            'tb2.meta_description',
+            'tb2.canonical',
+        ])
+            ->join('attribute_language as tb2', 'tb2.attribute_id', '=', 'attributes.id')
+            ->with('attribute_catalogues')
+            ->where('tb2.language_id', '=', $language_id)
+            ->find($id);
     }
 
-    public function searchAttributes(string $keyword = '', array $option = []){
+    public function searchAttributes(string $keyword = '', array $option = [])
+    {
         return $this->model->whereHas('attribute_catalogues', function($query) use ($option){
             $query->where('attribute_catalogue_id', $option['attributeCatalogueId']);
         })->whereHas('attribute_language', function($query) use ($keyword){
-            $query->where('name', 'like', '%'.$keyword.'%');
+            $query->where('name', 'like', '%'.$keyword.'%'); // code theo youtube đang lỗi
         })->get();
+
+        // return $this->model
+        //     ->whereHas('attribute_catalogues', function ($query) use ($option) {
+        //         $query->where('attribute_catalogue_id', $option['attributeCatalogueId']);
+        //     })
+        //     ->with(['attribute_language' => function ($q) use ($languageId, $keyword) {
+        //         $q->where('language_id', $languageId)
+        //             ->where('name', 'like', '%' . $keyword . '%');
+        //     }])
+        //     ->get();
     }
 
     public function findAttributeByIdArray(array $attributeArray = [], int $languageId = 0)

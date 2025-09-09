@@ -151,7 +151,7 @@
                 $(this).val('0')
             }
             value = value.replace(/\./gi, "")
-            _this.val(HT.addCommas(value))
+            _this.val(addCommas(value))
             if(isNaN(value)){
                 _this.val('0')
             }
@@ -169,26 +169,28 @@
         })
     }
 
-    HT.addCommas = (nStr) => { 
-        nStr = String(nStr);
-        nStr = nStr.replace(/\./gi, "");
-        let str ='';
-        for (let i = nStr.length; i > 0; i -= 3){
-            let a = ( (i-3) < 0 ) ? 0 : (i-3);
-            str= nStr.slice(a,i) + '.' + str;
-        }
-        str= str.slice(0,str.length-1);
-        return str;
-    }
+    // HT.addCommas = (nStr) => { 
+    //     nStr = String(nStr);
+    //     nStr = nStr.replace(/\./gi, "");
+    //     let str ='';
+    //     for (let i = nStr.length; i > 0; i -= 3){
+    //         let a = ( (i-3) < 0 ) ? 0 : (i-3);
+    //         str= nStr.slice(a,i) + '.' + str;
+    //     }
+    //     str= str.slice(0,str.length-1);
+    //     return str;
+    // }
 
     HT.setupDatepicker = () => {
-        $('.datepicker').datetimepicker({
-            format:'d/m/Y H:i',
-            timepicker: true,
-            value: new Date(),
-            minDate: new Date()
-        });
-    }
+        if ($.fn.datetimepicker) { // kiểm tra plugin có được load không
+            $('.datepicker').datetimepicker({
+                format: 'd/m/Y H:i',
+                timepicker: true,
+                value: new Date(),
+                minDate: new Date()
+            });
+        }
+    };
 
     $(document).ready(function() {
         HT.switchery();
@@ -203,3 +205,16 @@
         HT.setupDatepicker();
     });
 })(jQuery);
+
+addCommas = (nStr) => { 
+    nStr = String(nStr);
+    nStr = nStr.replace(/\./gi, "");
+    let str ='';
+    for (let i = nStr.length; i > 0; i -= 3){
+        let a = ( (i-3) < 0 ) ? 0 : (i-3);
+        str= nStr.slice(a,i) + '.' + str;
+    }
+    str= str.slice(0,str.length-1);
+
+    return str;
+}

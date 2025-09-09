@@ -1,6 +1,8 @@
 (function($) {
 	"use strict";
 	var HT = {};
+    var typingTimer;
+    var doneTypingInterval = 500;
 
     $.fn.elExist = function () {
         return this.length > 0;
@@ -37,9 +39,11 @@
                         name: 'Shoppe'
                     }
                 ];
-                let sourceHtml = HT.renderPromotionSource(sourceData).prop('outerHTML');
-                _this.parents('.ibox-content').append(sourceHtml);
-                HT.promotionMultipleSelect2();
+                if(!$('.source-wrapper').length) {
+                    let sourceHtml = HT.renderPromotionSource(sourceData).prop('outerHTML');
+                    _this.parents('.ibox-content').append(sourceHtml);
+                    HT.promotionMultipleSelect2();
+                }
             }
         });
     }
@@ -225,6 +229,506 @@
         });
     }
 
+    HT.btnJs100 = () => {
+        $(document).on('click', '.btn-js-100', function(){
+            let trLastChild = $('.order_amount_range').find('tbody tr:last-child');
+            let newTo = parseInt(trLastChild.find('.order_amount_range_to input').val().replace(/\./g, ''));
+
+            let $tr = $('<tr>')
+            let tdList = [
+                { class: 'order_amount_range_from td-range', name: '', value: addCommas(parseInt(newTo) + 1) },
+                { class: 'order_amount_range_to td-range', name: '', value: 0 },
+            ];
+
+            for(let i = 0; i < tdList.length; i++) {
+                let $td = $('<td>', { class: tdList[i].class });
+                let $input = $('<input>')
+                                .addClass('form-control int')
+                                .attr('name', tdList[i].name)
+                                .val(tdList[i].value);
+
+                $td.append($input);
+                $tr.append($td);
+            }
+
+            let $discountTd = $('<td>').addClass('discountType');
+            $discountTd.append(
+                $('<div>', { class: 'uk-flex uk-flex-middle' }).append(
+                    $('<input>', { type: 'text', name: '', class: 'form-control int', placeholder: 0, value: 0 })
+                ).append(
+                    $('<select>', { class: 'multipleSelect2'})
+                    .append($('<option>', { value: 'cash', text: 'đ'}))
+                    .append($('<option>', { value: 'percent', text: '%'}))
+                )
+            );
+
+            $tr.append($discountTd);
+            let deleteButton = $('<td>').append(
+                $('<div>', { 
+                    class: 'delete-order-amount-range-condition delete-some-item'
+                }).append(`<svg data-icon="TrashSolidLarge" aria-hidden="true" focusable="false" width="15" height="16" viewBox="0 0 15 16" class="bem-Svg" style="display: block;">
+                            <path fill="currentColor" d="M2 14a1 1 0 001 1h9a1 1 0 001-1V6H2v8zM13 2h-3a1 1 0 01-1-1H6a1 1 0 01-1 1H1v2h13V2h-1z"></path>
+                        </svg>`)
+            );
+
+            $tr.append(deleteButton);
+            $('.order_amount_range table tbody').append($tr);
+            HT.promotionMultipleSelect2();
+        });
+    }
+
+    HT.deletedAmountRangeCondition = () => {
+        $(document).on('click', '.delete-order-amount-range-condition', function(){
+            let _this = $(this);
+            _this.parents('tr').remove()
+        })
+    }
+
+    HT.renderOrderRangeConditionContainer = () => {
+        $(document).on('change', '.promotionMethod', function(){
+            let _this = $(this);
+            let option = _this.val();
+            switch (option) {
+                case "order_amount_range":
+                    HT.renderOrderAmountRange();
+                    break;
+                case "product_and_quantity":
+                    HT.renderProductAndQuantity();
+                    break;
+                case "product_quantity_range":
+                    console.log("product_quantity_range");
+                    break;
+                case "goods_discount_by_quantity":
+                    console.log("goods_discount_by_quantity");
+                    break;
+                default:
+                    HT.removePromotionContainer();
+                    break;
+            }
+        });
+    }
+
+    HT.removePromotionContainer = () => {
+        $('.promotion-container').html('');
+    }
+
+    HT.renderOrderAmountRange = () => {
+        let html = `<div class="order_amount_range">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-right">Giá trị từ</th>
+                        <th class="text-right">Giá trị đến</th>
+                        <th class="text-right">Chiết khấu (%)</th>
+                        <th class="text-right"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="order_amount_range_from td-range">
+                            <input type="text"
+                                class="form-control int"
+                                name="amountFrom[]"
+                                placeholder="0"
+                                value="0">
+                        </td>
+                        <td class="order_amount_range_to td-range">
+                            <input type="text"
+                                class="form-control int"
+                                name="amountTo[]"
+                                placeholder="0"
+                                value="0">
+                        </td>
+                        <td class="discountType">
+                            <div class="uk-flex uk-flex-middle">
+                                <input type="text"
+                                    class="form-control int"
+                                    name="amountValue[]"
+                                    placeholder="0"
+                                    value="0">
+                                <select name="amountType[]" class="multipleSelect2">
+                                    <option value="cash">đ</option>
+                                    <option value="percent">%</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="delete-order-amount-range-condition delete-some-item">
+                                <svg data-icon="TrashSolidLarge" aria-hidden="true" focusable="false" width="15" height="16" viewBox="0 0 15 16" class="bem-Svg" style="display: block;">
+                                    <path fill="currentColor" d="M2 14a1 1 0 001 1h9a1 1 0 001-1V6H2v8zM13 2h-3a1 1 0 01-1-1H6a1 1 0 01-1 1H1v2h13V2h-1z"></path>
+                                </svg>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-success btn-custom btn-js-100" type="button">
+                Thêm điều kiện
+            </button>
+        </div>`;
+
+        HT.renderPromotionContainer(html);
+    }
+
+    HT.renderProductAndQuantity = () => {
+        let selectData = JSON.parse($('.input-product-and-quantity').val());
+        
+        let selectHtml = '';
+        for(let key in selectData) {
+            selectHtml += '<option value="'+key+'">'+selectData[key]+'</option>'
+        }
+        
+        let html = `<div class="product_and_quantity">
+            <div class="choose-module mt20">
+                <div class="fix-label" style="color: blue;">Sản phẩm áp dụng</div>
+                <select class="select-product-and-quantity multipleSelect2">
+                    ${selectHtml}
+                </select>
+            </div>
+            <table class="table table-striped mt20">
+                <thead>
+                    <tr>
+                        <th class="text-right" style="width: 400px">Sản phẩm mua</th>
+                        <th class="text-right" style="width: 80px">SL tối thiểu</th>
+                        <th class="text-right">Giới hạn KM</th>
+                        <th class="text-right" style="width: 150px">Chiết khấu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="chooseProductPromotionTd">
+                            <div class="product-quantity" data-toggle="modal" data-target="#findProduct">
+                                <div class="boxWrapper">
+                                    <div class="boxSearchIcon">
+                                        <i class="fa fa-search"></i>
+                                    </div>
+                                    <div class="boxSearchInput">
+                                        <p>Tìm theo tên, mã sản phẩm</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text"
+                                class="form-control int"
+                                name="amountTo[]"
+                                value="1">
+                        </td>
+                        <td class="order_amount_range_to td-range">
+                            <input type="text"
+                                class="form-control int"
+                                name="amountTo[]"
+                                placeholder="0"
+                                value="0">
+                        </td>
+                        <td class="discountType">
+                            <div class="uk-flex uk-flex-middle">
+                                <input type="text"
+                                    class="form-control int"
+                                    name="amountValue[]"
+                                    placeholder="0"
+                                    value="0">
+                                <select name="amountType[]" class="multipleSelect2">
+                                    <option value="cash">đ</option>
+                                    <option value="percent">%</option>
+                                </select>
+                            </div>
+                        <td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>`
+
+        HT.renderPromotionContainer(html);
+    }
+
+    HT.renderPromotionContainer = (html) => {
+        $('.promotion-container').html(html);
+        HT.promotionMultipleSelect2();
+    }
+
+    HT.loadProduct = (option) => {
+        $.ajax({
+            url: 'ajax/product/loadProductPromotion',
+            type: 'GET',
+            data: option,
+            dataType: 'json',
+            success: function(res) {
+                HT.fillToObjectList(res);
+            },
+        });
+    }
+
+    HT.getPaginationPromotion = () => {
+        $(document).on('click', '.page-link', function(e) {
+            e.preventDefault();
+            let _this = $(this);
+            let option = {
+                'model' : $('.select-product-and-quantity').val(),
+                page: _this.text(),
+                keyword: $('search-model').val()
+            }
+            HT.loadProduct(option);
+        })
+    }
+
+    HT.productQuantityFindProduct = () => {
+        $(document).on('click', '.product-quantity', function(e){
+            e.preventDefault();
+            let option = {
+                'model' : $('.select-product-and-quantity').val()
+            }
+            HT.loadProduct(option);
+        });
+    }
+
+    HT.fillToObjectList = (data) => {
+        switch (data.model) {
+            case "Product":
+                HT.fillProductToList(data.objects);
+                break;
+            case "ProductCatalogue":
+                HT.fillProductCatalogueToList(data.objects);
+                break;
+        }
+    }
+
+    HT.fillProductCatalogueToList = (object) => {
+        let html = '';
+        if(object.data.length) {
+            let model = $('.select-product-and-quantity').val();
+            for(let i = 0; i < object.data.length; i++) {
+                let name = object.data[i].name;
+                let id = object.data[i].id;
+                let classBox = model + '_' + id;
+                let isChecked = ($('.boxWrapper .'+classBox+'').length ? true : false )
+            
+                html += `<div class="search-object-item" data-product-id="${id}" data-name="${name}">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="object-info">
+                            <div class="uk-flex uk-flex-middle">
+                                <input type="checkbox" 
+                                    class="input-checkbox" 
+                                    value="${id}"
+                                    ${ (isChecked) ? 'checked' : ''}>
+                                <div class="object-name">
+                                    <div class="name" style="margin: 0 0 0 5px">${name}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        html = html + HT.paginationLinks(object.links).prop('outerHTML');
+        $('.search-list').html(html);
+    }
+
+    HT.fillProductToList = (object) => {
+        let html = '';
+        if(object.data.length) {
+            let model = $('.select-product-and-quantity').val();
+            for(let i = 0; i < object.data.length; i++) {
+                let image = object.data[i].image;
+                let name = object.data[i].variant_name;
+                let product_variant_id = object.data[i].product_variant_id;
+                let product_id = object.data[i].id;
+                let inventory = (typeof object.data.inventory != 'undefined') ? object.data.inventory : 0;
+                let couldSall = (typeof object.data.couldSall != 'undefined') ? object.data.couldSall : 0;
+                let sku = object.data[i].sku;
+                let price = object.data[i].price;
+                let classBox = model + '_' + product_id + '_' + product_variant_id;
+                let isChecked = ($('.boxWrapper .'+classBox+'').length ? true : false )
+            
+                html += `<div class="search-object-item" data-product-id="${product_id}" 
+                        data-variant-id="${product_variant_id}" data-name="${name}">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="object-info">
+                            <div class="uk-flex uk-flex-middle">
+                                <input type="checkbox" 
+                                    class="input-checkbox" 
+                                    value="${product_id+'_'+product_variant_id}"
+                                    ${ (isChecked) ? 'checked' : ''}>
+                                <span class="image img-scaledown">
+                                    <img src="${image}" alt="">
+                                </span>
+                                <div class="object-name">
+                                    <div class="m0">${name}</div>
+                                    <div class="jscode">Mã SP: ${sku}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="object-extra-info">
+                            <div class="price">${addCommas(price)}</div>
+                            <div class="object-inventory">
+                                <div class="uk-flex uk-flex-middle">
+                                    <span class="text-1">Tồn kho: </span>
+                                    <span class="text-value">${inventory}</span>
+                                    <span class="text-1 slash">|</span>
+                                    <span class="text-value">Có thể bán: ${couldSall}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        html = html + HT.paginationLinks(object.links).prop('outerHTML');
+        $('.search-list').html(html);
+    }
+
+    HT.changePromotionMethod = () => {
+        $(document).on('change', '.select-product-and-quantity', function(){
+            $('.fixGrid6').remove();
+            objectChoose = [];
+        });
+    }
+
+    HT.paginationLinks = (links) => {
+        let nav = $('<nav>');
+        if(links.length > 3) {
+            let paginationUl = $('<ul>').addClass('pagination');
+            $.each(links, function(index, link) {
+                let li = $('<li>').addClass('page-item');
+                let labelRaw = $('<div>').html(link.label).text().trim(); // giải mã entity
+
+                if (link.active) {
+                    // Trang hiện tại
+                    li.addClass('active').attr('aria-current', 'page');
+                    li.append($('<span>').addClass('page-link').text(labelRaw));
+                } 
+                else if (!link.url) {
+                    // Nút disabled (Previous khi không có link)
+                    li.addClass('disabled').attr('aria-disabled', 'true');
+                    li.append($('<span>').addClass('page-link')
+                        .attr('aria-hidden', 'true')
+                        .text((labelRaw.toLowerCase().includes('previous') || labelRaw.includes('«')) ? '«' : (labelRaw.toLowerCase().includes('next') || labelRaw.includes('»')) ? '»' : labelRaw)
+                    );
+                } 
+                else {
+                    // Link bình thường hoặc Next
+                    let a = $('<a>').addClass('page-link').attr('href', link.url);
+
+                    if (labelRaw.toLowerCase().includes('previous') || labelRaw.includes('«')) {
+                        a.attr('aria-label', '« Previous').text('«');
+                    } 
+                    else if (labelRaw.toLowerCase().includes('next') || labelRaw.includes('»')) {
+                        a.attr('rel', 'next').attr('aria-label', 'Next »').text('»');
+                    } 
+                    else {
+                        a.text(labelRaw);
+                    }
+
+                    li.append(a);
+                }
+
+                paginationUl.append(li);
+            });
+            nav.append(paginationUl);
+        }
+        return nav;
+    }
+
+    HT.searchObject = () => {
+        $(document).on('keyup', '.search-model', function(e) {
+            e.preventDefault();
+            let _this = $(this);
+            let keyword = _this.val();
+            let option = {
+                model : $('.select-product-and-quantity').val(),
+                keyword: keyword
+            }
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(function() {
+                HT.loadProduct(option);
+            }, doneTypingInterval);
+        })
+    }
+
+    var objectChoose = [];
+    HT.chooseProuctPromtion = () => {
+        $(document).on('click', '.search-object-item', function(e) {
+            e.preventDefault();
+            let _this = $(this);
+            let isChecked = _this.find('input[type=checkbox]').prop('checked');
+            let objectItem = {
+                product_id: _this.attr('data-product-id'),
+                product_variant_id: _this.attr('data-variant-id'),
+                name: _this.attr('data-name')
+            }
+
+            if(isChecked) {
+                objectChoose = objectChoose.filter(item => item.product_id !== objectItem.product_id)
+                _this.find('input[type=checkbox]').prop('checked', false);
+            } else {
+                objectChoose.push(objectItem);
+                _this.find('input[type=checkbox]').prop('checked', true);
+            }
+            
+        });
+    }
+
+    HT.confirmProductPromotion = () => {
+        $(document).on('click', '.confirm-product-promotion', function(e){
+            e.preventDefault();
+            let html = '';
+            let model = $('.select-product-and-quantity').val();
+            if(objectChoose.length) {
+                for(let i = 0; i < objectChoose.length; i++) {
+                    let product_id = objectChoose[i].product_id;
+                    let product_variant_id = objectChoose[i].product_variant_id;
+                    let name = objectChoose[i].name;
+                    let classBox = model + '_' + product_id + '_' + product_variant_id;
+
+                    if(!$(`.boxWrapper .${classBox}`).length) {
+                        html += `<div class="fixGrid6 ${classBox}">
+                            <div class="goods-item">
+                                <a class="goods-item-name" title="${name}">${name}</a>
+                                <button class="delete-goods-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                    </svg>
+                                </button>
+                                <div class="hidden">
+                                    <input name="object[id][]" value="${product_id}">
+                                    <input name="object[product_variant_id][]" value="${product_variant_id}">
+                                </div>
+                            </div>
+                        </div>`;
+                    }
+                }
+            }
+            HT.checkFixGrid(html);
+        });
+    }
+
+    HT.checkFixGrid = (html) => {
+        if($('.fixGrid6').elExist) {
+            $('.boxSearchIcon').remove();
+            $('.boxWrapper').prepend(html);
+        }else{
+            $('.fixGrid6').remove();
+            $('.boxWrapper').prepend(HT.boxSearchIcon());
+        }
+    }
+
+    HT.boxSearchIcon = () => {
+        return `<div class="boxSearchInput">
+            <i class="fa fa-search"></i>
+        </div>`;
+    }
+
+    HT.deleteGoodsItem = () => {
+        $(document).on('click', '.delete-goods-item', function(e){
+            e.stopPropagation();
+            let _button = $(this);
+            _button.parents('.fixGrid6').remove();
+            HT.checkFixGrid();
+        });
+    }
+
 	$(document).ready(function(){
         HT.promotionNeverEnd();
         HT.promotionSource();
@@ -232,6 +736,15 @@
         HT.chooseCustomerCondition();
         HT.chooseApplyItem();
         // HT.deleteCondition();
+        HT.btnJs100();
+        HT.deletedAmountRangeCondition();
+        HT.renderOrderRangeConditionContainer();
+        HT.productQuantityFindProduct();
+        HT.getPaginationPromotion();
+        HT.searchObject();
+        HT.chooseProuctPromtion();
+        HT.confirmProductPromotion();
+        HT.deleteGoodsItem();
+        HT.changePromotionMethod();
 	});
-
 })(jQuery);

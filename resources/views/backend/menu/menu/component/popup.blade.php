@@ -7,7 +7,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title">Thêm mới vị trí hiển thị của menu</h4>
-                    <small class="font-bold">Nhập đầy đủ thông tin để tạo vị trí hiển thị của menu.</small>
+                    <small class="font-bold text-navy">Nhập đầy đủ thông tin để tạo vị trí hiển thị của menu.</small>
                 </div>
                 <div class="modal-body">
                     <div class="form-error text-success"></div>
