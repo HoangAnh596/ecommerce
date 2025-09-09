@@ -32,6 +32,8 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\Interfaces\WidgetRepositoryInterface' => 'App\Repositories\WidgetRepository',
         'App\Repositories\Interfaces\PromotionRepositoryInterface' => 'App\Repositories\PromotionRepository',
         'App\Repositories\Interfaces\SourceRepositoryInterface' => 'App\Repositories\SourceRepository',
+        'App\Repositories\Interfaces\CustomerRepositoryInterface' => 'App\Repositories\CustomerRepository',
+        'App\Repositories\Interfaces\CustomerCatalogueRepositoryInterface' => 'App\Repositories\CustomerCatalogueRepository',
     ];
 
     /**

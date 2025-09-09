@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreUserCatalogueRequest;
+use App\Http\Requests\User\StoreUserCatalogueRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Services\Interfaces\UserCatalogueServiceInterface as UserCatalogueService;
 use App\Repositories\Interfaces\UserCatalogueRepositoryInterface as UserCatalogueRepository;
@@ -21,12 +21,12 @@ class UserCatalogueController extends Controller
         UserCatalogueService $userCatalogueService,
         UserCatalogueRepository $userCatalogueRepository,
         PermissionRepository $permissionRepository,
-    ){
+    ) {
         $this->userCatalogueService = $userCatalogueService;
         $this->userCatalogueRepository = $userCatalogueRepository;
         $this->permissionRepository = $permissionRepository;
     }
-    
+
     public function index(Request $request)
     {
         $this->authorize('modules', 'user.catalogue.index');
@@ -65,15 +65,17 @@ class UserCatalogueController extends Controller
         ));
     }
 
-    public function store(StoreUserCatalogueRequest $request){
-        if($this->userCatalogueService->create($request)){
+    public function store(StoreUserCatalogueRequest $request)
+    {
+        if ($this->userCatalogueService->create($request)) {
 
             return redirect()->route('user.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('user.catalogue.index')->with('errors', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $this->authorize('modules', 'user.catalogue.update');
         $userCatalogue = $this->userCatalogueRepository->findById($id);
         $template = 'backend.user.catalogue.store';
@@ -87,15 +89,17 @@ class UserCatalogueController extends Controller
         ));
     }
 
-    public function update(StoreUserCatalogueRequest $request, $id) {
-        if($this->userCatalogueService->update($request, $id)){
+    public function update(StoreUserCatalogueRequest $request, $id)
+    {
+        if ($this->userCatalogueService->update($request, $id)) {
 
             return redirect()->route('user.catalogue.index')->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('user.catalogue.index')->with('errors', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $this->authorize('modules', 'user.catalogue.destroy');
         $userCatalogue = $this->userCatalogueRepository->findById($id);
         $template = 'backend.user.catalogue.delete';
@@ -108,8 +112,9 @@ class UserCatalogueController extends Controller
         ));
     }
 
-    public function destroy($id) {
-        if($this->userCatalogueService->destroy($id)){
+    public function destroy($id)
+    {
+        if ($this->userCatalogueService->destroy($id)) {
 
             return redirect()->route('user.catalogue.index')->with('success', 'Xóa bản ghi thành công');
         }
@@ -135,7 +140,7 @@ class UserCatalogueController extends Controller
     public function updatePermission(Request $request)
     {
         $permission = $this->userCatalogueService->setPermission($request);
-        if($permission) {
+        if ($permission) {
 
             return redirect()->route('user.catalogue.index')->with('success', 'Cập nhật quyền thành công');
         }

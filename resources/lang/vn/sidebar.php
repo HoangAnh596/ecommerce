@@ -40,6 +40,21 @@ return [
             ]
         ],
         [
+            'title' => 'QL Nhóm Khách hàng',
+            'icon' => 'fa fa-user',
+            'name' => ['customer'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Khách hàng',
+                    'route' => 'customer/catalogue/index',
+                ],
+                [
+                    'title' => 'QL Khách hàng',
+                    'route' => 'customer/index',
+                ]
+            ]
+        ],
+        [
             'title' => 'QL Marketing',
             'icon' => 'fa fa-money',
             'name' => ['promotion', 'source'],
@@ -81,7 +96,7 @@ return [
             ]
         ],
         [
-            'title' => 'QL Thành viên',
+            'title' => 'QL Nhóm Thành viên',
             'icon' => 'fa fa-user',
             'name' => ['user', 'permission'],
             'subModule' => [

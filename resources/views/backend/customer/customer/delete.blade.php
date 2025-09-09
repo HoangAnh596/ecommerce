@@ -1,4 +1,4 @@
-@include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['delete']['title']])
+@include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['create']['title']])
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -9,7 +9,7 @@
     </div>
 @endif
 
-<form action="{{ route('user.destroy', $user->id) }}" method="POST" class="box">
+<form action="{{ route('customer.destroy', $customer->id) }}" method="POST" class="box">
     @csrf
     @method('DELETE')
     <div class="wrapper wrapper-content animated fadeInRight">
@@ -18,7 +18,7 @@
                 <div class="panel-head">
                     <div class="panel-title">Thông tin chung</div>
                     <div class="panel-description">
-                        <p>- Bạn đang muốn xóa thành viên có mail là: {{ $user->mail }}</p>
+                        <p>- Bạn đang muốn xóa thành viên có mail là: {{ $customer->mail }}</p>
                         <p>- Lưu ý: Không thể khôi phục thành viên sau khi xóa. Hãy chắc chắn là bạn muốn thực hiện chức năng này.</p>
                     </div>
                 </div>
@@ -30,13 +30,13 @@
                             <div class="col-lg-6">
                                 <div class="form-row">
                                     <label for="" class="control-label">Email <span class="text-danger">(*)</span></label>
-                                    <input type="text" name="email" value="{{ old('email', ($user->email) ?? '') }}" class="form-control" placeholder="" readonly>
+                                    <input type="text" name="email" value="{{ old('email', ($customer->email) ?? '') }}" class="form-control" placeholder="" readonly>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-row">
                                     <label for="" class="control-label">Họ và tên <span class="text-danger">(*)</span></label>
-                                    <input type="text" name="name" value="{{ old('name', ($user->name) ?? '') }}" class="form-control" placeholder="" readonly>
+                                    <input type="text" name="name" value="{{ old('name', ($customer->name) ?? '') }}" class="form-control" placeholder="" readonly>
                                 </div>
                             </div>
                         </div>

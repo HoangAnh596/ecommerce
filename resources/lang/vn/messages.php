@@ -1,5 +1,35 @@
 <?php
 return [
+    'customer' => [
+        'index' => [
+            'title' => 'Quản lý khách hàng',
+            'tableHeading' => 'Danh sách khách hàng'
+        ],
+        'create' => [
+            'title' => 'Thêm mới khách hàng'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật khách hàng'
+        ],
+        'delete' => [
+            'title' => 'Xóa khách hàng'
+        ]
+    ],
+    'customerCatalogue' => [
+        'index' => [
+            'title' => 'Quản lý nhóm khách hàng',
+            'tableHeading' => 'Danh sách nhóm khách hàng'
+        ],
+        'create' => [
+            'title' => 'Thêm mới nhóm khách hàng'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật nhóm khách hàng'
+        ],
+        'delete' => [
+            'title' => 'Xóa nhóm khách hàng'
+        ]
+    ],
     'promotion' => [
         'index' => [
             'title' => 'Quản lý khuyến mại',
