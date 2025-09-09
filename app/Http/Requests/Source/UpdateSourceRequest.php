@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Source;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreGalleryCatalogueRequest extends FormRequest
+class UpdateSourceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,16 +23,16 @@ class StoreGalleryCatalogueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'required|unique:routers',
+            'keyword' => 'required|unique:sources,keyword, '.$this->id.''
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Tiêu đề bài viết không được để trống.',
-            'canonical.required' => 'Đường dẫn không được để trống.',
-            'canonical.unique' => 'Đường dẫn đã tồn tại. Hãy chọn đường dẫn khác.',
+            'name.required' => 'Bạn chưa nhập tên của nguồn khách.',
+            'keyword.required' => 'Bạn chưa nhập từ khóa của nguồn khách.',
+            'keyword.unique' => 'Từ khóa đã tồn tại. Hãy nhập từ khóa khác.'
         ];
     }
 }

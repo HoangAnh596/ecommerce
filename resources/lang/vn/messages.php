@@ -16,6 +16,21 @@ return [
             'title' => 'Xóa khuyến mại'
         ],
     ],
+    'source' => [
+        'index' => [
+            'title' => 'Quản lý nguồn khách',
+            'tableHeading' => 'Danh sách nguồn khách'
+        ],
+        'create' => [
+            'title' => 'Thêm mới nguồn khách',
+        ],
+        'edit' => [
+            'title' => 'Cập nhật nguồn khách'
+        ],
+        'delete' => [
+            'title' => 'Xóa nguồn khách'
+        ],
+    ],
     'widget' => [
         'index' => [
             'title' => 'Quản lý widget',

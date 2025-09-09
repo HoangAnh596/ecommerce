@@ -42,7 +42,7 @@ return [
         [
             'title' => 'QL Marketing',
             'icon' => 'fa fa-money',
-            'name' => ['promotion'],
+            'name' => ['promotion', 'source'],
             'subModule' => [
                 [
                     'title' => 'QL Khuyến mại',
@@ -52,6 +52,10 @@ return [
                 //     'title' => 'QL Mã giảm giá',
                 //     'route' => 'coupon/index',
                 // ],
+                [
+                    'title' => 'QL Nguồn khách',
+                    'route' => 'source/index',
+                ],
             ]
         ],
         [

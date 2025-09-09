@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreWidgetRequest;
-use App\Http\Requests\UpdateWidgetRequest;
+use App\Http\Requests\Widget\StoreWidgetRequest;
+use App\Http\Requests\Widget\UpdateWidgetRequest;
 use App\Services\Interfaces\WidgetServiceInterface as WidgetService;
 use App\Repositories\Interfaces\WidgetRepositoryInterface as WidgetRepository;
 use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Widget;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateWidgetRequest extends FormRequest
+class StoreWidgetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,8 @@ class UpdateWidgetRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'keyword' => 'required|unique:widgets,keyword, '.$this->id.'',
-            'short_code' => 'required|unique:widgets,short_code, '.$this->id.'',
+            'keyword' => 'required|unique:widgets',
+            'short_code' => 'required|unique:widgets',
         ];
     }
 
