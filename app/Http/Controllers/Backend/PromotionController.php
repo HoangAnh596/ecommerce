@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePromotionRequest;
-use App\Http\Requests\UpdatePromotionRequest;
+use App\Http\Requests\Promotion\StorePromotionRequest;
+use App\Http\Requests\Promotion\UpdatePromotionRequest;
 use App\Services\Interfaces\PromotionServiceInterface as PromotionService;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
+use App\Repositories\Interfaces\SourceRepositoryInterface as SourceRepository;
 use Illuminate\Http\Request;
 use App\Models\Language;
 
@@ -15,16 +16,19 @@ class PromotionController extends Controller
 {
     protected $promotionService;
     protected $promotionRepository;
+    protected $sourceRepository;
     protected $languageRepository;
     protected $language;
 
     public function __construct(
         PromotionService $promotionService,
         PromotionRepository $promotionRepository,
+        SourceRepository $sourceRepository,
         LanguageRepository $languageRepository,
     ) {
         $this->promotionService = $promotionService;
         $this->promotionRepository = $promotionRepository;
+        $this->sourceRepository = $sourceRepository;
         $this->languageRepository = $languageRepository;
         $this->middleware(function ($request, $next) {
             $locale = app()->getLocale();
@@ -62,6 +66,8 @@ class PromotionController extends Controller
     public function create()
     {
         $this->authorize('modules', 'promotion.create');
+        $sources = $this->sourceRepository->all();
+
         $config = $this->configData();
         $template = 'backend.promotion.promotion.store';
         $config['seo']  = __('messages.promotion');
@@ -70,6 +76,7 @@ class PromotionController extends Controller
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
+            'sources'
         ));
     }
 

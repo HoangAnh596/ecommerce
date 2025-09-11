@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
-use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
 use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
+use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
+use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\GenerateController;
@@ -283,6 +284,8 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
     Route::get('ajax/dashboard/findModelObject', [AjaxDashboardController::class, 'findModelObject'])->name('ajax.dashboard.findModelObject')->middleware('admin');
     Route::get('ajax/dashboard/findPromotionObject', [AjaxDashboardController::class, 'findPromotionObject'])->name('ajax.dashboard.findPromotionObject')->middleware('admin');
     Route::get('ajax/product/loadProductPromotion', [AjaxProductController::class, 'loadProductPromotion'])->name('ajax.product.loadProductPromotion')->middleware('admin');
+    Route::get('ajax/source/getAllSource', [AjaxSourceController::class, 'getAllSource'])->name('ajax.source.getAllSource')->middleware('admin');
+    Route::get('ajax/dashboard/getPromotionConditionValue', [AjaxDashboardController::class, 'getPromotionConditionValue'])->name('ajax.dashboard.getPromotionConditionValue')->middleware('admin');
 });
 
 Route::get('admin', [AuthController::class, 'index'])->name('auth.admin')->middleware(LoginMiddleware::class);

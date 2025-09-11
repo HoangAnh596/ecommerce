@@ -186,7 +186,7 @@
             $('.datepicker').datetimepicker({
                 format: 'd/m/Y H:i',
                 timepicker: true,
-                value: new Date(),
+                // value: new Date(),
                 minDate: new Date()
             });
         }

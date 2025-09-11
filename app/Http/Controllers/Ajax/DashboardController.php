@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ajax;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Language;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DashboardController extends Controller
@@ -106,8 +107,8 @@ class DashboardController extends Controller
         ], $this->language, $alias);
 
         $temp = [];
-        if(count($object) ){
-            foreach($object as $key => $val){
+        if (count($object)) {
+            foreach ($object as $key => $val) {
                 $temp[] = [
                     'id' => $val->id,
                     'text' => $val->languages->first()->pivot->name,
@@ -133,4 +134,49 @@ class DashboardController extends Controller
     // }
     // return $serviceInstance;
     // }
+
+    public function getPromotionConditionValue(Request $request)
+    {
+        try {
+            $get = $request->input();
+            switch ($get['value']) {
+                case 'staff_take_care_customer':
+                    $class = loadClassInterface('User');
+                    $object = $class->all()->toArray();
+                    break;
+                case 'customer_group':
+                    $class = loadClassInterface('CustomerCatalogue');
+                    $object = $class->all()->toArray();
+                    break;
+                case 'customer_gender':
+                    $object = __('module.gender');
+                    break;
+                case 'customer_birthday':
+                    $object = __('module.day');
+                    break;
+            }
+
+            $temp = [];
+            if (!is_null($object) && count($object)) {
+                foreach ($object as $key => $val) {
+                    $temp[] = [
+                        'id' => $val['id'],
+                        'text' => $val['name'],
+                    ];
+                }
+            }
+
+            return response()->json([
+                'data' => $temp,
+                'error' => false
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response()->json([
+                'error' => true,
+                'messages' => $e->getMessage()
+            ]);
+        }
+    }
 }

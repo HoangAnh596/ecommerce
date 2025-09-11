@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        foreach($this->serviceBindings as $interface => $service){
+        foreach ($this->serviceBindings as $interface => $service) {
             $this->app->bind($interface, $service);
         }
         $this->app->register(RepositoryServiceProvider::class);
@@ -46,6 +48,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Validator::extend('custom_date_format', function ($attribute, $value, $parameters, $validator) {
+            return Carbon::createFromFormat('d/m/Y H:i', $value) !== false;
+        });
+
+        Validator::extend('custom_after', function ($attribute, $value, $parameters, $validator) {
+            $startDate = Carbon::createFromFormat('d/m/Y H:i', $validator->getData()[$parameters[0]]);
+            $endDate = Carbon::createFromFormat('d/m/Y H:i', $value);
+
+            return $endDate->greaterThan($startDate) != false;
+        });
+
         Schema::defaultStringLength(191);
     }
 }
