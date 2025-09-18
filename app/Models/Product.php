@@ -49,4 +49,12 @@ class Product extends Model
     public function product_variants(){
         return $this->hasMany(ProductVariant::class, 'product_id', 'id');
     }
+
+    public function promotions(){
+        return $this->belongsToMany(Promotion::class, 'promotion_product_variant', 'product_id', 'promotion_id')
+        ->withPivot(
+            'product_variant_id',
+            'model',
+        )->withTimestamps();
+    }
 }

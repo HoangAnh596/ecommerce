@@ -867,6 +867,10 @@ div.fix-label {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.text-small {
+    font-size: 12px;
+    font-weight: 600;
+}
 
 
 /* Reponsive mobile */

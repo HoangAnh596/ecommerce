@@ -562,6 +562,8 @@
     HT.productVariant = () => {
         variant = JSON.parse(atob(variant))
         $('.variant-row').each(function(index, value) {
+            console.log(variant);
+            
             let _this = $(this)
             let inputHiddenFields = [
                 { name: 'variant[quantity][]', class: 'variant_quantity', value: variant.quantity[index]},
@@ -579,8 +581,10 @@
 
             let album = variant.album[index]
             let variantImage = (album) ? album.split(',')[0] : 'https://daks2k3a4ib2z.cloudfront.net/6343da4ea0e69336d8375527/6343da5f04a965c89988b149_1665391198377-image16-p-500.jpg'
+            // check null => 0 khi render quantity
+            let qty = (variant.quantity[index] == null || variant.quantity[index] === '') ? 0 : variant.quantity[index]
 
-            _this.find('.td-quantity').html(addCommas(variant.quantity[index]))
+            _this.find('.td-quantity').html(addCommas(qty))
             _this.find('.td-price').html(addCommas(variant.price[index]))
             _this.find('.td-sku').html(variant.sku[index])
             _this.find('.imageSrc').attr('src', variantImage)           

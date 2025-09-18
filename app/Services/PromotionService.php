@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\PromotionEnum;
 use App\Services\Interfaces\PromotionServiceInterface;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use Illuminate\Support\Carbon;
@@ -41,18 +42,38 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         return $promotions;
     }
 
-    public function create($request, $languageId)
+    private function request($request)
+    {
+        $payload = $request->only('name', 'code', 'description', 'method', 'startDate', 'endDate', 'neverEndDate');
+        $payload['startDate'] = Carbon::createFromFormat('d/m/Y H:i', $request->input('startDate'));
+        if (isset($payload['endDate'])) {
+            $payload['endDate'] = Carbon::createFromFormat('d/m/Y H:i', $request->input('endDate'));
+        }
+        $payload['user_id'] = auth()->id();
+        $payload['code'] = (empty($payload['code'])) ? time() : $payload['code'];
+
+        switch ($payload['method']) {
+            case PromotionEnum::ORDER_AMOUNT_RANGE:
+                $payload[PromotionEnum::DISCOUNT] = $this->orderByRanger($request);
+                break;
+            case PromotionEnum::PRODUCT_AND_QUANTITY:
+                $payload[PromotionEnum::DISCOUNT] = $this->productAndQuantity($request);
+                break;
+        }
+
+        return $payload;
+    }
+
+    public function create($request)
     {
         DB::beginTransaction();
         try {
-            $payload = $request->only('name', 'keyword', 'short_code', 'description', 'album', 'model');
-            $payload['model_id'] = $request->input('modelItem.id');
-            $payload['description'] = [
-                $languageId => $payload['description']
-            ];
-            $payload['user_id'] = auth()->id();
+            $payload = $this->request($request);
 
-            $this->promotionRepository->create($payload);
+            $promotion = $this->promotionRepository->create($payload);
+            if ($promotion->id > 0) {
+                $this->handleRelation($promotion, $request);
+            }
 
             DB::commit();
             return true;
@@ -65,18 +86,14 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         }
     }
 
-    public function update($request, $id, $languageId)
+    public function update($request, $id)
     {
         DB::beginTransaction();
         try {
-            $payload = $request->only('name', 'keyword', 'short_code', 'description', 'album', 'model');
-            $payload['model_id'] = $request->input('modelItem.id');
-            $payload['description'] = [
-                $languageId => $payload['description']
-            ];
-            $payload['user_id'] = auth()->id();
+            $payload = $this->request($request);
 
-            $this->promotionRepository->update($id, $payload);
+            $promotion = $this->promotionRepository->update($id, $payload);
+            $this->handleRelation($promotion, $request, 'update');
 
             DB::commit();
             return true;
@@ -106,32 +123,83 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         }
     }
 
-    public function saveTranslate($request, $languageId)
+    private function handleRelation($promotion, $request, $method = 'create')
     {
-        DB::beginTransaction();
-        try {
-            $temp = [];
-            $translate = $request->input('translateId');
-            $promotion = $this->promotionRepository->findById($request->input('promotionId'));
-            $temp = $promotion->description;
-            $temp[$translate] = $request->input('translate_description');
-            $payload['description'] = $temp;
+        if ($request->input('method') === PromotionEnum::PRODUCT_AND_QUANTITY) {
+            $object = $request->input('object');
+            $payload = [];
+            if (!is_null($object)) {
+                foreach ($object['id'] as $key => $val) {
+                    $payload[] = [
+                        'promotion_id' => $promotion->id,
+                        'product_id' => $val,
+                        // 'product_variant_id' => ($object['product_variant_id'][$key] ?? 0) === 'null' ? 0 : ($object['product_variant_id'][$key] ?? 0),
+                        'variant_uuid' => $object['variant_uuid'][$key],
+                        'model' => $request->input(PromotionEnum::MODULE_TYPE)
+                    ];
+                }
+            }
 
-            $this->promotionRepository->update($promotion->id, $payload);
+            if($method == 'update') {
+                $promotion->products()->detach();
+            }
 
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
+            $promotion->products()->sync($payload);
         }
+    }
+
+    private function handleSourceAndCondition($request)
+    {
+        $data = [
+            'source' => [
+                'status' => $request->input('source'),
+                'data' => $request->input('sourceValue'),
+            ],
+            'apply' => [
+                'status' => $request->input('applyStatus'),
+                'data' => $request->input('applyValue'),
+            ],
+        ];
+
+        if (!is_null($data['apply']['data'])) {
+            foreach ($data['apply']['data'] as $key => $val) {
+                $data['apply']['condition'][$val] = $request->input($val);
+            }
+        }
+
+        return $data;
+    }
+
+    private function orderByRanger($request)
+    {
+        $data['info'] = $request->input('promotion_order_amount_range');
+
+        return $data + $this->handleSourceAndCondition($request);
+    }
+
+    private function productAndQuantity($request)
+    {
+        $data['info'] = $request->input('product_and_quantity');
+        $data['info']['model'] = $request->input(PromotionEnum::MODULE_TYPE);
+        $data['info']['object'] = $request->input('object');
+
+        return $data + $this->handleSourceAndCondition($request);
     }
 
     private function paginateSelect()
     {
-        return ['id', 'name', 'keyword', 'description', 'album', 'short_code', 'model', 'publish'];
+        return [
+            'id',
+            'name',
+            'code',
+            'description',
+            'method',
+            'discountInformation',
+            'startDate',
+            'endDate',
+            'neverEndDate',
+            'order',
+            'publish'
+        ];
     }
 }

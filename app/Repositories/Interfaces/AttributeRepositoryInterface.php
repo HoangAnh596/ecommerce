@@ -8,5 +8,5 @@ namespace App\Repositories\Interfaces;
  */
 interface AttributeRepositoryInterface
 {
-    public function searchAttributes(string $keyword = '', array $option = []);
+    public function searchAttributes(string $keyword = '', array $option = [], $languageId);
 }

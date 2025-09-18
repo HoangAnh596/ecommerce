@@ -10,7 +10,7 @@
                     <input
                         type="text"
                         name="startDate"
-                        value="{{ old('startDate', ($model->startDate) ?? '') }}"
+                        value="{{ old('startDate', $model && $model->startDate ? convertDateTime($model->startDate) : '') }}"
                         class="form-control datepicker"
                         placeholder=""
                         autocomplete="off">
@@ -23,7 +23,7 @@
                     <input
                         type="text"
                         name="endDate"
-                        value="{{ old('endDate', ($model->endDate) ?? '') }}"
+                        value="{{ old('endDate', $model && $model->endDate ? convertDateTime($model->endDate) : '') }}"
                         class="form-control datepicker"
                         placeholder=""
                         autocomplete="off"
@@ -49,7 +49,7 @@
             <h5>Nguồn khách áp dụng</h5>
         </div>
         @php
-        $sourceStatus = old('source', ($model->sourceStatus) ?? null);
+        $sourceStatus = old('source', ($model->discountInformation['source']['status']) ?? null);
         @endphp
         <div class="ibox-content">
             <div class="setting-value">
@@ -59,7 +59,7 @@
                         name="source"
                         id="allSource"
                         value="all"
-                        {{ (old('source', $model->sourceStatus ?? '') === 'all' || !old('source')) ? 'checked' : '' }}>
+                        {{ (old('source', $model->discountInformation['source']['status'] ?? '') === 'all' || !old('source')) ? 'checked' : '' }}>
                     <label class="fix-label ml5" for="allSource">Áp dụng cho toàn bộ nguồn khách</label>
                 </div>
                 <div class="nav-setting-item uk-flex uk-flex-middle">
@@ -68,13 +68,13 @@
                         name="source"
                         id="chooseSource"
                         value="choose"
-                        {{ (old('source', $model->sourceStatus ?? '') === 'choose') ? 'checked' : '' }}>
+                        {{ (old('source', $model->discountInformation['source']['status'] ?? '') === 'choose') ? 'checked' : '' }}>
                     <label class="fix-label ml5" for="chooseSource">Chọn nguồn khách áp dụng</label>
                 </div>
             </div>
-            @if($sourceStatus)
+            @if($sourceStatus == 'choose')
             @php
-            $sourceValue = old('sourceValue', ($model->sourceValue) ?? []);
+            $sourceValue = old('sourceValue', ($model->discountInformation['source']['data']) ?? []);
             @endphp
             <div class="source-wrapper">
                 <select name="sourceValue[]" class="multipleSelect2" multiple>
@@ -100,7 +100,7 @@
                         name="applyStatus"
                         id="allApply"
                         value="all"
-                        {{ (old('applyStatus', $model->applyStatus ?? '') === 'all' || !old('applyStatus')) ? 'checked' : '' }}>
+                        {{ (old('applyStatus', $model->discountInformation['apply']['status'] ?? '') === 'all' || !old('applyStatus')) ? 'checked' : '' }}>
                     <label class="fix-label ml5" for="allApply">Áp dụng cho toàn bộ khách hàng</label>
                 </div>
                 <div class="nav-setting-item uk-flex uk-flex-middle">
@@ -109,15 +109,15 @@
                         name="applyStatus"
                         id="chooseApply"
                         value="choose"
-                        {{ (old('applyStatus', $model->applyStatus ?? '') === 'choose') ? 'checked' : '' }}>
+                        {{ (old('applyStatus', $model->discountInformation['apply']['status'] ?? '') === 'choose') ? 'checked' : '' }}>
                     <label class="fix-label ml5" for="chooseApply">Chọn đối tượng khách hàng</label>
                 </div>
             </div>
             @php
-            $applyStatus = old('applyStatus', ($model->applyStatus) ?? null);
-            $applyValue = old('applyValue', ($model->applyValue) ?? []);
+                $applyStatus = old('applyStatus', ($model->discountInformation['apply']['status']) ?? null);
+                $applyValue = old('applyValue', ($model->discountInformation['apply']['data']) ?? []);
             @endphp
-            @if($applyStatus)
+            @if($applyStatus == 'choose')
             <div class="apply-wrapper">
                 <select name="applyValue[]" class="multipleSelect2 conditionItem" multiple>
                     @foreach(__('module.applyStatus') as $key => $val)
@@ -131,12 +131,24 @@
     </div>
 </div>
 
-<input type="hidden" class="input-product-and-quantity" value="{{ json_encode(__('module.item')) }}">
-<input type="hidden" class="applyStatusList" value="{{ json_encode(__('module.applyStatus')) }}">
-<input type="hidden" class="conditionItemSelected" value="{{ json_encode($applyValue) }}">
+<input
+    type="hidden"
+    class="input-product-and-quantity"
+    value="{{ json_encode(__('module.item')) }}">
+<input
+    type="hidden"
+    class="applyStatusList"
+    value="{{ json_encode(__('module.applyStatus')) }}">
+<input
+    type="hidden"
+    class="conditionItemSelected"
+    value="{{ json_encode($applyValue) }}">
 
 @if(count($applyValue))
 @foreach($applyValue as $key => $val)
-<input type="hidden" class="condition_input_{{ $val }}" value="{{ json_encode(old($val)) }}">
+<input
+    type="hidden"
+    class="condition_input_{{ $val }}"
+    value="{{ json_encode(old($val, ($model->discountInformation['apply']['condition'][$val]) ?? null)) }}">
 @endforeach
 @endif

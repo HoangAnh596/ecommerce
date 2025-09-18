@@ -15,19 +15,27 @@ class Promotion extends Model
 
     protected $fillable = [
         'name',
-        'keyword',
+        'code',
         'description',
-        'album',
-        'model_id',
-        'model',
-        'short_code',
+        'method',
+        'discountInformation',
+        'neverEndDate',
+        'startDate',
+        'endDate',
         'publish',
+        'order',
         'user_id',
     ];
 
     protected $casts = [
-        'model_id' => 'json',
-        'album' => 'json',
-        'description' => 'json'
+        'discountInformation' => 'json',
     ];
+
+    public function products(){
+        return $this->belongsToMany(Promotion::class, 'promotion_product_variant', 'promotion_id', 'product_id')
+        ->withPivot(
+            'variant_uuid',
+            'model',
+        )->withTimestamps();
+    }
 }

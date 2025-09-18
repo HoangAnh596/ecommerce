@@ -93,11 +93,7 @@ class PromotionController extends Controller
     {
         $this->authorize('modules', 'promotion.update');
         $promotion = $this->promotionRepository->findById($id);
-        $promotion->description = $promotion->description[$this->language];
-        $modelClass = loadClassInterface($promotion->model);
-        $promotionItem = convertArrayByKey($modelClass->findByCondition(
-            ...array_values($this->modelItemAgrument($promotion->model_id))
-        ), ['id', 'name.languages', 'image']);
+        $sources = $this->sourceRepository->all();
 
         $config = $this->configData();
         $template = 'backend.promotion.promotion.store';
@@ -108,7 +104,7 @@ class PromotionController extends Controller
             'template',
             'config',
             'promotion',
-            'promotionItem'
+            'sources'
         ));
     }
 
@@ -142,59 +138,6 @@ class PromotionController extends Controller
             return redirect()->route('promotion.index')->with('success', 'Xóa bản ghi thành công');
         }
         return redirect()->route('promotion.index')->with('errors', 'Xóa bản ghi không thành công. Hãy thử lại');
-    }
-
-    public function translate($languageId, $promotionId)
-    {
-        $this->authorize('modules', 'promotion.translate');
-        $promotion = $this->promotionRepository->findById($promotionId);
-        $promotion->jsonDescription = $promotion->description;
-        $promotion->description = $promotion->description[$this->language];
-
-        $promotionTranslate = new \stdClass();
-        $promotionTranslate->description = ($promotion->jsonDescription[$languageId]) ?? '';
-
-        $translate = $this->languageRepository->findById($languageId);
-        $config = $this->configData();
-        $template = 'backend.promotion.promotion.translate';
-        $config['seo']  = __('messages.promotion');
-        $config['method'] = 'translate';
-
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'config',
-            'promotion',
-            'translate',
-            'promotionTranslate'
-        ));
-    }
-
-    public function saveTranslate(Request $request)
-    {
-        if ($this->promotionService->saveTranslate($request, $this->language)) {
-
-            return redirect()->route('promotion.index')->with('success', 'Tạo bản dịch thành công');
-        }
-        return redirect()->route('promotion.index')->with('errors', 'Tạo bản dịch không thành công. Hãy thử lại');
-    }
-
-    private function modelItemAgrument(array $whereIn = [])
-    {
-        $language = $this->language;
-        return [
-            'condition' => [],
-            'flag' => true,
-            'relation' => [
-                'languages' => function ($query) use ($language) {
-                    $query->where('language_id', $language);
-                }
-            ],
-            'orderBy' => ['id', 'desc'],
-            'params' => [
-                'whereIn' => $whereIn,
-                'whereInField' => 'id'
-            ]
-        ];
     }
 
     private function configData()

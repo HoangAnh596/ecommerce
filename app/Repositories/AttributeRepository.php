@@ -43,23 +43,34 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
             ->find($id);
     }
 
-    public function searchAttributes(string $keyword = '', array $option = [])
+    public function searchAttributes(string $keyword = '', array $option = [], $languageId)
     {
-        return $this->model->whereHas('attribute_catalogues', function($query) use ($option){
-            $query->where('attribute_catalogue_id', $option['attributeCatalogueId']);
-        })->whereHas('attribute_language', function($query) use ($keyword){
-            $query->where('name', 'like', '%'.$keyword.'%'); // code theo youtube đang lỗi
-        })->get();
+        // return $this->model->whereHas('attribute_catalogues', function($query) use ($option){
+        //     $query->where('attribute_catalogue_id', $option['attributeCatalogueId']);
+        // })->whereHas('attribute_language', function($query) use ($keyword){
+        //     $query->where('name', 'like', '%'.$keyword.'%'); // code đang lỗi
+        // })->get();
+        $attributeCatalogueId = $option['attributeCatalogueId'] ?? null;
 
-        // return $this->model
-        //     ->whereHas('attribute_catalogues', function ($query) use ($option) {
-        //         $query->where('attribute_catalogue_id', $option['attributeCatalogueId']);
-        //     })
-        //     ->with(['attribute_language' => function ($q) use ($languageId, $keyword) {
-        //         $q->where('language_id', $languageId)
-        //             ->where('name', 'like', '%' . $keyword . '%');
-        //     }])
-        //     ->get();
+        return $this->model
+            // load đúng ngôn ngữ để dùng khi map()
+            ->with(['attribute_language' => function ($q) use ($languageId) {
+                $q->where('language_id', $languageId);
+            }])
+            // lọc theo catalogue (nếu có truyền vào)
+            ->when($attributeCatalogueId, function ($q) use ($attributeCatalogueId) {
+                $q->whereHas('attribute_catalogues', function ($sub) use ($attributeCatalogueId) {
+                    $sub->where('attribute_catalogue_id', $attributeCatalogueId);
+                });
+            })
+            // tìm kiếm theo tên và NGÔN NGỮ CỤ THỂ
+            ->whereHas('attribute_language', function ($q) use ($keyword, $languageId) {
+                $q->where('language_id', $languageId)
+                    ->when($keyword !== '', function ($qq) use ($keyword) {
+                        $qq->where('name', 'like', '%' . $keyword . '%');
+                    });
+            })
+            ->get();
     }
 
     public function findAttributeByIdArray(array $attributeArray = [], int $languageId = 0)

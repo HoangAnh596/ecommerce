@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\PromotionEnum;
+
 if (!function_exists('convert_price')) {
     function convert_price(string $price = '')
     {
@@ -26,10 +28,32 @@ if (!function_exists('convert_array')) {
     }
 }
 
+if (!function_exists('convertDateTime')) {
+    function convertDateTime(string $date = '', string $format = 'd/m/Y H:i')
+    {
+        $carbonDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date);
+
+        return $carbonDate->format($format);
+    }
+}
+
+if (!function_exists('renderDiscountInformation')) {
+    function renderDiscountInformation($promotion)
+    {
+        if ($promotion->method === PromotionEnum::PRODUCT_AND_QUANTITY) {
+            $discountValue = $promotion->discountInformation['info']['discountValue'];
+            $discountType = ($promotion->discountInformation['info']['discountType'] == 'percent') ? '%' : 'đ';
+
+            return '<span class="label label-success">'.$discountValue.$discountType.'</span>';
+        }
+
+        return '<div><a href="'.route('promotion.edit', $promotion->id).'">Xem chi tiết</a></div>';
+    }
+}
+
 if (!function_exists('renderSystemInput')) {
     function renderSystemInput(string $name = '', $systems = null)
     {
-        // dd($name, $systems);
         return '<input type="text" 
             name="config[' . $name . ']" 
             value="' . old($name, ($systems[$name]) ?? '') . '" 

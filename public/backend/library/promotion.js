@@ -32,7 +32,6 @@
                 $.ajax({
                     url: 'ajax/source/getAllSource',
                     type: 'GET',
-                    // data: option,
                     dataType: 'json',
                     success: function(res) {
                         let sourceData = res.data;
@@ -565,10 +564,11 @@
                 let sku = object.data[i].sku;
                 let price = object.data[i].price;
                 let classBox = model + '_' + product_id + '_' + product_variant_id;
-                let isChecked = ($('.boxWrapper .'+classBox+'').length ? true : false )
+                let isChecked = ($('.boxWrapper .'+classBox+'').length ? true : false );
+                let uuid = object.data[i].uuid;
             
                 html += `<div class="search-object-item" data-product-id="${product_id}" 
-                        data-variant-id="${product_variant_id}" data-name="${name}">
+                        data-variant-id="${product_variant_id}" data-name="${name}" data-uuid="${uuid}">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="object-info">
                             <div class="uk-flex uk-flex-middle">
@@ -682,7 +682,8 @@
             let objectItem = {
                 product_id: _this.attr('data-product-id'),
                 product_variant_id: _this.attr('data-variant-id'),
-                name: _this.attr('data-name')
+                name: _this.attr('data-name'),
+                uuid: _this.attr('data-uuid')
             }
 
             if(isChecked) {
@@ -700,13 +701,15 @@
         let preloadObject = JSON.parse($('.input_object').val()) || { 
             id: [], 
             product_variant_id: [],
-            name: []
+            name: [],
+            uuid: [],
         };
 
         let objectArray = preloadObject.id.map((id, index) => ({
             product_id: id,
             product_variant_id: preloadObject.product_variant_id[index] || 'null',
-            name: preloadObject.name[index]
+            name: preloadObject.name[index],
+            uuid: preloadObject.uuid[index] || 'null',
         }));
 
         if(objectArray.length && typeof objectArray !== 'undefined') {
@@ -726,7 +729,7 @@
         let model = $('.select-product-and-quantity').val();
         if(objectData.length) {
             for(let i = 0; i < objectData.length; i++) {
-                let { product_id, product_variant_id, name } = objectData[i];
+                let { product_id, product_variant_id, name, uuid } = objectData[i];
                 let classBox = `${model}_${product_id}_${product_variant_id}`;
                 if(!$(`.boxWrapper .${classBox}`).length) {
                     html += `<div class="fixGrid6 ${classBox}">
@@ -740,6 +743,7 @@
                             <div class="hidden">
                                 <input name="object[id][]" value="${product_id}">
                                 <input name="object[product_variant_id][]" value="${product_variant_id}">
+                                <input name="object[variant_uuid][]" value="${uuid}">
                                 <input name="object[name][]" value="${name}">
                             </div>
                         </div>
