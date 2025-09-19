@@ -6,29 +6,30 @@ use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
 use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 use App\Http\Controllers\Ajax\LocationController;
-use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\GenerateController;
 use App\Http\Controllers\Backend\LanguageController;
-use App\Http\Controllers\Backend\PermissionController;
-use App\Http\Controllers\Backend\PostCatalogueController;
-use App\Http\Controllers\Backend\PostController;
-use App\Http\Controllers\Backend\UserCatalogueController;
-use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\Backend\Post\PostCatalogueController;
+use App\Http\Controllers\Backend\Post\PostController;
+use App\Http\Controllers\Backend\User\AuthController;
+use App\Http\Controllers\Backend\User\PermissionController;
+use App\Http\Controllers\Backend\User\UserCatalogueController;
+use App\Http\Controllers\Backend\User\UserController;
 use App\Http\Middleware\LoginMiddleware;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Backend\ProductCatalogueController;
-use App\Http\Controllers\Backend\ProductController;
-use App\Http\Controllers\Backend\AttributeCatalogueController;
-use App\Http\Controllers\Backend\AttributeController;
+use App\Http\Controllers\Backend\Product\ProductCatalogueController;
+use App\Http\Controllers\Backend\Product\ProductController;
+use App\Http\Controllers\Backend\Attribute\AttributeCatalogueController;
+use App\Http\Controllers\Backend\Attribute\AttributeController;
 use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\SlideController;
 use App\Http\Controllers\Backend\SystemController;
 use App\Http\Controllers\Backend\WidgetController;
-use App\Http\Controllers\Backend\SourceController;
-use App\Http\Controllers\Backend\CustomerCatalogueController;
-use App\Http\Controllers\Backend\CustomerController;
-use App\Http\Controllers\Backend\PromotionController;
+use App\Http\Controllers\Backend\Customer\CustomerCatalogueController;
+use App\Http\Controllers\Backend\Customer\CustomerController;
+use App\Http\Controllers\Backend\Promotion\SourceController;
+use App\Http\Controllers\Backend\Promotion\PromotionController;
+use App\Http\Controllers\Frontend\HomeController;
 
 //@@useController@@
 
@@ -42,10 +43,9 @@ use App\Http\Controllers\Backend\PromotionController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+/* FRONTEND ROUTES */
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
-Route::get('/', function () {
-    return view('welcome');
-});
 /* Backend Routes */
 Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], function (){
     Route::get('dashboard/index', [DashboardController::class, 'index'])->name('dashboard.index');

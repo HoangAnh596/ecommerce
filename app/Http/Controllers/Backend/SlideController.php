@@ -49,7 +49,7 @@ class SlideController extends Controller
             ],
             'model' => 'Slide'
         ];
-        $template = 'backend.slide.slide.index';
+        $template = 'backend.slide.index';
         $config['seo']  = __('messages.slide');
 
         return view('backend.dashboard.layout', compact(
@@ -63,7 +63,7 @@ class SlideController extends Controller
     {
         $this->authorize('modules', 'slide.create');
         $config = $this->configData();
-        $template = 'backend.slide.slide.store';
+        $template = 'backend.slide.store';
         $config['seo']  = __('messages.slide');
         $config['method'] = 'create';
 
@@ -92,7 +92,7 @@ class SlideController extends Controller
         );
 
         $config = $this->configData();
-        $template = 'backend.slide.slide.store';
+        $template = 'backend.slide.store';
         $config['seo']  = __('messages.slide');
         $config['method'] = 'edit';
 
@@ -117,7 +117,7 @@ class SlideController extends Controller
     {
         $this->authorize('modules', 'slide.destroy');
         $slide = $this->slideRepository->findById($id);
-        $template = 'backend.slide.slide.delete';
+        $template = 'backend.slide.delete';
         $config['seo']  = __('messages.slide');
 
         return view('backend.dashboard.layout', compact(

@@ -121,6 +121,7 @@ class BaseRepository implements BaseRepositoryInterface
         $relation = [],
         array $orderBy = ['id', 'ASC'],
         array $params = [],
+        array $withCount = []
     ) {
         $query = $this->model->newQuery();
         foreach ($condition as $key => $value) {
@@ -132,6 +133,7 @@ class BaseRepository implements BaseRepositoryInterface
         }
 
         $query->with($relation);
+        $query->withCount($withCount);
         $query->orderBy($orderBy[0], $orderBy[1]);
 
         return ($flag == false) ? $query->first() : $query->get();

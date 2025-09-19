@@ -44,10 +44,10 @@ if (!function_exists('renderDiscountInformation')) {
             $discountValue = $promotion->discountInformation['info']['discountValue'];
             $discountType = ($promotion->discountInformation['info']['discountType'] == 'percent') ? '%' : 'đ';
 
-            return '<span class="label label-success">'.$discountValue.$discountType.'</span>';
+            return '<span class="label label-success">' . $discountValue . $discountType . '</span>';
         }
 
-        return '<div><a href="'.route('promotion.edit', $promotion->id).'">Xem chi tiết</a></div>';
+        return '<div><a href="' . route('promotion.edit', $promotion->id) . '">Xem chi tiết</a></div>';
     }
 }
 
@@ -136,6 +136,56 @@ if (!function_exists('recursive')) {
             }
         }
         return $temp;
+    }
+}
+
+if (!function_exists('write_url')) {
+    function write_url(
+        string $canonical = '',
+        bool $fullDomain = true,
+        $suffix = false,
+        $externalLink = false
+    ) {
+        if (strpos($canonical, 'http') !== false) {
+            return $canonical;
+        }
+
+        $fullUrl = (($fullDomain === true) ? config('app.url') : '')
+            . $canonical
+            . (($suffix === true) ? config('apps.general.suffix') : '');
+
+        return $fullUrl;
+    }
+}
+
+if (!function_exists('frontend_recursive_menu')) {
+    function frontend_recursive_menu(array $data, int $count = 1, $type = 'html')
+    {
+        $html = '';
+        if (isset($data) && !is_null($data) && count($data)) {
+            if ($type == 'html') {
+                foreach ($data as $key => $val) {
+                    $name  = $val['item']->languages->first()->pivot->name;
+                    $canonical = write_url($val['item']->languages->first()->pivot->canonical, true, true);
+                    $ulClass = ($count >= 1) ? 'menu-level__' . ($count + 1) : '';
+
+                    $html .= '<li class="' . (($count == 1) ? 'children' : '') . '">';
+                    $html .= '<a href="' . $canonical . '" title="' . $name . '">' . $name . '</a>';
+                    if (count($val['children'])) {
+                        $html .= '<div class="dropdown-menu">';
+                        $html .= '<ul class="uk-list uk-clearfix menu-style ' . $ulClass . '">';
+                        $html .= frontend_recursive_menu($val['children'], $val['item']->parent_id, $count + 1);
+                        $html .= '</ul>';
+                        $html .= '</div>';
+                    }
+                    $html .= '</li>';
+                }
+
+                return $html;
+            }
+        }
+
+        return $data;
     }
 }
 

@@ -58,7 +58,6 @@ class BaseService implements BaseServiceInterface
             ['language_id', '=', $languageId],
             ['controllers', '=', 'App\Http\Controllers\Frontend\\' . $controllerName],
         ];
-
         $router = $this->routerRepository->findByCondition($condition);
 
         return $this->routerRepository->update($router->id, $payload);

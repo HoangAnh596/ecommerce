@@ -4,9 +4,8 @@ namespace App\Services;
 
 use App\Services\Interfaces\WidgetServiceInterface;
 use App\Repositories\Interfaces\WidgetRepositoryInterface as WidgetRepository;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 /**
  * Class WidgetService
@@ -50,6 +49,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             $payload['description'] = [
                 $languageId => $payload['description']
             ];
+            $payload['publish'] = config('apps.general.public');
             $payload['user_id'] = auth()->id();
 
             $this->widgetRepository->create($payload);
@@ -133,5 +133,58 @@ class WidgetService extends BaseService implements WidgetServiceInterface
     private function paginateSelect()
     {
         return ['id', 'name', 'keyword', 'description', 'album', 'short_code', 'model', 'publish'];
+    }
+
+    /* FRONTEND SERVICE */
+
+    public function findWidgetByKeyword(string $keyword = '', int $language = 1, $param = [])
+    {
+        $widget = $this->widgetRepository->findByCondition([
+            ['keyword', '=', $keyword],
+            config('apps.general.defaultPublish'), // ['publish', '=', 2]
+        ]);
+
+        if(!is_null($widget)){
+            $loadClass = loadClassInterface($widget->model);
+            $agrument = $this->widgetAgrument($widget, $language, $param);
+            $object = $loadClass->findByCondition(...$agrument)->toArray();
+            dd($object);
+        }
+    }
+
+    private function widgetAgrument($widget, $language, $param)
+    {
+        $relation = [
+            'languages' => function ($query) use ($language) {
+                $query->where('language_id', $language);
+            }
+        ];
+
+        $withCount = [];
+        if (strpos($widget->model, 'Catalogue') && isset($param['children'])) {
+            $model = lcfirst(str_replace('Catalogue', '', $widget->model)).'s';
+            $relation[$model] = function ($query) use ($param, $language) {
+                $query->limit($param['limit'] ?? 8);
+                $query->where('publish', config('apps.general.public')); // config('apps.general.public') = 2
+                $query->with(['languages' => function ($query) use ($language) {
+                    $query->where('language_id', $language);
+                }]);
+            };
+
+            $withCount[] = $model;
+        }
+
+        return [
+            'condition' => [
+                config('apps.general.defaultPublish')
+            ],
+            'flag' => true,
+            'relation' => $relation,
+            'params' => [
+                'whereIn' => $widget->model_id,
+                'whereInField' => 'id',
+            ],
+            'withCount' => $withCount,
+        ];
     }
 }
