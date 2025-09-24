@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePermissionRequest;
-use App\Http\Requests\UpdatePermissionRequest;
+use App\Http\Requests\User\StorePermissionRequest;
+use App\Http\Requests\User\UpdatePermissionRequest;
 use App\Repositories\Interfaces\PermissionRepositoryInterface as PermissionRepository;
 use App\Services\Interfaces\PermissionServiceInterface as PermissionService;
 use Illuminate\Http\Request;

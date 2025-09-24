@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Backend\Attribute;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAttributeCatalogueRequest;
-use App\Http\Requests\UpdateAttributeCatalogueRequest;
+use App\Http\Requests\Attribute\StoreAttributeCatalogueRequest;
+use App\Http\Requests\Attribute\UpdateAttributeCatalogueRequest;
 use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
 use App\Services\Interfaces\AttributeCatalogueServiceInterface as AttributeCatalogueService;
 use Illuminate\Http\Request;
 use App\Classes\Nestedsetbie;
-use App\Http\Requests\DeleteAttributeCatalogueRequest;
+use App\Http\Requests\Attribute\DeleteAttributeCatalogueRequest;
 use App\Models\Language;
 
 class AttributeCatalogueController extends Controller

@@ -14,17 +14,15 @@ class Promotion extends Model
     protected $table = 'promotions';
 
     protected $fillable = [
-        'name',
-        'code',
-        'description',
-        'method',
+        'name', 'code',
+        'description', 'method',
+        'discountValue',
+        'discountType',
+        'maxDiscountValue',
         'discountInformation',
-        'neverEndDate',
-        'startDate',
-        'endDate',
-        'publish',
-        'order',
-        'user_id',
+        'neverEndDate', 'startDate',
+        'endDate', 'publish',
+        'order', 'user_id',
     ];
 
     protected $casts = [
@@ -32,7 +30,7 @@ class Promotion extends Model
     ];
 
     public function products(){
-        return $this->belongsToMany(Promotion::class, 'promotion_product_variant', 'promotion_id', 'product_id')
+        return $this->belongsToMany(Products::class, 'promotion_product_variant', 'promotion_id', 'product_id')
         ->withPivot(
             'variant_uuid',
             'model',

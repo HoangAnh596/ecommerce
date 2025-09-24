@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Backend\Post;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePostCatalogueRequest;
-use App\Http\Requests\UpdatePostCatalogueRequest;
+use App\Http\Requests\Post\StorePostCatalogueRequest;
+use App\Http\Requests\Post\UpdatePostCatalogueRequest;
+use App\Http\Requests\Post\DeletePostCatalogueRequest;
 use App\Repositories\Interfaces\PostCatalogueRepositoryInterface as PostCatalogueRepository;
 use App\Services\Interfaces\PostCatalogueServiceInterface as PostCatalogueService;
 use Illuminate\Http\Request;
 use App\Classes\Nestedsetbie;
-use App\Http\Requests\DeletePostCatalogueRequest;
 use App\Models\Language;
 
 class PostCatalogueController extends Controller

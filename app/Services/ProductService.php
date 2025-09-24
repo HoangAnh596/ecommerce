@@ -8,6 +8,7 @@ use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as ProductVariantLanguageRepository;
 use App\Repositories\Interfaces\ProductVariantAttrRepositoryInterface as ProductVariantAttrRepository;
+use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -24,17 +25,20 @@ class ProductService extends BaseService implements ProductServiceInterface
     protected $prVariantLanguageRepository;
     protected $productVariantAttrRepository;
     protected $controllerName;
+    protected $promotionRepository;
 
     public function __construct(
         ProductRepository $productRepository,
         RouterRepository $routerRepository,
         ProductVariantLanguageRepository $prVariantLanguageRepository,
         ProductVariantAttrRepository $productVariantAttrRepository,
+        PromotionRepository $promotionRepository,
     ) {
         $this->productRepository = $productRepository;
         $this->routerRepository = $routerRepository;
         $this->prVariantLanguageRepository = $prVariantLanguageRepository;
         $this->productVariantAttrRepository = $productVariantAttrRepository;
+        $this->promotionRepository = $promotionRepository;
         $this->controllerName = 'ProductController';
     }
 
@@ -205,7 +209,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $variant = [];
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach (($payload['variant']['sku']) as $key => $val) {
-                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.$payload['productVariant']['id'][$key]);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $payload['productVariant']['id'][$key]);
                 $variant[] = [
                     'uuid' => $uuid,
                     'code' => ($payload['productVariant']['id'][$key]) ?? '',
@@ -306,5 +310,21 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function payloadProduct()
     {
         return ['name', 'canonical', 'description', 'content', 'meta_title', 'meta_description', 'meta_keyword'];
+    }
+
+    public function combineProductAndPromotion($productId = [], $products)
+    {
+        $promotions = $this->promotionRepository->findByProduct($productId);
+        if ($promotions) {
+            foreach ($products as $index => $product) {
+                foreach ($promotions as $key => $promotion) {
+                    if ($promotion->product_id == $product->id) {
+                        $products[$index]->promotions = $promotion;
+                    }
+                }
+            }
+        }
+
+        return $products;
     }
 }

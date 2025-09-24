@@ -12,6 +12,7 @@
                 <div class="search-model-box">
                     <i class="fa fa-search"></i>
                     <input type="text" class="form-control search-model" placeholder="Tìm kiếm tên, mã sản phẩm, SKU...">
+                    <div class="ajax-search-result" hidden></div>
                 </div>
                 <div class="search-list mt10">Loading...</div>
             </div>

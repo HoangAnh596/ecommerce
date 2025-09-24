@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSlideRequest;
-use App\Http\Requests\UpdateSlideRequest;
+use App\Http\Requests\Slide\StoreSlideRequest;
+use App\Http\Requests\Slide\UpdateSlideRequest;
 use App\Services\Interfaces\SlideServiceInterface as SlideService;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 use App\Repositories\Interfaces\SlideRepositoryInterface as SlideRepository;

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Backend\Product;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductCatalogueRequest;
-use App\Http\Requests\UpdateProductCatalogueRequest;
+use App\Http\Requests\Product\StoreProductCatalogueRequest;
+use App\Http\Requests\Product\UpdateProductCatalogueRequest;
+use App\Http\Requests\Product\DeleteProductCatalogueRequest;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface as ProductCatalogueRepository;
 use App\Services\Interfaces\ProductCatalogueServiceInterface as ProductCatalogueService;
 use Illuminate\Http\Request;
 use App\Classes\Nestedsetbie;
-use App\Http\Requests\DeleteProductCatalogueRequest;
 use App\Models\Language;
 
 class ProductCatalogueController extends Controller

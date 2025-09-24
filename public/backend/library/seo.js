@@ -1,6 +1,7 @@
 (function($) {
 	"use strict";
 	var HT = {}; 
+    var autoSlug = false;
 
     HT.seoPreview = () => {
         $('input[name=meta_title]').on('keyup', function(){
@@ -9,19 +10,34 @@
             $('.meta-title').html(value)
         })
 
-
-       $('.seo-canonical').each(function(){
+        $('.seo-canonical').each(function(){
             let _this = $(this)
             _this.css({
-                'padding-left':   parseInt($('.baseUrl').outerWidth()) + 10
+                'padding-left': parseInt($('.baseUrl').outerWidth()) + 10
             })
-       })
+        })
 
-       $('input[name=canonical]').on('keyup', function(){
+
+        // xác định trạng thái tự sinh ngay sau khi load
+        autoSlug = !$('input[name=canonical]').val()?.trim();
+        // console.log(autoSlug);
+        
+        // khi nhập trực tiếp canonical
+        $('input[name=canonical]').on('keyup', function(){
             let input = $(this)
+            autoSlug = false;
             let value = HT.removeUtf8(input.val())
             $('.canonical').html(BASE_URL + value + SUFFIX) 
         })
+
+        // ⭐ khi nhập tiêu đề (name) thì tự sinh canonical
+        $('input[name=name]').on('keyup', function(){
+            let input = $(this);
+            if (!autoSlug) return;
+            let value = HT.removeUtf8(input.val());
+            $('input[name=canonical]').val(value); // gán slug vào canonical
+            $('.canonical').html(BASE_URL + value + SUFFIX); // cập nhật preview
+        });
 
         $('textarea[name=meta_description]').on('keyup', function(){
             let input = $(this)
@@ -39,7 +55,7 @@
         str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
         str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
         str = str.replace(/đ/g, "d");
-        str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|,|\.|\:|\;|\'|\–| |\"|\&|\#|\[|\]|\\|\/|~|$|_/g, "-");
+        str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|,|\.|\:|\;|\'|\–| |\"|\`|\&|\#|\[|\]|\\|\/|~|\$|_/g, "-");
         str = str.replace(/-+-/g, "-");
         str = str.replace(/^\-+|\-+$/g, "");
         return str;

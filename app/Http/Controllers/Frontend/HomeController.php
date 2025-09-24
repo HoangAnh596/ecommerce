@@ -28,12 +28,22 @@ class HomeController extends FrontendController
         $slides->slideItems = $slides->item[$this->language];
 
         $widget = [
-            // 'category' => $this->widgetService->findWidgetByKeyword('category', $this->language, ['children' => true]),
+            'category' => $this->widgetService->findWidgetByKeyword(
+                'category', 
+                $this->language, 
+                [
+                    'children' => true, 
+                    'object' => true,
+                    'countObject' => true,
+                ]
+            ),
             'news' => $this->widgetService->findWidgetByKeyword('news', $this->language),
+            'category-2' => $this->widgetService->findWidgetByKeyword('category-highlight', $this->language),
         ];
-
+// dd($widget['category']);
         return view('frontend.homepage.home.index', compact(
-            'slides'
+            'slides',
+            'widget'
         ));
     }
 

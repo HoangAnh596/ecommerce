@@ -44,14 +44,29 @@ class PromotionService extends BaseService implements PromotionServiceInterface
 
     private function request($request)
     {
-        $payload = $request->only('name', 'code', 'description', 'method', 'startDate', 'endDate', 'neverEndDate');
+        $payload = $request->only(
+            'name',
+            'code',
+            'description',
+            'method',
+            'discountValue',
+            'discountType',
+            'maxDiscountValue',
+            'startDate',
+            'endDate',
+            'neverEndDate',
+        );
+
+        $payload['discountValue'] = convert_price($request->input(PromotionEnum::PRODUCT_AND_QUANTITY . '.discountValue'));
+        $payload['discountType'] = $request->input(PromotionEnum::PRODUCT_AND_QUANTITY . '.discountType');
+        $payload['maxDiscountValue'] = convert_price($request->input(PromotionEnum::PRODUCT_AND_QUANTITY . '.maxDiscountValue'));
         $payload['startDate'] = Carbon::createFromFormat('d/m/Y H:i', $request->input('startDate'));
         if (isset($payload['endDate'])) {
             $payload['endDate'] = Carbon::createFromFormat('d/m/Y H:i', $request->input('endDate'));
         }
         $payload['user_id'] = auth()->id();
         $payload['code'] = (empty($payload['code'])) ? time() : $payload['code'];
-
+// dd($payload);
         switch ($payload['method']) {
             case PromotionEnum::ORDER_AMOUNT_RANGE:
                 $payload[PromotionEnum::DISCOUNT] = $this->orderByRanger($request);
@@ -140,7 +155,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                 }
             }
 
-            if($method == 'update') {
+            if ($method == 'update') {
                 $promotion->products()->detach();
             }
 

@@ -4,42 +4,53 @@
     @include('frontend.component.slide')
     <div class="panel-category page-setup">
         <div class="uk-container uk-container-center">
+            @if(!is_null($widget['category-2']))
             <div class="panel-head">
                 <div class="uk-flex uk-flex-middle">
                     <h2 class="heading-1"><span>Danh mục sản phẩm</span></h2>
                     <div class="category-children">
                         <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
-                            <li class=""><a href="" title="">Bánh & Sữa</a></li>
-                            <li class=""><a href="" title="">Cà phê & Trà</a></li>
-                            <li class=""><a href="" title="">Thức ăn cho vật nuôi</a></li>
-                            <li class=""><a href="" title="">Rau củ</a></li>
-                            <li class=""><a href="" title="">Hoa Quả</a></li>
+                            @foreach($widget['category-2'] as $key => $val)
+                            @php
+                                $name = $val->languages->first()->pivot->name;
+                                $canonical = write_url($val->languages->first()->pivot->canonical);
+                            @endphp
+                            <li class=""><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>
             </div>
+            @endif
+            @if(!is_null($widget['category']))
             <div class="panel-body">
-                <?php $category = ['Cake & Milk', 'Oganic Kiwi', 'Peach', 'Read Apple', 'Snacks', 'Vegetables', 'Strawbery', 'Black plum', 'Custard apple', 'Coffe & Tea', 'Headphone', 'Kiwi', 'Iphone']  ?>
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
                 <div class="swiper-container">
                     <div class="swiper-wrapper">
-                        @foreach ($category as $i => $cat)
+                        @foreach ($widget['category'] as $key => $val)
+                        @php
+                            $name = $val->languages->first()->pivot->name;
+                            $canonical = write_url($val->languages->first()->pivot->canonical);
+                            $image = $val->image;
+                            $productCount = $val->product_count;
+                        @endphp
                         <div class="swiper-slide">
                             <div class="category-item bg-{{ rand(1, 7) }}">
                                 <a href="" class="image img-scaledown img-zoomin">
-                                    <img src="{{ asset('frontend/resources/img/cat-' . ($i + 1) . '.png') }}" alt="">
+                                    <img src="{{ asset($val->image) }}" alt="">
                                 </a>
                                 <div class="title">
-                                    <a href="" title="">{{ $cat }}</a>
+                                    <a href="" title="">{{ $name }}</a>
                                 </div>
-                                <div class="total-product">{{ rand(0, 100) }} sản phẩm</div>
+                                <div class="total-product">{{ $val->product_count }} sản phẩm</div>
                             </div>
                         </div>
                         @endforeach
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
     <div class="panel-banner">
@@ -122,11 +133,11 @@
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-container">
                                 <div class="swiper-wrapper">
-                                    <?php for ($i = 0; $i < count($category); $i++) {  ?>
+                                    
                                         <div class="swiper-slide">
                                             @include('frontend.component.product-item')
                                         </div>
-                                    <?php }  ?>
+                                    
                                 </div>
                             </div>
                         </div>

@@ -46,29 +46,6 @@ class ProductCatalogue extends Model
         return $this->belongsToMany(Product::class, 'product_catalogue_product', 'product_catalogue_id', 'product_id');
     }
 
-    /* Lấy ra cha con */
-    public function parent()
-    {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
-
-    public function children()
-    {
-        return $this->hasMany(self::class, 'parent_id');
-    }
-
-    /**
-     * Đệ quy lấy toàn bộ nhánh con + kèm products của từng node
-     * Có thể truyền $language, $limit qua scope tạm hoặc closure khi with()
-     */
-    public function childrenRecursive()
-{
-    return $this->children()->with([
-        'childrenRecursive', 
-        'products.languages'
-    ]);
-}
-
     public function product_catalogue_language(){
         return $this->hasMany(ProductCatalogueLanguage::class, 'product_catalogue_id', 'id');
     }

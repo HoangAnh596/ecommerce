@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreLanguageRequest;
-use App\Http\Requests\StoreTranslateRequest;
-use App\Http\Requests\TranslateRequest;
-use App\Http\Requests\UpdateLanguageRequest;
+use App\Http\Requests\Language\StoreLanguageRequest;
+use App\Http\Requests\Language\TranslateRequest;
+use App\Http\Requests\Language\UpdateLanguageRequest;
 use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 use App\Services\Interfaces\LanguageServiceInterface as LanguageService;
 use Illuminate\Http\Request;

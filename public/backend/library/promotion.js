@@ -556,6 +556,9 @@
             let model = $('.select-product-and-quantity').val();
             for(let i = 0; i < object.data.length; i++) {
                 let image = object.data[i].image;
+                if (!image || image === 'null') {
+                    image = ''; // ảnh mặc định
+                }
                 let name = object.data[i].variant_name;
                 let product_variant_id = object.data[i].product_variant_id;
                 let product_id = object.data[i].id;
@@ -702,14 +705,14 @@
             id: [], 
             product_variant_id: [],
             name: [],
-            uuid: [],
+            variant_uuid: [],
         };
 
         let objectArray = preloadObject.id.map((id, index) => ({
             product_id: id,
             product_variant_id: preloadObject.product_variant_id[index] || 'null',
             name: preloadObject.name[index],
-            uuid: preloadObject.uuid[index] || 'null',
+            uuid: preloadObject.variant_uuid[index] || 'null',
         }));
 
         if(objectArray.length && typeof objectArray !== 'undefined') {

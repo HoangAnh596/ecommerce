@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend\Post;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
+use App\Http\Requests\Post\StorePostRequest;
+use App\Http\Requests\Post\UpdatePostRequest;
 use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
 use App\Services\Interfaces\PostServiceInterface as PostService;
 use Illuminate\Http\Request;

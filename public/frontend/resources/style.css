@@ -1427,7 +1427,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     right:0;
     left:initial;
     top:-30px;
-    background-image: url('img/arrow.png');
+    background-image: url('../resources/img/arrow.png');
     background-size:50%;
     background-color: #f2f3f4;
     width:40px;
@@ -1439,7 +1439,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     right:50px;
     left:initial;
     top:-30px;
-    background-image: url('img/arrow.png');
+    background-image: url('../resources/img/arrow.png');
     background-size:50%;
     background-color: #f2f3f4;
     width:40px;

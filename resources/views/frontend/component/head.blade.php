@@ -27,10 +27,10 @@
 
 @php
     $coreCss = [
+        'frontend/resources/library/css/library.css',
         'frontend/resources/style.css',
         'frontend/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css',
         'frontend/resources/uikit/css/uikit.modify.css',
-        'frontend/resources/library/css/library.css',
         'frontend/resources/plugins/wow/css/libs/animate.css'
     ];
 @endphp

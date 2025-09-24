@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend\Attribute;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAttributeRequest;
-use App\Http\Requests\UpdateAttributeRequest;
+use App\Http\Requests\Attribute\StoreAttributeRequest;
+use App\Http\Requests\Attribute\UpdateAttributeRequest;
 use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeRepository;
 use App\Services\Interfaces\AttributeServiceInterface as AttributeService;
 use Illuminate\Http\Request;

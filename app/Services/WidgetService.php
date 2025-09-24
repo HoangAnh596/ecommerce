@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Services\Interfaces\WidgetServiceInterface;
 use App\Repositories\Interfaces\WidgetRepositoryInterface as WidgetRepository;
+use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
+use App\Services\Interfaces\ProductServiceInterface as ProductService;
+use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface as ProductCatalogueRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -14,10 +17,20 @@ use Illuminate\Support\Str;
 class WidgetService extends BaseService implements WidgetServiceInterface
 {
     protected $widgetRepository;
+    protected $promotionRepository;
+    protected $productService;
+    protected $productCatalogueRepository;
 
-    public function __construct(WidgetRepository $widgetRepository)
-    {
+    public function __construct(
+        WidgetRepository $widgetRepository,
+        PromotionRepository $promotionRepository,
+        ProductService $productService,
+        ProductCatalogueRepository $productCatalogueRepository,
+    ) {
         $this->widgetRepository = $widgetRepository;
+        $this->promotionRepository = $promotionRepository;
+        $this->productService = $productService;
+        $this->productCatalogueRepository = $productCatalogueRepository;
     }
 
     public function paginate($request)
@@ -144,11 +157,39 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             config('apps.general.defaultPublish'), // ['publish', '=', 2]
         ]);
 
-        if(!is_null($widget)){
-            $loadClass = loadClassInterface($widget->model);
+        if (!is_null($widget)) {
+            $class = loadClassInterface($widget->model);
             $agrument = $this->widgetAgrument($widget, $language, $param);
-            $object = $loadClass->findByCondition(...$agrument)->toArray();
-            dd($object);
+            $object = $class->findByCondition(...$agrument);
+
+            $model = lcfirst(str_replace('Catalogue', '', $widget->model));
+            if (count($object)) {
+                foreach ($object as $val) {
+                    if ($model === 'product' && isset($param['object']) && $param['object'] == true) {
+                        // if ($val->id != 8) continue; // để test id = 8
+                        $productId = $val->products->pluck('id')->toArray();
+                        //dd($productId); // array:3 [▼ app\Services\WidgetService.php:164
+                        //   0 => 10
+                        //   1 => 11
+                        //   2 => 90
+                        // ]
+                        $val->products = $this->productService->combineProductAndPromotion($productId, $val->products);
+                    }
+
+                    if (isset($param['children']) && $param['children'] == true) {
+                        $val->childrens = $this->productCatalogueRepository->findByCondition(
+                            [
+                                ['lft', '>', $val->lft],
+                                ['rgt', '<', $val->rgt],
+                                config('apps.general.defaultPublish'),
+                            ],
+                            true
+                        );
+                    }
+                }
+            }
+
+            return $object;
         }
     }
 
@@ -161,17 +202,19 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         ];
 
         $withCount = [];
-        if (strpos($widget->model, 'Catalogue') && isset($param['children'])) {
-            $model = lcfirst(str_replace('Catalogue', '', $widget->model)).'s';
+        if (strpos($widget->model, 'Catalogue') && isset($param['object'])) {
+            $model = lcfirst(str_replace('Catalogue', '', $widget->model)) . 's';
             $relation[$model] = function ($query) use ($param, $language) {
-                $query->limit($param['limit'] ?? 8);
-                $query->where('publish', config('apps.general.public')); // config('apps.general.public') = 2
-                $query->with(['languages' => function ($query) use ($language) {
+                $query->whereHas('languages', function ($query) use ($language) {
                     $query->where('language_id', $language);
-                }]);
+                });
+                $query->take(($param['limit']) ?? 8);
+                $query->orderBy('order', 'desc');
             };
 
-            $withCount[] = $model;
+            if (isset($param['countObject'])) {
+                $withCount[] = $model;
+            }
         }
 
         return [
@@ -186,5 +229,50 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             ],
             'withCount' => $withCount,
         ];
+
+        // if (strpos($widget->model, 'Catalogue') && isset($param['children'])) {
+        //     $model = lcfirst(str_replace('Catalogue', '', $widget->model)) . 's';
+        //     $relation[$model] = function ($query) use ($param, $language) {
+        //         $limit = $param['limit'] ?? 8;
+        //         $query->limit($limit);
+        //         $query->where('publish', config('apps.general.public')); // config('apps.general.public') = 2
+        //         $query->with(['languages' => function ($query) use ($language) {
+        //             $query->where('language_id', $language);
+        //         }]);
+        //         $query->with('promotions', function ($query) use($limit) {
+        //             $query->select(
+        //                 'promotions.id',
+        //                 'promotions.discountValue',
+        //                 'promotions.discountType',
+        //                 'promotions.maxDiscountValue',
+        //                 DB::raw("
+        //                     IF(promotions.maxDiscountValue != 0, 
+        //                         LEAST(
+        //                             CASE
+        //                             WHEN discountType = 'cash' THEN discountValue
+        //                             WHEN discountType = 'percent' THEN ((SELECT price FROM products
+        //                             WHERE products.id = product_id) * discountValue / 100)
+        //                             ELSE 0
+        //                             END, 
+        //                             promotions.maxDiscountValue
+        //                         ),
+        //                         CASE
+        //                             WHEN discountType = 'cash' THEN discountValue
+        //                             WHEN discountType = 'percent' THEN ((SELECT price FROM products
+        //                             WHERE products.id = product_id) * discountValue / 100)
+        //                             ELSE 0
+        //                             END
+        //                     ) as discount
+        //                 ")
+        //             );
+        //             $query->where('publish', 2);
+        //             $query->whereDate('endDate', '>', now());
+        //             $query->orderBy('discount', 'DESC');
+        //             $query->take($limit);
+        //         });
+        //     };
+
+        //     $withCount[] = $model;
+        // }
     }
 }

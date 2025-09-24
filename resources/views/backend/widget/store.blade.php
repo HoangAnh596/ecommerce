@@ -52,9 +52,9 @@ $url = ($config['method'] == 'create') ? route('widget.store') : route('widget.u
                                         <span class="image img-cover"><img src="{{ $modelItem['image'][$key] }}" alt=""></span>
                                         <span class="name">{{ $modelItem['name'][$key] }}</span>
                                         <div class="hidden">
-                                            <input type="text" name="modelItem[id][] value="{{ $val }}">
-                                            <input type="text" name="modelItem[name][] value="{{ $modelItem['name'][$key] }}">
-                                            <input type="text" name="modelItem[image][] value="{{ $modelItem['image'][$key] }}">
+                                            <input type="text" name="modelItem[id][]" value="{{ $val }}">
+                                            <input type="text" name="modelItem[name][]" value="{{ $modelItem['name'][$key] ?? '' }}">
+                                            <input type="text" name="modelItem[image][]" value="{{ $modelItem['image'][$key] ?? '' }}">
                                         </div>
                                     </div>
                                     <div class="deleted">

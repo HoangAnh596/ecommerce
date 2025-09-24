@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreMenuCatalogueRequest;
+use App\Http\Requests\Menu\StoreMenuCatalogueRequest;
 use App\Repositories\Interfaces\MenuRepositoryInterface  as MenuRepository;
 use App\Services\Interfaces\MenuServiceInterface  as MenuService;
 use App\Services\Interfaces\MenuCatalogueServiceInterface  as MenuCatalogueService;
@@ -56,5 +56,25 @@ class MenuController extends Controller
         $json = json_decode($request->input('json'), true);
         $menuCatalogueId = $request->integer('menu_catalogue_id');
         $flag = $this->menuService->drapUpdate($json, $menuCatalogueId, $this->language);
+    }
+
+    public function deleteMenu(Request $request)
+    {
+        $id = $request->input('id');
+        $menu = $this->menuRepository->findById($id);
+        if($menu){
+            $this->menuRepository->forceDeleteByCondition([['id', '=', $id]]);
+            $menu->languages()->detach([$this->language, $id]);
+
+            return response()->json([
+                'code' => 0,
+                'message' => 'Xóa menu thành công',
+            ]);
+        }
+
+        return response()->json([
+            'code' => 1,
+            'message' => 'Menu không tồn tại',
+        ]);
     }
 }
