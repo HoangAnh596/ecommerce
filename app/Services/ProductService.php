@@ -256,6 +256,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payload['price'] = convert_price(($payload['price']) ?? 0);
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
         $payload['attribute'] = $this->formatJson($request, 'attribute');
+        $payload['publish'] = config('apps.general.public');
         $payload['variant'] = $this->formatJson($request, 'variant');
 
         return $this->productRepository->create($payload);
@@ -315,6 +316,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     public function combineProductAndPromotion($productId = [], $products)
     {
         $promotions = $this->promotionRepository->findByProduct($productId);
+
         if ($promotions) {
             foreach ($products as $index => $product) {
                 foreach ($promotions as $key => $promotion) {

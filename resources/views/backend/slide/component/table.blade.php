@@ -6,7 +6,7 @@
             </th>
             <th class="text-center">Tên nhóm</th>
             <th class="text-center">Từ khóa</th>
-            <!-- <th class="text-center">Danh sách Hình Ảnh</th> -->
+            <th class="text-center">Danh sách Hình Ảnh</th>
             <th class="text-center">Tình trạng</th>
             <th class="text-center">Thao tác</th>
         </tr>
@@ -23,6 +23,22 @@
             <!-- <td>
                 <span class="image img-cover"><img src="" alt=""></span>
             </td> -->
+            <td>
+                @php
+                    $items = is_array($slide->item) ? $slide->item : json_decode($slide->item, true);
+                    $langId = $language; // đổi theo ngôn ngữ hiện tại
+                @endphp
+
+                @if(!empty($items[$langId]))
+                    @foreach($items[$langId] as $it)
+                        <span class="image img-cover" style="display:inline-block; margin-right:5px;">
+                            <img src="{{ asset(ltrim($it['image'], '/')) }}" alt="">
+                        </span>
+                    @endforeach
+                @else
+                    <img src="{{ asset('images/no-image.png') }}" alt="">
+                @endif
+            </td>
             <td class="text-center js-switch-{{ $slide->id }}">
                 <input type="checkbox" class="js-switch status" data-field="publish" data-model="{{ $config['model'] }}" value="{{ $slide->publish }}" data-modelId="{{ $slide->id }}" {{ ($slide->publish == 2) ? 'checked' : '' }} />
             </td>

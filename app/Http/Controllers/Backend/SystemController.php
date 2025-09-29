@@ -41,7 +41,6 @@ class SystemController extends Controller
     public function index()
     {
         $systemConfig = $this->systemLibrary->config();
-        // $systems = convert_array($this->systemRepository->all(), 'keyword', 'content');
         $systems = convert_array($this->systemRepository->findByCondition(
             [
                 ['language_id', '=', $this->language],   

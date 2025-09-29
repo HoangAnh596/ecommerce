@@ -55,12 +55,25 @@ class System {
 
         $data['seo'] = [
             'label' => 'Cấu hình SEO dành cho trang chủ',
-            'description' => 'Cài đặt đầy đủ thông tin về SEO của trang chủ website. Bao gồm title seo, keyword seo,vv...',
+            'description' => 'Cài đặt đầy đủ thông tin về SEO của trang chủ website. 
+            Bao gồm title seo, keyword seo,vv...',
             'value' => [
                 'meta_title' => ['type' => 'text', 'label' => 'Tiêu đề SEO'],
                 'meta_keyword' => ['type' => 'text', 'label' => 'Từ khóa SEO'],
-                'meta_description' => ['type' => 'text', 'label' => 'Mô tả SEO'],
+                'meta_description' => ['type' => 'textarea', 'label' => 'Mô tả SEO'],
                 'meta_images' => ['type' => 'images', 'label' => 'Ảnh SEO'],
+            ]
+        ];
+
+        $data['social'] = [
+            'label' => 'Cấu hình Mạng xã hội dành cho trang chủ',
+            'description' => 'Cài đặt đầy đủ thông tin về Mạng xã hội của trang chủ website. 
+            Bao gồm Facebook, Youtube, X, Tiktok,...',
+            'value' => [
+                'facebook' => ['type' => 'text', 'label' => 'Facebook'],
+                'youtube' => ['type' => 'text', 'label' => 'Youtube'],
+                'twitter' => ['type' => 'text', 'label' => 'Twitter'],
+                'tiktok' => ['type' => 'text', 'label' => 'Tiktok'],
             ]
         ];
 

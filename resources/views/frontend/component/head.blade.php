@@ -2,28 +2,30 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<meta name="author" content="">
-<meta name="copyright" content="">
+<meta name="author" content="{{ $system['homepage_company'] }}">
+<meta name="copyright" content="{{ $system['homepage_company'] }}">
 <meta http-equiv="refresh" content="1800">
 <link rel="icon" href="" type="image/png" sizes="30x30">
+<meta name="theme-color" content="">
 <!-- GOOGLE -->
-<title></title>
-<meta name="description" content="">
+<title>{{ $system['seo_meta_title'] }}</title>
+<meta name="keywords" content="{{ $system['seo_meta_keyword'] }}">
+<meta name="description" content="{{ $system['seo_meta_description'] }}">
 <link rel="canonical" href="{{ config('app.url') }}">
 <meta property="og:locale" content="vi_VN">
 <!-- for Facebook -->
-<meta property="og:title" content="">
-<meta property="og:type" content="article">
-<meta property="og:image" content="">
+<meta property="og:title" content="{{ $system['seo_meta_title'] }}">
+<meta property="og:type" content="website">
+<meta property="og:image" content="{{ $system['seo_meta_images'] }}">
 <meta property="og:url" content="{{ config('app.url') }}">
-<meta property="og:description" content="">
+<meta property="og:description" content="{{ $system['seo_meta_description'] }}">
 <meta property="og:site_name" content="">
 <meta property="fb:admins" content="">
 <meta property="fb:app_id" content="">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="">
-<meta name="twitter:description" content="">
-<meta name="twitter:image" content="">
+<meta name="twitter:title" content="{{ $system['seo_meta_title'] }}">
+<meta name="twitter:description" content="{{ $system['seo_meta_description'] }}">
+<meta name="twitter:image" content="{{ $system['seo_meta_images'] }}">
 
 @php
     $coreCss = [

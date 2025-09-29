@@ -51,11 +51,13 @@ class SlideController extends Controller
         ];
         $template = 'backend.slide.index';
         $config['seo']  = __('messages.slide');
+        $language = $this->language;
 
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'slides'
+            'slides',
+            'language'
         ));
     }
 

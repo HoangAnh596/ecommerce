@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend\Product;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
+use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;

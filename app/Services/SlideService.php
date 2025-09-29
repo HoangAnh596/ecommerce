@@ -126,4 +126,29 @@ class SlideService extends BaseService implements SlideServiceInterface
     {
         return ['id', 'name', 'keyword', 'item', 'publish'];
     }
+
+    /* FRONTEND SERVICE */
+    public function getSlide($array = [], $languageId = 1)
+    {
+        $slides = $this->slideRepository->findByCondition(
+            [
+                ['publish', '=', 2]
+            ],
+            true,
+            [],
+            ['id', 'desc'],
+            [
+                'whereIn' => $array,
+                'whereInField' => 'keyword',
+            ],
+        );
+
+        $temp = [];
+        foreach ($slides as $key => $val) {
+            $temp[$val->keyword]['item'] = $val->item[$languageId];
+            $temp[$val->keyword]['setting'] = $val->setting;
+        }
+
+        return $temp;
+    }
 }

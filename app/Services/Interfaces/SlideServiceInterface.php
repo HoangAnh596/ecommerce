@@ -9,4 +9,6 @@ namespace App\Services\Interfaces;
 interface SlideServiceInterface
 {
     public function paginate($request);
+
+    public function getSlide($array = [], $languageId = 1);
 }

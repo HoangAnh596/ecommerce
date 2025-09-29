@@ -27,33 +27,37 @@ class ProductCatalogue extends Model
         'user_id',
     ];
 
-    public function languages(){
-        return $this->belongsToMany(Language::class, 'product_catalogue_language' , 'product_catalogue_id', 'language_id')
-        ->withPivot(
-            'product_catalogue_id',
-            'language_id',
-            'name',
-            'canonical',
-            'meta_title',
-            'meta_keyword',
-            'meta_description',
-            'description',
-            'content'
-        )->withTimestamps();
+    public function languages()
+    {
+        return $this->belongsToMany(Language::class, 'product_catalogue_language', 'product_catalogue_id', 'language_id')
+            ->withPivot(
+                'product_catalogue_id',
+                'language_id',
+                'name',
+                'canonical',
+                'meta_title',
+                'meta_keyword',
+                'meta_description',
+                'description',
+                'content'
+            )->withTimestamps();
     }
 
-    public function products(){
+    public function products()
+    {
         return $this->belongsToMany(Product::class, 'product_catalogue_product', 'product_catalogue_id', 'product_id');
     }
 
-    public function product_catalogue_language(){
+    public function product_catalogue_language()
+    {
         return $this->hasMany(ProductCatalogueLanguage::class, 'product_catalogue_id', 'id');
     }
 
-    public static function isNodeCheck($id = 0){
+    public static function isNodeCheck($id = 0)
+    {
         $productCatalogue = ProductCatalogue::find($id);
-        
-        if($productCatalogue->rgt - $productCatalogue->lft !== 1){
+
+        if ($productCatalogue->rgt - $productCatalogue->lft !== 1) {
             return false;
         }
 

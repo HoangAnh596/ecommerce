@@ -30,7 +30,7 @@ class Promotion extends Model
     ];
 
     public function products(){
-        return $this->belongsToMany(Products::class, 'promotion_product_variant', 'promotion_id', 'product_id')
+        return $this->belongsToMany(Product::class, 'promotion_product_variant', 'promotion_id', 'product_id')
         ->withPivot(
             'variant_uuid',
             'model',
