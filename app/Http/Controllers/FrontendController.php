@@ -13,15 +13,20 @@ class FrontendController extends Controller
 
     public function __construct()
     {
-        $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale();
-            $language = Language::where('canonical', $locale)->first();
-            $this->language = $language->id;
+        $this->setLanguage();
+        $this->setSystem();
+    }
 
-            $system = System::where('language_id', $language->id)->get();
-            $this->system = convert_array($system, 'keyword', 'content');
+    public function setLanguage()
+    {
+        $locale = app()->getLocale();
+        $language = Language::where('canonical', $locale)->first();
+        $this->language = $language->id;
+    }
 
-            return $next($request);
-        });
+    public function setSystem()
+    {
+        $system = System::where('language_id', $this->language)->get();
+        $this->system = convert_array($system, 'keyword', 'content');
     }
 }

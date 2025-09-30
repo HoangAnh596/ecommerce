@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as ProductVariantLanguageRepository;
 use App\Repositories\Interfaces\ProductVariantAttrRepositoryInterface as ProductVariantAttrRepository;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -42,12 +43,23 @@ class ProductService extends BaseService implements ProductServiceInterface
         $this->controllerName = 'ProductController';
     }
 
-    public function paginate($request, $languageId)
-    {
-        $perpage = $request->integer('perpage');
+    public function paginate(
+        $request, 
+        $languageId, 
+        $productCatalogue = null, 
+        $page = 1,
+        $extend = []
+    ) {
+        if(!is_null($productCatalogue)) {
+            Paginator::currentPageResolver(function() use ($page) {
+                return $page;
+            });
+        }
+
+        $perpage = !is_null($productCatalogue) ? 20 : 15;
         $condition = [
             'keyword' => addslashes($request->input('keyword')),
-            'publish' => $request->integer('publish'),
+            'publish' => (!is_null($productCatalogue)) ? config('apps.general.public') : $request->integer('publish'),
             'where' => [
                 ['tb2.language_id', '=', $languageId]
             ]
@@ -56,14 +68,17 @@ class ProductService extends BaseService implements ProductServiceInterface
             $this->paginateSelect(),
             $condition,
             $perpage,
-            ['path' => 'product.index', 'groupBy' => $this->paginateSelect()],
+            [
+                'path' => ($extend['path']) ?? 'product/index',
+                'groupBy' => $this->paginateSelect()
+            ],
             ['products.id', 'DESC'],
             [
                 ['product_language as tb2', 'tb2.product_id', '=', 'products.id'],
                 ['product_catalogue_product as tb3', 'products.id', '=', 'tb3.product_id']
             ],
             ['product_catalogues'],
-            $this->whereRaw($request, $languageId)
+            $this->whereRaw($request, $languageId, $productCatalogue)
         );
 
         return $products;
@@ -152,6 +167,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'products.image',
             'products.publish',
             'products.order',
+            'products.price',
             'tb2.name',
             'tb2.canonical'
         ];
@@ -227,10 +243,13 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $variant;
     }
 
-    private function whereRaw($request, $languageId)
+    private function whereRaw($request, $languageId, $productCatalogue = null)
     {
         $rawCondition = [];
-        if ($request->integer('product_catalogue_id') > 0) {
+        if ($request->integer('product_catalogue_id') > 0 || !is_null($productCatalogue)) {
+            $catId = ($request->integer('product_catalogue_id') > 0)
+                ? $request->integer('product_catalogue_id')
+                : $productCatalogue->id;
             $rawCondition['whereRaw'] =  [
                 [
                     'tb3.product_catalogue_id IN (
@@ -241,7 +260,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                         AND rgt <= (SELECT rgt FROM product_catalogues as pc WHERE pc.id = ?)
                         AND product_catalogue_language.language_id = ' . $languageId . '
                     )',
-                    [$request->integer('product_catalogue_id'), $request->integer('product_catalogue_id')]
+                    [$catId, $catId]
                 ]
             ];
         }

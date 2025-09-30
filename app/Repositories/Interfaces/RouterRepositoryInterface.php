@@ -8,4 +8,5 @@ namespace App\Repositories\Interfaces;
  */
 interface RouterRepositoryInterface
 {
+    public function findByCondition();
 }

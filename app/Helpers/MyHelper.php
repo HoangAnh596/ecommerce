@@ -166,6 +166,20 @@ if (!function_exists('write_url')) {
     }
 }
 
+if (!function_exists('seo')) {
+    function seo($model = null, $page = 1)
+    {
+        $canonical = ($page > 1) ? write_url($model->canonical, true, false).'/trang-'.$page : write_url($model->canonical);
+        return [
+            'meta_title' => $model->meta_title ?? $model->name,
+            'meta_keyword' => $model->meta_keyword ?? '',
+            'meta_description' => cut_string_and_code($model->name, 168),
+            'meta_images' => '',
+            'canonical' => $canonical,
+        ];
+    }
+}
+
 if (!function_exists('frontend_recursive_menu')) {
     function frontend_recursive_menu(array $data, int $count = 1, $type = 'html')
     {
@@ -352,12 +366,12 @@ if (!function_exists('renderQuickBuy')) {
     {
         $class = 'btn-addCart';
         $openModal = '';
-        if(isset($product->product_variants) && count($product->product_variants)) {
+        if (isset($product->product_variants) && count($product->product_variants)) {
             $class = '';
             $canonical = '#popup';
             $openModal = 'data-uk-modal';
         }
-        $html = '<a href="'.$canonical.'" '.$openModal.' title="'.$name.'" class="'.$class.'">
+        $html = '<a href="' . $canonical . '" ' . $openModal . ' title="' . $name . '" class="' . $class . '">
             <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g>
                     <path d="M24.4941 3.36652H4.73614L4.69414 3.01552C4.60819 2.28593 4.25753 1.61325 3.70863 1.12499C3.15974 0.636739 2.45077 0.366858 1.71614 0.366516L0.494141 0.366516V2.36652H1.71614C1.96107 2.36655 2.19748 2.45647 2.38051 2.61923C2.56355 2.78199 2.68048 3.00626 2.70914 3.24952L4.29414 16.7175C4.38009 17.4471 4.73076 18.1198 5.27965 18.608C5.82855 19.0963 6.53751 19.3662 7.27214 19.3665H20.4941V17.3665H7.27214C7.02705 17.3665 6.79052 17.2764 6.60747 17.1134C6.42441 16.9505 6.30757 16.7259 6.27914 16.4825L6.14814 15.3665H22.3301L24.4941 3.36652ZM20.6581 13.3665H5.91314L4.97214 5.36652H22.1011L20.6581 13.3665Z" fill="#253D4E"></path>
@@ -373,5 +387,25 @@ if (!function_exists('renderQuickBuy')) {
         </a>';
 
         return $html;
+    }
+}
+
+if (!function_exists('cutnchar')) {
+    function cutnchar($str = NULL, $n = 320)
+    {
+        if (strlen($str) < $n) return $str;
+        $html = substr($str, 0, $n);
+        $html = substr($html, 0, strpos($html, ' '));
+        return $html . '...';
+    }
+}
+
+if (!function_exists('cut_string_and_code')) {
+    function cut_string_and_code($str = NULL, $n = 200)
+    {
+        $str = html_entity_decode($str);
+        $str = strip_tags($str);
+        $str = cutnchar($str, $n);
+        return $str;
     }
 }

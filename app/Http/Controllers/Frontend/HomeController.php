@@ -7,11 +7,9 @@ use App\Http\Controllers\FrontendController;
 use App\Repositories\Interfaces\SlideRepositoryInterface as SlideRepository;
 use App\Services\Interfaces\WidgetServiceInterface as WidgetService;
 use App\Services\Interfaces\SlideServiceInterface as SlideService;
-use Illuminate\Http\Request;
 
 class HomeController extends FrontendController
 {
-    protected $language;
     protected $slideRepository;
     protected $slideService;
     protected $widgetService;
@@ -40,13 +38,22 @@ class HomeController extends FrontendController
             [ 'keyword' => 'product-bestseller',],
         ], $language);
 
+        // SEO and System
         $system = $this->system;
+        $seo = [
+            'meta_title' => $system['seo_meta_title'],
+            'meta_keyword' => $system['seo_meta_keyword'],
+            'meta_description' => $system['seo_meta_description'],
+            'meta_images' => $system['seo_meta_images'],
+            'canonical' => config('app.url')
+        ];
 
         return view('frontend.homepage.home.index', compact(
             'language',
             'slides',
             'widgets',
             'system',
+            'seo'
         ));
     }
 }

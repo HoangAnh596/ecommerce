@@ -1,4 +1,4 @@
-<base href="{{ config('app.url') }}">
+<base href="{{ $seo['canonical'] }}">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
@@ -8,32 +8,33 @@
 <link rel="icon" href="" type="image/png" sizes="30x30">
 <meta name="theme-color" content="">
 <!-- GOOGLE -->
-<title>{{ $system['seo_meta_title'] }}</title>
-<meta name="keywords" content="{{ $system['seo_meta_keyword'] }}">
-<meta name="description" content="{{ $system['seo_meta_description'] }}">
-<link rel="canonical" href="{{ config('app.url') }}">
+<title>{{ $seo['meta_title'] }}</title>
+<meta name="keywords" content="{{ $seo['meta_keyword'] }}">
+<meta name="description" content="{{ $seo['meta_description'] }}">
+<link rel="canonical" href="{{ $seo['canonical'] }}">
 <meta property="og:locale" content="vi_VN">
 <!-- for Facebook -->
-<meta property="og:title" content="{{ $system['seo_meta_title'] }}">
+<meta property="og:title" content="{{ $seo['meta_title'] }}">
 <meta property="og:type" content="website">
-<meta property="og:image" content="{{ $system['seo_meta_images'] }}">
-<meta property="og:url" content="{{ config('app.url') }}">
-<meta property="og:description" content="{{ $system['seo_meta_description'] }}">
+<meta property="og:image" content="{{ $seo['meta_images'] }}">
+<meta property="og:url" content="{{ $seo['canonical'] }}">
+<meta property="og:description" content="{{ $seo['meta_description'] }}">
 <meta property="og:site_name" content="">
 <meta property="fb:admins" content="">
 <meta property="fb:app_id" content="">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="{{ $system['seo_meta_title'] }}">
-<meta name="twitter:description" content="{{ $system['seo_meta_description'] }}">
-<meta name="twitter:image" content="{{ $system['seo_meta_images'] }}">
+<meta name="twitter:title" content="{{ $seo['meta_title'] }}">
+<meta name="twitter:description" content="{{ $seo['meta_description'] }}">
+<meta name="twitter:image" content="{{ $seo['meta_images'] }}">
 
 @php
     $coreCss = [
-        'frontend/resources/library/css/library.css',
-        'frontend/resources/style.css',
         'frontend/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css',
         'frontend/resources/uikit/css/uikit.modify.css',
-        'frontend/resources/plugins/wow/css/libs/animate.css'
+        'frontend/resources/library/css/library.css',
+        'frontend/core/plugins/jquery-nice-select-1.1.0/css/nice-select.css',
+        'frontend/resources/plugins/wow/css/libs/animate.css',
+        'frontend/resources/style.css',
     ];
 @endphp
 @foreach($coreCss as $item)

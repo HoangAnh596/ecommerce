@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Language;
-use App\Http\ViewComposers\SystemComposer;
 use App\Http\ViewComposers\MenuComposer;
 use App\Http\ViewComposers\LanguageComposer;
 
@@ -68,7 +67,6 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('frontend.homepage.layout', function ($view) use ($language) {
             $composerClasses = [
-                // SystemComposer::class,
                 MenuComposer::class,
                 LanguageComposer::class,
             ];

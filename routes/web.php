@@ -30,6 +30,7 @@ use App\Http\Controllers\Backend\Customer\CustomerController;
 use App\Http\Controllers\Backend\Promotion\SourceController;
 use App\Http\Controllers\Backend\Promotion\PromotionController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\RouterController;
 
 //@@useController@@
 
@@ -45,6 +46,16 @@ use App\Http\Controllers\Frontend\HomeController;
 */
 /* FRONTEND ROUTES */
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
+// Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])
+//     ->where('canonical', '[a-zA-Z0-9-]+')
+//     ->name('router.index');
+Route::get('{canonical}', [RouterController::class, 'index'])
+    ->where('canonical', '^(?!admin$)[a-zA-Z0-9-]+')
+    ->name('router.index');
+Route::get('{canonical}/trang-{page}', [RouterController::class, 'page'])
+    ->where('canonical', '^(?!admin$)[a-zA-Z0-9-]+')
+    ->where('page', '[0-9]')
+    ->name('router.page');
 
 /* Backend Routes */
 Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], function (){
