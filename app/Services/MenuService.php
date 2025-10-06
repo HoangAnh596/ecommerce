@@ -57,7 +57,8 @@ class MenuService extends BaseService implements MenuServiceInterface
                     $menuId = $payload['menu']['id'][$key];
                     $menuArray = [
                         'menu_catalogue_id' => $payload['menu_catalogue_id'],
-                        'order' => $payload['menu']['order'][$key],
+                        'order' => (int) $payload['menu']['order'][$key],
+                        'publish' => config('apps.general.public'),
                         'user_id' => Auth::id(),
                     ];
 
@@ -113,7 +114,8 @@ class MenuService extends BaseService implements MenuServiceInterface
                     $menuArray = [
                         'menu_catalogue_id' => $menu->menu_catalogue_id,
                         'parent_id' => $menu->id,
-                        'order' => $payload['menu']['order'][$key],
+                        'order' => (int) $payload['menu']['order'][$key],
+                        'publish' => config('apps.general.public'),
                         'user_id' => Auth::id(),
                     ];
                     $menuSave = ($menuId == 0)

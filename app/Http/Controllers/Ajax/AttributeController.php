@@ -27,7 +27,11 @@ class AttributeController extends Controller
 
     public function getAttribute(Request $request){
         $payload = $request->input();
-        $attributes = $this->attributeRepository->searchAttributes($payload['search'], $payload['option'], $this->language);
+        $attributes = $this->attributeRepository->searchAttributes(
+            $payload['search'], 
+            $payload['option'], 
+            $this->language
+        );
 
         $attributeMapped = $attributes->map(function($attribute){
             return [

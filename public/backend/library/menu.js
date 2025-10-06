@@ -86,14 +86,58 @@
         return row;
     }
 
+    // HT.deleteMenuRow = () => {
+    //     $(document).on('click', '.delete-menu', function(e) {
+    //         e.preventDefault();
+    //         let _this = $(this);
+    //         _this.parents('.menu-item').remove();
+    //         HT.checkMenuItemLength();
+    //     });    
+    // }
+
     HT.deleteMenuRow = () => {
         $(document).on('click', '.delete-menu', function(e) {
             e.preventDefault();
             let _this = $(this);
-            _this.parents('.menu-item').remove();
+            let $row = _this.closest('.menu-item');
+            // Lấy id từ input hidden cùng hàng
+            let id = parseInt($row.find('input[name="menu[id][]"]').val() || 0, 10);
+
+            // Nếu là item mới thêm (id = 0) thì chỉ xoá ở client
+            if (!id || id === 0) {
+            $row.remove();
             HT.checkMenuItemLength();
-        });    
+            return;
+            }
+
+            // Item đã tồn tại trong DB => gọi AJAX xoá backend trước
+            _this.addClass('disabled').css('pointer-events','none').attr('aria-disabled', 'true');
+
+            $.ajax({
+            url: 'ajax/menu/deleteMenu', // đổi theo route của bạn nếu khác
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                _token: $('meta[name="csrf_token"]').attr('content')
+            },
+            success: function(res) {
+                if (res.code === 0) {
+                $row.remove();
+                HT.checkMenuItemLength();
+                } else {
+                alert(res.message || 'Không thể xoá menu này.');
+                _this.removeClass('disabled').css('pointer-events','').removeAttr('aria-disabled');
+                }
+            },
+            error: function() {
+                alert('Có lỗi xảy ra khi xoá. Vui lòng thử lại.');
+                _this.removeClass('disabled').css('pointer-events','').removeAttr('aria-disabled');
+            }
+            });
+        });
     }
+
 
     HT.checkMenuItemLength = () => {
         if($('.menu-item').length === 0) {
@@ -190,36 +234,6 @@
         }
         return nav;
     }
-
-    // HT.menuLinks = (links) => {
-    //     let nav = $('<nav>');
-    //     if(links.length > 3) {
-    //         let paginationUl = $('<ul>').addClass('pagination');
-    //         $.each(links, function(index, link) {
-    //             let liClass = 'page-item'
-    //             if(link.active) {
-    //                 liClass += ' active';
-    //             }else if(!link.url) {
-    //                 liClass += ' disabled';
-    //             }
-    
-    //             let li = $('<li>').addClass(liClass);
-    //             if(link.label == 'pagination.previous') {
-    //                 let span = $('<span>').addClass('page-link').attr('aria-hidden', true).html('<');
-    //                 li.append(span);
-    //             }else if(link.label == 'pagination.next') {
-    //                 let span = $('<span>').addClass('page-link').attr('aria-hidden', true).html('>');
-    //                 li.append(span);
-    //             }else if(link.url) {
-    //                 let a = $('<a>').addClass('page-link').text(link.label).attr('href', link.url).attr('data-page', link.label);
-    //                 li.append(a);
-    //             }
-    //             paginationUl.append(li);
-    //         })
-    //         nav.append(paginationUl);
-    //     }
-    //     return nav;
-    // }
 
     HT.getPaginationMenu = () => {
         $(document).on('click', '.page-link', function(e) {

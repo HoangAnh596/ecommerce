@@ -27,19 +27,26 @@ interface BaseRepositoryInterface
 
     public function update(int $id = 0, array $payload = []);
 
-    public function updateOrInsert(array $payload= [], array $condition = []);
+    public function updateOrInsert(array $payload = [], array $condition = []);
 
-    public function updateByWhere(array $condition = [], array $payload= []);
+    public function updateByWhere(array $condition = [], array $payload = []);
 
     public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = []);
 
     public function delete(int $id = 0);
-    
+
     public function createPivot($model, array $payload = [], string $relation = '');
 
     public function forceDeleteByCondition(array $condition = []);
 
-    public function findByCondition($condition = [], $flag = false, $relation = [], array $orderBy = ['id', 'DESC']);
+    public function findByCondition(
+        $condition = [],
+        $flag = false,
+        $relation = [],
+        array $orderBy = ['id', 'ASC'],
+        array $params = [],
+        array $withCount = []
+    );
 
     public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '');
 

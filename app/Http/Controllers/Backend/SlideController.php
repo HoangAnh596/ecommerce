@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSlideRequest;
-use App\Http\Requests\UpdateSlideRequest;
+use App\Http\Requests\Slide\StoreSlideRequest;
+use App\Http\Requests\Slide\UpdateSlideRequest;
 use App\Services\Interfaces\SlideServiceInterface as SlideService;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 use App\Repositories\Interfaces\SlideRepositoryInterface as SlideRepository;
@@ -49,13 +49,15 @@ class SlideController extends Controller
             ],
             'model' => 'Slide'
         ];
-        $template = 'backend.slide.slide.index';
+        $template = 'backend.slide.index';
         $config['seo']  = __('messages.slide');
+        $language = $this->language;
 
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'slides'
+            'slides',
+            'language'
         ));
     }
 
@@ -63,7 +65,7 @@ class SlideController extends Controller
     {
         $this->authorize('modules', 'slide.create');
         $config = $this->configData();
-        $template = 'backend.slide.slide.store';
+        $template = 'backend.slide.store';
         $config['seo']  = __('messages.slide');
         $config['method'] = 'create';
 
@@ -92,7 +94,7 @@ class SlideController extends Controller
         );
 
         $config = $this->configData();
-        $template = 'backend.slide.slide.store';
+        $template = 'backend.slide.store';
         $config['seo']  = __('messages.slide');
         $config['method'] = 'edit';
 
@@ -117,7 +119,7 @@ class SlideController extends Controller
     {
         $this->authorize('modules', 'slide.destroy');
         $slide = $this->slideRepository->findById($id);
-        $template = 'backend.slide.slide.delete';
+        $template = 'backend.slide.delete';
         $config['seo']  = __('messages.slide');
 
         return view('backend.dashboard.layout', compact(

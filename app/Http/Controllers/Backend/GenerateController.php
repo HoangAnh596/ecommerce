@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreGenerateRequest;
-use App\Http\Requests\StoreTranslateRequest;
-use App\Http\Requests\UpdateGenerateRequest;
+use App\Http\Requests\Generate\StoreGenerateRequest;
+use App\Http\Requests\Generate\UpdateGenerateRequest;
 use App\Repositories\Interfaces\GenerateRepositoryInterface as GenerateRepository;
 use App\Services\Interfaces\GenerateServiceInterface as GenerateService;
 use Illuminate\Http\Request;

@@ -58,7 +58,6 @@ class BaseService implements BaseServiceInterface
             ['language_id', '=', $languageId],
             ['controllers', '=', 'App\Http\Controllers\Frontend\\' . $controllerName],
         ];
-
         $router = $this->routerRepository->findByCondition($condition);
 
         return $this->routerRepository->update($router->id, $payload);
@@ -81,7 +80,7 @@ class BaseService implements BaseServiceInterface
         DB::beginTransaction();
         try {
             $model = lcfirst($post['model']) . 'Repository';
-            $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
+            $payload[$post['field']] = ($post['value'] != 2) ? 2 : 1;
             $this->{$model}->update($post['modelId'], $payload);
 
             DB::commit();

@@ -5,8 +5,8 @@
     <div class="ibox-content">
         <div class="form-row">
             <div class="fix-label" for="">Chọn hình thức khuyến mãi</div>
-            <select name="promotion_method" class="setupSelect2 promotionMethod">
-                <option value="">Chọn hình thức</option>
+            <select name="method" class="setupSelect2 promotionMethod">
+                <option value="none">Chọn hình thức</option>
                 @foreach(__('module.promotion') as $key => $val)
                 <option value="{{ $key }}">{{ $val }}</option>
                 @endforeach

@@ -42,6 +42,7 @@ class MenuCatalogueService extends BaseService implements MenuCatalogueServiceIn
         try {
             $payload = $request->only(['name', 'keyword']);
             $payload['keyword'] = Str::slug($payload['keyword']);
+            $payload['publish'] = config('apps.general.public');
             $menuCatalogue = $this->menuCatalogueRepository->create($payload);
 
             DB::commit();
@@ -49,38 +50,6 @@ class MenuCatalogueService extends BaseService implements MenuCatalogueServiceIn
                 'name' => $menuCatalogue->name,
                 'id' => $menuCatalogue->id,
             ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function update($request, $id){
-        DB::beginTransaction();
-        try {
-            
-
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
-    }
-
-    public function destroy($id) {
-        DB::beginTransaction();
-        try {
-            
-
-            DB::commit();
-            return true;
         } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());

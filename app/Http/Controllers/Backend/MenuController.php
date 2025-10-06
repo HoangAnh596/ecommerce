@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\storeMenuChildrenRequest;
-use App\Http\Requests\StoreMenuRequest;
-use App\Http\Requests\UpdateMenuRequest;
+use App\Http\Requests\Menu\StoreMenuChildrenRequest;
+use App\Http\Requests\Menu\StoreMenuRequest;
 use App\Services\Interfaces\MenuServiceInterface as MenuService;
 use App\Repositories\Interfaces\MenuRepositoryInterface as MenuRepository;
 use App\Services\Interfaces\MenuCatalogueServiceInterface as MenuCatalogueService;
@@ -201,7 +200,7 @@ class MenuController extends Controller
         ));
     }
 
-    public function saveChildren(storeMenuChildrenRequest $request, $id)
+    public function saveChildren(StoreMenuChildrenRequest $request, $id)
     {
         $menu = $this->menuRepository->findById($id);
         if ($this->menuService->saveChildren($request, $this->language, $menu)) {

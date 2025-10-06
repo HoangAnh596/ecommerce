@@ -43,7 +43,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             $this->paginateSelect(),
             $condition,
             $perpage,
-            ['path' => 'product.catalogue.index'],
+            ['path' => 'product/catalogue/index'],
             ['product_catalogues.lft','ASC'],
             [
                 ['product_catalogue_language as tb2', 'tb2.product_catalogue_id', '=', 'product_catalogues.id'],
@@ -130,6 +130,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     private function createProductCatalogue($request) {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);
+        $payload['publish'] = config('apps.general.public');
         $payload['user_id'] = Auth::id();
 
         return $this->productCatalogueRepository->create($payload);;

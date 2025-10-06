@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'public' => 2,
     'publish' => [
         '0' => 'Chọn tình trạng',
         '1' => 'Không xuất bản',
@@ -11,6 +12,6 @@ return [
         '1' => 'nofollow',
         '2' => 'follow'
     ],
-    'suffix' =>'.html',
-]
-?>
+    'suffix' => '.html',
+    'defaultPublish' => ['publish', '=', 2],
+];

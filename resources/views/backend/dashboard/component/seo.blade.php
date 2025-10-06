@@ -54,20 +54,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row mb15">
-                <div class="col-lg-12">
-                    <div class="form-row">
-                        <label class="control-label">{{ __('messages.canonical') }} <span class="text-danger">(*)</span></label>
-                        <div class="input-wrapper">
-                            <input 
-                                type="text" name="canonical" 
-                                value="{{ old('canonical', ($model->canonical) ?? '') }}" class="form-control seo-canonical" 
-                                autocomplete="off" {{ isset($disabled) ? 'disabled' : '' }}>
-                            <span class="baseUrl">{{ config('app.url') }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Canonical -->
         </div>
     </div>
 </div>

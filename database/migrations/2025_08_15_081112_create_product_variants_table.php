@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('code')->nullable();
             $table->integer('quantity')->default(0);
             $table->string('sku')->nullable();
+            $table->string('uuid')->unique();
             // $table->float('price')->default(0);
             $table->decimal('price', 15, 2)->default(0);
             $table->string('barcode')->nullable();

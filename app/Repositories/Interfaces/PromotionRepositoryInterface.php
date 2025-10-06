@@ -8,4 +8,5 @@ namespace App\Repositories\Interfaces;
  */
 interface PromotionRepositoryInterface
 {
+    public function findByProduct(array $productId = []);
 }

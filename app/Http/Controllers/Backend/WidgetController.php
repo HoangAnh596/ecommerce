@@ -88,9 +88,20 @@ class WidgetController extends Controller
         $widget = $this->widgetRepository->findById($id);
         $widget->description = $widget->description[$this->language];
         $modelClass = loadClassInterface($widget->model);
-        $widgetItem = convertArrayByKey($modelClass->findByCondition(
-            ...array_values($this->modelItemAgrument($widget->model_id))
-        ), ['id', 'name.languages', 'image']);
+
+
+        // $widgetItem = convertArrayByKey(
+        //     $modelClass->findByCondition(...array_values($this->modelItemAgrument($widget->model_id))),
+        //     ['id', 'name.languages', 'image']
+        // );
+        // dd($widget->model_id);
+        $widgetItem = null;
+        if(isset($widget->model_id)) {
+            $widgetItem = convertArrayByKey(
+                $modelClass->findByCondition(...array_values($this->modelItemAgrument($widget->model_id))), 
+                ['id', 'name.languages', 'image']
+            );
+        }
 
         $config = $this->configData();
         $template = 'backend.widget.store';

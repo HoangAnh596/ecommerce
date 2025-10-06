@@ -14,20 +14,26 @@ class Promotion extends Model
     protected $table = 'promotions';
 
     protected $fillable = [
-        'name',
-        'keyword',
-        'description',
-        'album',
-        'model_id',
-        'model',
-        'short_code',
-        'publish',
-        'user_id',
+        'name', 'code',
+        'description', 'method',
+        'discountValue',
+        'discountType',
+        'maxDiscountValue',
+        'discountInformation',
+        'neverEndDate', 'startDate',
+        'endDate', 'publish',
+        'order', 'user_id',
     ];
 
     protected $casts = [
-        'model_id' => 'json',
-        'album' => 'json',
-        'description' => 'json'
+        'discountInformation' => 'json',
     ];
+
+    public function products(){
+        return $this->belongsToMany(Product::class, 'promotion_product_variant', 'promotion_id', 'product_id')
+        ->withPivot(
+            'variant_uuid',
+            'model',
+        )->withTimestamps();
+    }
 }
