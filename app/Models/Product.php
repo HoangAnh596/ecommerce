@@ -29,6 +29,10 @@ class Product extends Model
         'product_catalogue_id'
     ];
 
+    protected $casts = [
+        'attribute' => 'json'
+    ];
+
     public function languages(){
         return $this->belongsToMany(Language::class, 'product_language', 'product_id', 'language_id')
         ->withPivot(

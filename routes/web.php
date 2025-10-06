@@ -57,6 +57,9 @@ Route::get('{canonical}/trang-{page}', [RouterController::class, 'page'])
     ->where('page', '[0-9]')
     ->name('router.page');
 
+/* FRONTEND AJAX ROUTE */
+Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant'])->name('ajax.product.loadVariant');
+
 /* Backend Routes */
 Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], function (){
     Route::get('dashboard/index', [DashboardController::class, 'index'])->name('dashboard.index');

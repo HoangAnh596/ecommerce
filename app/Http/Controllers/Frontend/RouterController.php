@@ -23,7 +23,6 @@ class RouterController extends FrontendController
         $router = $this->getRouter($canonical);
 
         if (!is_null($router) && !empty($router)) {
-            // dd(666);
             $method = 'index';
             echo app($router->controllers)->{$method}($router->module_id, $request);
         }

@@ -66,7 +66,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         }
         $payload['user_id'] = auth()->id();
         $payload['code'] = (empty($payload['code'])) ? time() : $payload['code'];
-// dd($payload);
+
         switch ($payload['method']) {
             case PromotionEnum::ORDER_AMOUNT_RANGE:
                 $payload[PromotionEnum::DISCOUNT] = $this->orderByRanger($request);

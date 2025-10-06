@@ -19,10 +19,17 @@ class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function all(array $relation = [])
+    public function all(array $relation = [], string $selectRaw = '')
     {
+        $query = $this->model->newQuery();
+        $query->select('*');
+        if (!empty($selectRaw)) {
+            $query->selectRaw($selectRaw);
+        }
+        
+        $query->with($relation);
 
-        return $this->model->with($relation)->get();
+        return $query->get();
     }
 
     public function pagination(
@@ -195,22 +202,22 @@ class BaseRepository implements BaseRepositoryInterface
     {
         $query = $this->model->newQuery();
 
-        $query->select($model.'s.*')
+        $query->select($model . 's.*')
             ->where([config('apps.general.defaultPublish')])
-            ->with('languages', function($query) use ($language) {
+            ->with('languages', function ($query) use ($language) {
                 $query->where('language_id', $language);
             })
-            ->with($model.'_catalogues', function($query) use ($language) {
-                $query->with('languages', function($query) use ($language) {
+            ->with($model . '_catalogues', function ($query) use ($language) {
+                $query->with('languages', function ($query) use ($language) {
                     $query->where('language_id', $language);
                 });
             });
 
-            if($model === 'product') {
-                $query->with('product_variants');
-            }
+        if ($model === 'product') {
+            $query->with('product_variants');
+        }
 
-            $query->join($model . '_catalogue_' . $model . ' as tb2', 'tb2.' . $model . '_id', '=', $model . 's.id')
+        $query->join($model . '_catalogue_' . $model . ' as tb2', 'tb2.' . $model . '_id', '=', $model . 's.id')
             ->whereIn('tb2.' . $model . '_catalogue_id', $catIds)
             ->orderBy('order', 'desc')
             ->limit(8);
@@ -222,8 +229,8 @@ class BaseRepository implements BaseRepositoryInterface
     {
         return $this->findByCondition(
             [
-                [ 'lft' , '<=', $model->lft ],
-                [ 'rgt' , '>=', $model->rgt ],
+                ['lft', '<=', $model->lft],
+                ['rgt', '>=', $model->rgt],
                 config('apps.general.defaultPublish')
             ],
             true,
@@ -232,7 +239,7 @@ class BaseRepository implements BaseRepositoryInterface
                     $query->where('language_id', $language);
                 }
             ],
-            [ 'lft', 'asc']
+            ['lft', 'asc']
         );
     }
 }

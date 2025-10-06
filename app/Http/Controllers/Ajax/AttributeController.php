@@ -27,14 +27,6 @@ class AttributeController extends Controller
 
     public function getAttribute(Request $request){
         $payload = $request->input();
-        // dd($payload);
-        // array:2 [ // app\Http\Controllers\Ajax\AttributeController.php:30
-        //     "search" => "ba"
-        //     "option" => array:1 [
-        //         "attributeCatalogueId" => "3"
-        //     ]
-        // ]
-        // $this->language = 1;
         $attributes = $this->attributeRepository->searchAttributes(
             $payload['search'], 
             $payload['option'], 

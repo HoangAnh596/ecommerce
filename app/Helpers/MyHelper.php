@@ -3,7 +3,7 @@
 use App\Enums\PromotionEnum;
 
 if (!function_exists('convert_price')) {
-    function convert_price(string $price = '', bool $flag = false)
+    function convert_price($price = '', bool $flag = false)
     {
         return ($flag == false) ? str_replace('.', '', $price) : number_format($price, 0, ',', '.');
     }
@@ -169,7 +169,7 @@ if (!function_exists('write_url')) {
 if (!function_exists('seo')) {
     function seo($model = null, $page = 1)
     {
-        $canonical = ($page > 1) ? write_url($model->canonical, true, false).'/trang-'.$page : write_url($model->canonical);
+        $canonical = ($page > 1) ? write_url($model->canonical, true, false) . '/trang-' . $page : write_url($model->canonical);
         return [
             'meta_title' => $model->meta_title ?? $model->name,
             'meta_keyword' => $model->meta_keyword ?? '',
@@ -310,23 +310,67 @@ if (!function_exists('getPrice')) {
             'html' => ''
         ];
 
-        if (isset($product->promotions) && count($product->promotions->toArray())) {
+        if (isset($product->promotions) && isset($product->promotions->discountType)) {
             $result['percent'] = ($product->promotions->discountType == 'percent')
                 ? $product->promotions->discountValue
                 : getPercent($product, $product->promotions->discountValue);
 
             if ($product->promotions->discountValue > 0) {
-                $result['priceSale'] = getPromotionPrice($product->price, $product->promotions->discountValue, $product->promotions->discountType);
+                $result['priceSale'] = getPromotionPrice(
+                    $product->price,
+                    $product->promotions->discountValue,
+                    $product->promotions->discountType,
+                    $product->promotions->maxDiscountType
+                );
             }
         }
+
         $result['html'] .= '<div class="price uk-flex uk-flex-bottom">';
+        $result['html'] = getResultPrice($result);
+        $result['html'] .= '</div>';
+
+        return $result;
+    }
+}
+
+if (!function_exists('getVariantPrice')) {
+    function getVariantPrice($variant = null, $variantPromotion)
+    {
+        $result = [
+            'price' => $variant->price,
+            'priceSale' => 0,
+            'percent' => 0,
+            'html' => ''
+        ];
+
+        if (!is_null($variantPromotion)) {
+            $result['percent'] = ($variantPromotion->discountType == 'percent')
+                ? $variantPromotion->discountValue
+                : getPercent($variant, $variantPromotion->discountValue);
+
+            $result['priceSale'] = getPromotionPrice(
+                $variant->price,
+                $variantPromotion->discountValue,
+                $variantPromotion->discountType,
+                $variantPromotion->maxDiscountType
+            );
+        }
+
+        $result['html'] = getResultPrice($result);
+
+        return $result;
+    }
+}
+
+if (!function_exists('getResultPrice')) {
+    function getResultPrice(array $result = [])
+    {
         $result['html'] .= '<div class="price-sale">' . (($result['priceSale'] > 0) ? convert_price($result['priceSale'], true) : convert_price($result['price'], true)) . 'đ</div>';
         if ($result['priceSale'] > 0) {
             $result['html'] .= '<div class="price-old">' . convert_price($result['price'], true) . 'đ</div>';
         }
-        $result['html'] .= '</div>';
 
-        return $result;
+        return $result['html'];
     }
 }
 
@@ -338,14 +382,20 @@ if (!function_exists('getPercent')) {
 }
 
 if (!function_exists('getPromotionPrice')) {
-    function getPromotionPrice($priceMain = 0, $discountValue = 0, $discountType = '')
-    {
-        $priceSale = 0;
+    function getPromotionPrice(
+        $priceMain = 0,
+        $discountValue = 0,
+        $discountType = '',
+        $maxDiscountValue = 0
+    ) {
+        $value = 0;
         if ($discountType == 'percent') {
-            $priceSale = $priceMain - ($priceMain * $discountValue / 100);
+            $value = $priceMain * $discountValue / 100;
         } else {
-            $priceSale = $priceMain - $discountValue;
+            $value = $discountValue;
         }
+
+        $priceSale = $priceMain - (($maxDiscountValue > 0) ? $maxDiscountValue : $value);
 
         return $priceSale;
     }
@@ -407,5 +457,38 @@ if (!function_exists('cut_string_and_code')) {
         $str = strip_tags($str);
         $str = cutnchar($str, $n);
         return $str;
+    }
+}
+
+if (!function_exists('categorySelectRaw')) {
+    function categorySelectRaw($table = 'product')
+    {
+        $rawQuery = "
+            (
+                SELECT COUNT(DISTINCT id)
+                FROM {$table}s
+                JOIN {$table}_catalogue_{$table} as tb3 ON tb3.{$table}_id = {$table}s.id
+                WHERE tb3.{$table}_catalogue_id IN (
+                    SELECT id
+                    FROM {$table}_catalogues as parent_category
+                    WHERE lft >= (SELECT lft FROM {$table}_catalogues as pc WHERE pc.id = {$table}_catalogues.id)
+                    AND rgt <= (SELECT rgt FROM {$table}_catalogues as pc WHERE pc.id = {$table}_catalogues.id)
+                ) 
+            ) as {$table}s_count
+        ";
+
+        return $rawQuery;
+    }
+}
+
+if (!function_exists('sortString')) {
+    function sortString($string = '')
+    {
+        $extract = explode(',', $string);
+        $extract = array_map('trim', $extract);
+        sort($extract, SORT_NUMERIC);
+        $newArray = implode(', ', $extract);
+
+        return $newArray;
     }
 }

@@ -80,7 +80,7 @@ class BaseService implements BaseServiceInterface
         DB::beginTransaction();
         try {
             $model = lcfirst($post['model']) . 'Repository';
-            $payload[$post['field']] = ($post['value'] == 1) ? 2 : 1;
+            $payload[$post['field']] = ($post['value'] != 2) ? 2 : 1;
             $this->{$model}->update($post['modelId'], $payload);
 
             DB::commit();

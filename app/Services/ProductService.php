@@ -9,6 +9,8 @@ use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as ProductVariantLanguageRepository;
 use App\Repositories\Interfaces\ProductVariantAttrRepositoryInterface as ProductVariantAttrRepository;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
+use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
+use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeRepository;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +29,8 @@ class ProductService extends BaseService implements ProductServiceInterface
     protected $productVariantAttrRepository;
     protected $controllerName;
     protected $promotionRepository;
+    protected $attCatalogueRepository;
+    protected $attributeRepository;
 
     public function __construct(
         ProductRepository $productRepository,
@@ -34,24 +38,28 @@ class ProductService extends BaseService implements ProductServiceInterface
         ProductVariantLanguageRepository $prVariantLanguageRepository,
         ProductVariantAttrRepository $productVariantAttrRepository,
         PromotionRepository $promotionRepository,
+        AttributeCatalogueRepository $attCatalogueRepository,
+        AttributeRepository $attributeRepository,
     ) {
         $this->productRepository = $productRepository;
         $this->routerRepository = $routerRepository;
         $this->prVariantLanguageRepository = $prVariantLanguageRepository;
         $this->productVariantAttrRepository = $productVariantAttrRepository;
         $this->promotionRepository = $promotionRepository;
+        $this->attCatalogueRepository = $attCatalogueRepository;
+        $this->attributeRepository = $attributeRepository;
         $this->controllerName = 'ProductController';
     }
 
     public function paginate(
-        $request, 
-        $languageId, 
-        $productCatalogue = null, 
+        $request,
+        $languageId,
+        $productCatalogue = null,
         $page = 1,
         $extend = []
     ) {
-        if(!is_null($productCatalogue)) {
-            Paginator::currentPageResolver(function() use ($page) {
+        if (!is_null($productCatalogue)) {
+            Paginator::currentPageResolver(function () use ($page) {
                 return $page;
             });
         }
@@ -179,10 +187,11 @@ class ProductService extends BaseService implements ProductServiceInterface
         $variant = $this->createVariantArray($payload, $product);
 
         $variants = $product->product_variants()->createMany($variant);
+
         $variantId = $variants->pluck('id');
         $productVariantLanguage = [];
         $variantAttribute = [];
-        $attributeCombies = $this->combineAttribute(array_values($payload['attribute']));
+        $attributeCombines = $this->combineAttribute(array_values($payload['attribute']));
 
         if (count($variantId)) {
             foreach ($variantId as $key => $val) {
@@ -192,8 +201,8 @@ class ProductService extends BaseService implements ProductServiceInterface
                     'name' => $payload['productVariant']['name'][$key]
                 ];
 
-                if (count($attributeCombies)) {
-                    foreach ($attributeCombies[$key] as $attributeId) {
+                if (count($attributeCombines)) {
+                    foreach ($attributeCombines[$key] as $attributeId) {
                         $variantAttribute[] = [
                             'product_variant_id' => $val,
                             'attribute_id' => $attributeId
@@ -223,12 +232,14 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createVariantArray(array $payload = [], $product): array
     {
         $variant = [];
+        // dd($product);
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach (($payload['variant']['sku']) as $key => $val) {
+                $vId = ($payload['productVariant']['id'][$key]) ?? '';
                 $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $payload['productVariant']['id'][$key]);
                 $variant[] = [
                     'uuid' => $uuid,
-                    'code' => ($payload['productVariant']['id'][$key]) ?? '',
+                    'code' => sortString($vId),
                     'quantity' => ($payload['variant']['quantity'][$key]) ?? 0,
                     'sku' => $val,
                     'barcode' => ($payload['variant']['barcode'][$key]) ?? '',
@@ -274,7 +285,8 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payload['album'] = $this->formatAlbum($request);
         $payload['price'] = convert_price(($payload['price']) ?? 0);
         $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
-        $payload['attribute'] = $this->formatJson($request, 'attribute');
+        // $payload['attribute'] = $this->formatJson($request, 'attribute');
+        $payload['attribute'] = $request->input('attribute');
         $payload['publish'] = config('apps.general.public');
         $payload['variant'] = $this->formatJson($request, 'variant');
 
@@ -332,11 +344,17 @@ class ProductService extends BaseService implements ProductServiceInterface
         return ['name', 'canonical', 'description', 'content', 'meta_title', 'meta_description', 'meta_keyword'];
     }
 
-    public function combineProductAndPromotion($productId = [], $products)
+    public function combineProductAndPromotion($productId = [], $products, $flag = false)
     {
         $promotions = $this->promotionRepository->findByProduct($productId);
 
         if ($promotions) {
+            if ($flag == true) {
+                $products->promotions = $promotions[0] ?? null;
+
+                return $products;
+            }
+
             foreach ($products as $index => $product) {
                 foreach ($promotions as $key => $promotion) {
                     if ($promotion->product_id == $product->id) {
@@ -347,5 +365,28 @@ class ProductService extends BaseService implements ProductServiceInterface
         }
 
         return $products;
+    }
+
+    public function getAttribute($product, $languageId)
+    {
+        $attrCatalogueId = array_keys($product->attribute);
+        $attrCatalogues = $this->attCatalogueRepository->getAttCatalogueWhereIn($attrCatalogueId, 'attribute_catalogues.id', $languageId);
+        /* ---- */
+        $attributeId = array_merge(...$product->attribute);
+        $attrs = $this->attributeRepository->findAttributeByIdArray($attributeId, $languageId);
+        if (!is_null($attrCatalogues)) {
+            foreach ($attrCatalogues as $val) {
+                $tempAttributes = [];
+                foreach ($attrs as $attr) {
+                    if ($val->id == $attr->attribute_catalogue_id) {
+                        $tempAttributes[] = $attr;
+                    }
+                }
+                $val->attributes = $tempAttributes;
+            }
+        }
+        $product->attributeCatalogue = $attrCatalogues;
+
+        return $product;
     }
 }
