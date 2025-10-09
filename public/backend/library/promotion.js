@@ -26,8 +26,10 @@
         $(document).on('click', '.chooseSource', function() {
             let _this = $(this);
             let flag = (_this.attr('id') == 'allSource') ? true : false;
+            console.log(flag);
+            
             if(flag) {
-                _this.parents('.ibox-content').find('.source-wrapper').remove;
+                _this.parents('.ibox-content').find('.source-wrapper').remove();
             }else{
                 $.ajax({
                     url: 'ajax/source/getAllSource',
@@ -70,7 +72,7 @@
             let id = _this.attr('id');
 
             if(id === 'allApply'){
-                _this.parents('.ibox-content').find('.apply-wrapper').remove;
+                _this.parents('.ibox-content').find('.apply-wrapper').remove();
             }else{
                 let applyHtml = HT.renderApplyCondition().prop('outerHTML');
                 _this.parents('.ibox-content').append(applyHtml);

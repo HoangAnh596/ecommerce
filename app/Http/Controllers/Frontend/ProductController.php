@@ -32,6 +32,10 @@ class ProductController extends FrontendController
     {
         $language = $this->language;
         $product = $this->productRepository->getProductById($id, $language);
+        if (is_null($product)) {
+            abort(404);
+        }
+
         $product = $this->productService->combineProductAndPromotion([$id], $product, true);
         $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($product->product_catalogue_id, $language);
         $breadcrumb = $this->productCatalogueRepository->breadcrumb($productCatalogue, $language);
@@ -53,6 +57,7 @@ class ProductController extends FrontendController
         // SEO and System
         $system = $this->system;
         $seo = seo($product);
+        $config = $this->config();
 
         return view('frontend.product.product.index', compact(
             'productCatalogue',
@@ -60,8 +65,19 @@ class ProductController extends FrontendController
             'breadcrumb',
             'system',
             'seo',
+            'config',
             'language',
             'category'
         ));
+    }
+
+    private function config()
+    {
+        return [
+            'js' => [
+                'frontend/core/library/cart.js',
+                'frontend/core/library/product.js',
+            ]
+        ];
     }
 }

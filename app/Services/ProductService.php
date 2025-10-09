@@ -232,7 +232,6 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createVariantArray(array $payload = [], $product): array
     {
         $variant = [];
-        // dd($product);
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach (($payload['variant']['sku']) as $key => $val) {
                 $vId = ($payload['productVariant']['id'][$key]) ?? '';
@@ -369,6 +368,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function getAttribute($product, $languageId)
     {
+        // if(is_null($product->attribute)) return $product; // Trường hợp không thuộc tính
         $attrCatalogueId = array_keys($product->attribute);
         $attrCatalogues = $this->attCatalogueRepository->getAttCatalogueWhereIn($attrCatalogueId, 'attribute_catalogues.id', $languageId);
         /* ---- */

@@ -117,8 +117,7 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
             'promotions.discountValue',
             'promotions.discountType',
             'promotions.maxDiscountValue'
-        )
-            ->selectRaw("$effectiveDiscountExpr AS discount")
+        )->selectRaw("$effectiveDiscountExpr AS discount")
             ->join('promotion_product_variant as ppv', 'ppv.promotion_id', '=', 'promotions.id')
             ->join('product_variants as pv', 'pv.uuid', '=', 'ppv.variant_uuid')
             ->where('promotions.publish', 2)
@@ -131,5 +130,13 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
             ->orderByDesc('promotions.created_at')
             ->limit(1)
             ->first();
+    }
+    public function getPromotionByCartTotal()
+    {
+        return $this->model->where('promotions.publish', 2)
+            ->where('promotions.method', 'order_amount_range')
+            ->whereDate('promotions.endDate', '>=', now())
+            ->whereDate('promotions.startDate', '<=', now())
+            ->get();
     }
 }

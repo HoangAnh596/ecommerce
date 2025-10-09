@@ -3,8 +3,10 @@
 use App\Enums\PromotionEnum;
 
 if (!function_exists('convert_price')) {
-    function convert_price($price = '', bool $flag = false)
+    function convert_price(mixed $price = '', bool $flag = false)
     {
+        if($price === null) return 0;
+
         return ($flag == false) ? str_replace('.', '', $price) : number_format($price, 0, ',', '.');
     }
 }
@@ -490,5 +492,15 @@ if (!function_exists('sortString')) {
         $newArray = implode(', ', $extract);
 
         return $newArray;
+    }
+}
+
+if (!function_exists('sortAttribute')) {
+    function sortAttribute(array $attribute_id = [])
+    {
+        sort($attribute_id, SORT_NUMERIC);
+        $attributeId = implode(', ', $attribute_id);
+
+        return $attributeId;
     }
 }

@@ -82,8 +82,7 @@ class ProductController extends Controller
         $languageId = $request->input('language_id');
         $attributeId = $request->input('attribute_id');
      
-        sort($attributeId, SORT_NUMERIC);
-        $attributeId = implode(', ', $attributeId);
+        $attributeId = sortAttribute($attributeId);
 
         $variant = $this->productVariantRepository->findVariant($attributeId, $productId, $languageId);
         $variantPromotion = $this->promotionRepository->findPromotionByVariantUuid($variant->uuid);

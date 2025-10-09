@@ -2537,12 +2537,16 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     font-size:24px;
     font-weight:bold;
 }
+.cart-container .nice-select.open .list {
+    height: 300px;
+    overflow-y: scroll;
+    width: 100% !important;
+}
 
 .cart-container .select2-container{
    width:100% !important;
   
 }
-
 
 .select2-container--default .select2-selection--single{
     height:45px !important;

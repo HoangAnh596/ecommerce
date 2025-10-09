@@ -33,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\SourceServiceInterface' => 'App\Services\SourceService',
         'App\Services\Interfaces\CustomerServiceInterface' => 'App\Services\CustomerService',
         'App\Services\Interfaces\CustomerCatalogueServiceInterface' => 'App\Services\CustomerCatalogueService',
+        'App\Services\Interfaces\CartServiceInterface' => 'App\Services\CartService',
     ];
 
     /**

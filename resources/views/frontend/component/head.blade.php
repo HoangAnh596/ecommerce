@@ -13,6 +13,7 @@
 <meta name="description" content="{{ $seo['meta_description'] }}">
 <link rel="canonical" href="{{ $seo['canonical'] }}">
 <meta property="og:locale" content="vi_VN">
+<meta name="csrf_token" content="{{ csrf_token() }}">
 <!-- for Facebook -->
 <meta property="og:title" content="{{ $seo['meta_title'] }}">
 <meta property="og:type" content="website">
@@ -33,9 +34,16 @@
         'frontend/resources/uikit/css/uikit.modify.css',
         'frontend/resources/library/css/library.css',
         'frontend/core/plugins/jquery-nice-select-1.1.0/css/nice-select.css',
+        'backend/css/plugins/toastr/toastr.min.css',
         'frontend/resources/plugins/wow/css/libs/animate.css',
         'frontend/resources/style.css',
     ];
+
+    if(isset($config['css'])) {
+        foreach($config['css'] as $key => $val) {
+            array_push($coreCss, $val);
+        }
+    }
 @endphp
 @foreach($coreCss as $item)
 <link rel="stylesheet" href="{{ asset($item) }}">

@@ -5,6 +5,7 @@ use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
 use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
+use App\Http\Controllers\Ajax\CartController as AjaxCartController;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\GenerateController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Backend\Promotion\SourceController;
 use App\Http\Controllers\Backend\Promotion\PromotionController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\RouterController;
+use App\Http\Controllers\Frontend\CartController;
 
 //@@useController@@
 
@@ -46,9 +48,7 @@ use App\Http\Controllers\Frontend\RouterController;
 */
 /* FRONTEND ROUTES */
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
-// Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])
-//     ->where('canonical', '[a-zA-Z0-9-]+')
-//     ->name('router.index');
+Route::get('thanh-toan', [CartController::class, 'checkout'])->name('cart.index');
 Route::get('{canonical}', [RouterController::class, 'index'])
     ->where('canonical', '^(?!admin$)[a-zA-Z0-9-]+')
     ->name('router.index');
@@ -56,9 +56,16 @@ Route::get('{canonical}/trang-{page}', [RouterController::class, 'page'])
     ->where('canonical', '^(?!admin$)[a-zA-Z0-9-]+')
     ->where('page', '[0-9]')
     ->name('router.page');
-
+// Đường dẫn có thêm .html
+// Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])
+//     ->where('canonical', '[a-zA-Z0-9-]+')
+//     ->name('router.index');
 /* FRONTEND AJAX ROUTE */
 Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant'])->name('ajax.product.loadVariant');
+Route::post('ajax/cart/create', [AjaxCartController::class, 'create'])->name('ajax.cart.create');
+Route::post('ajax/cart/update', [AjaxCartController::class, 'update'])->name('ajax.cart.update');
+Route::post('ajax/cart/delete', [AjaxCartController::class, 'delete'])->name('ajax.cart.delete');
+Route::get('ajax/location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.getLocation');
 
 /* Backend Routes */
 Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], function (){
@@ -287,7 +294,6 @@ Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], fu
 
 
     /* Ajax */
-    Route::get('ajax/location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.getLocation')->middleware('admin');
     Route::post('ajax/dashboard/changeStatus', [AjaxDashboardController::class, 'changeStatus'])->name('ajax.dashboard.changeStatus')->middleware('admin');
     Route::post('ajax/dashboard/changeStatusAll', [AjaxDashboardController::class, 'changeStatusAll'])->name('ajax.dashboard.changeStatusAll')->middleware('admin');
     Route::get('ajax/dashboard/getMenu', [AjaxDashboardController::class, 'getMenu'])->name('ajax.dashboard.getMenu')->middleware('admin');
