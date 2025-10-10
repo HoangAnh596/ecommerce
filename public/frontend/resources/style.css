@@ -2577,6 +2577,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     color:red;
 }
 
+/* Begin Css Cart */
 .cart-success{
     padding: 30px 10px;
 }
@@ -2677,7 +2678,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     margin-bottom:15px;
     font-weight: 500;
 }
-
+/* End CSS Cart */
 
 .star-rating {
     font-size: 25px;

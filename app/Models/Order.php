@@ -47,7 +47,6 @@ class Order extends Model
             'qty',
             'price',
             'priceOriginal',
-            'promotion',
             'option'
         )->withTimestamps();
     }

@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\QueryScopes;
 
 class OrderPayment extends Model
 {
-    use HasFactory, SoftDeletes, QueryScopes;
+    use HasFactory, QueryScopes;
 
     protected $table = 'order_payment';
 

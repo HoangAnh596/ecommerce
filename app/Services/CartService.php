@@ -9,6 +9,8 @@ use App\Services\Interfaces\ProductServiceInterface as ProductService;
 use App\Repositories\Interfaces\ProductVariantRepositoryInterface as ProductVariantRepository;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
+use App\Mail\OrderMail;
+use Illuminate\Support\Facades\Mail;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +25,9 @@ class CartService implements CartServiceInterface
     protected $productVariantRepository;
     protected $promotionRepository;
     protected $orderRepository;
+
+    protected $priceOriginal;
+    protected $image;
 
     public function __construct(
         ProductRepository $productRepository,
@@ -124,16 +129,17 @@ class CartService implements CartServiceInterface
         }
     }
 
-    public function order($request)
+    public function order($request, $system)
     {
         DB::beginTransaction();
         try {
             $payload = $this->request($request);
-            $order = $this->orderRepository->create($payload);
+            $order = $this->orderRepository->create($payload, ['products']);
 
             if ($order->id > 0) {
                 $this->createOrderProduct($payload, $order);
                 // $this->paymentOnline($payload['method']);
+                // $this->mail($order, $system);
                 // Cart::instance('shopping')->destroy();
             }
 
@@ -177,10 +183,12 @@ class CartService implements CartServiceInterface
 
     private function createOrderProduct($payload, $order)
     {
-        $temp = [];
+        $carts = Cart::instance('shopping')->content();
+        $carts = $this->remakeCart($carts);
 
-        if (!is_null($payload['cart']['detail'])) {
-            foreach ($payload['cart']['detail'] as $val) {
+        $temp = [];
+        if (!is_null($carts)) {
+            foreach ($carts as $val) {
                 $extract = explode('_', $val->id);
                 $temp[] = [
                     'product_id' => $extract[0],
@@ -199,15 +207,12 @@ class CartService implements CartServiceInterface
 
     private function request($request)
     {
-        $carts = Cart::instance('shopping')->content();
-        $carts = $this->remakeCart($carts);
         $cartCaculate = $this->reCaculateCart();
         $cartPromotion = $this->cartPromotion($cartCaculate['cartTotal']);
 
         $payload = $request->except('_token', 'create', 'voucher');
-        $payload['code'] = 'DH-'.time();
+        $payload['code'] = 'dh-'.time();
         $payload['cart'] = $cartCaculate;
-        $payload['cart']['detail'] = $carts;
         $payload['promotion']['discount'] = $cartPromotion['discount'];
         $payload['promotion']['name'] = $cartPromotion['selectPromotion']->name ?? null;
         $payload['promotion']['code'] = $cartPromotion['selectPromotion']->code ?? null;
@@ -296,16 +301,37 @@ class CartService implements CartServiceInterface
             if (isset($objects['variants'][$objectId])) {
                 $variantItem = $objects['variants'][$objectId];
                 $variantImage = explode(',', $variantItem->album)[0] ?? null;
-                $cart->image = $variantImage;
-                $cart->priceOriginal = $variantItem->price;
+                $cart->setImage($variantImage)->setPriceOriginal($variantItem->price);
+                // $cart->image = $variantImage;
+                // $cart->priceOriginal = $variantItem->price;
             } elseif (isset($objects['products'][$objectId])) {
                 $productItem = $objects['products'][$objectId];
-                $cart->image = $productItem->image;
-                $cart->priceOriginal = $productItem->price;
+                $cart->setImage($productItem->image)->setPriceOriginal($productItem->price);
+                // $cart->image = $productItem->image;
+                // $cart->priceOriginal = $productItem->price;
             }
         }
 
         return $carts;
+    }
+
+    private function mail($order, $system)
+    {
+        $carts = Cart::instance('shopping')->content();
+        $carts = $this->remakeCart($carts);
+        $cartCaculate = $this->cartAndPromotion();
+        $cartPromotion = $this->cartPromotion($cartCaculate['cartTotal']);
+
+        $to = $order->email;
+        $cc = $system['contact_email'];
+        $data = [
+            'order' => $order,
+            'carts' => $carts,
+            'cartCaculate' => $cartCaculate,
+            'cartPromotion' => $cartPromotion
+        ];
+
+        Mail::to($to)->cc($cc)->send(new OrderMail($data));
     }
 
     public function cartPromotion($cartTotal = 0)

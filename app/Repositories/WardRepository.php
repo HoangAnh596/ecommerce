@@ -9,6 +9,12 @@ use App\Repositories\Interfaces\WardRepositoryInterface;
  * Class WardRepository
  * @package App\Repositories
  */
-class WardRepository implements WardRepositoryInterface
+class WardRepository extends BaseRepository implements WardRepositoryInterface
 {
+    protected $model;
+    
+    public function __construct(Ward $model)
+    {
+        $this->model = $model;
+    }
 }

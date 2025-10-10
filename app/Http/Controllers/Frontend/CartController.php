@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\FrontendController;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
+use App\Repositories\Interfaces\WardRepositoryInterface as WardRepository;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 use App\Services\Interfaces\CartServiceInterface as CartService;
 use App\Http\Requests\StoreCartRequest;
@@ -12,18 +13,22 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 class CartController extends FrontendController
 {
     protected $provinceRepository;
+    protected $wardRepository;
     protected $orderRepository;
     protected $cartService;
 
     public function __construct(
         ProvinceRepository $provinceRepository,
+        WardRepository $wardRepository,
         OrderRepository $orderRepository,
         CartService $cartService,
     ) {
         parent::__construct();
         $this->provinceRepository = $provinceRepository;
+        $this->wardRepository = $wardRepository;
         $this->orderRepository = $orderRepository;
         $this->cartService = $cartService;
+        $this->provinceRepository = $provinceRepository;
     }
 
     public function checkout()
@@ -58,7 +63,8 @@ class CartController extends FrontendController
 
     public function store(StoreCartRequest $request)
     {
-        $order = $this->cartService->order($request);
+        $system = $this->system;
+        $order = $this->cartService->order($request, $system);
 
         if ($order['flag']) {
 
@@ -71,15 +77,22 @@ class CartController extends FrontendController
 
     public function success($code)
     {
+
         $order = $this->orderRepository->findByCondition(
             [
                 ['code', '=', $code]
             ],
+            false,
+            ['products']
         );
-        if(!isset($order)) {
+
+        if (!isset($order)) {
             abort('404');
             // return view('frontend.homepage.home.404');
         }
+
+        $province = $this->provinceRepository->findById($order->province_id);
+        $ward = $this->wardRepository->findById($order->ward_id);
 
         // SEO and System
         $system = $this->system;
@@ -96,7 +109,9 @@ class CartController extends FrontendController
             'seo',
             'system',
             'config',
-            'order'
+            'order',
+            'province',
+            'ward'
         ));
     }
 
