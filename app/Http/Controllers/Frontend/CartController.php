@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\FrontendController;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
+use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 use App\Services\Interfaces\CartServiceInterface as CartService;
 use App\Http\Requests\StoreCartRequest;
 use Gloudemans\Shoppingcart\Facades\Cart;
@@ -11,14 +12,17 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 class CartController extends FrontendController
 {
     protected $provinceRepository;
+    protected $orderRepository;
     protected $cartService;
 
     public function __construct(
         ProvinceRepository $provinceRepository,
+        OrderRepository $orderRepository,
         CartService $cartService,
     ) {
         parent::__construct();
         $this->provinceRepository = $provinceRepository;
+        $this->orderRepository = $orderRepository;
         $this->cartService = $cartService;
     }
 
@@ -39,7 +43,6 @@ class CartController extends FrontendController
             'meta_images' => '',
             'canonical' => write_url('thanh-toan')
         ];
-        $language = $this->language;
         $config = $this->configData();
 
         return view('frontend.cart.index', compact(
@@ -53,9 +56,48 @@ class CartController extends FrontendController
         ));
     }
 
-    public function create()
+    public function store(StoreCartRequest $request)
     {
-        
+        $order = $this->cartService->order($request);
+
+        if ($order['flag']) {
+
+            return redirect()
+                ->route('cart.success', ['code' => $order['order']->code])
+                ->with('success', 'Đặt hàng thành công');
+        }
+        return redirect()->route('cart.checkout')->with('errors', 'Đặt hàng không thành công. Hãy thử lại');
+    }
+
+    public function success($code)
+    {
+        $order = $this->orderRepository->findByCondition(
+            [
+                ['code', '=', $code]
+            ],
+        );
+        if(!isset($order)) {
+            abort('404');
+            // return view('frontend.homepage.home.404');
+        }
+
+        // SEO and System
+        $system = $this->system;
+        $seo = [
+            'meta_title' => 'Thanh toán đơn hàng thành công',
+            'meta_keyword' => '',
+            'meta_description' => '',
+            'meta_images' => '',
+            'canonical' => write_url('cart/success')
+        ];
+        $config = $this->configData();
+
+        return view('frontend.cart.success', compact(
+            'seo',
+            'system',
+            'config',
+            'order'
+        ));
     }
 
     private function configData()

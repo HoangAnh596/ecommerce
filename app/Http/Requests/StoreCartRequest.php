@@ -22,20 +22,20 @@ class StoreCartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'keyword' => 'required|unique:widgets',
-            'short_code' => 'required|unique:widgets',
+            'fullname' => 'required',
+            'phone' => 'required',
+            'email' => 'required',
+            'address' => 'required',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Bạn chưa nhập tên của Widget.',
-            'keyword.required' => 'Bạn chưa nhập từ khóa của Widget.',
-            'keyword.unique' => 'Từ khóa của Widget đã tồn tại. Hãy nhập lại.',
-            'short_code.required' => 'Bạn chưa nhập short code của Widget.',
-            'short_code.unique' => 'Short code của Widget đã tồn tại. Hãy nhập lại.',
+            'fullname.required' => 'Bạn chưa nhập Họ Tên.',
+            'phone.required' => 'Bạn chưa nhập Số điện thoại.',
+            'email.required' => 'Bạn chưa nhập Email.',
+            'address.required' => 'Bạn chưa nhập Địa chỉ.',
         ];
     }
 }

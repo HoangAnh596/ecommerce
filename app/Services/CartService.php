@@ -2,13 +2,15 @@
 
 namespace App\Services;
 
+use App\Enums\PromotionEnum;
 use App\Services\Interfaces\CartServiceInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
 use App\Repositories\Interfaces\ProductVariantRepositoryInterface as ProductVariantRepository;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
-use Illuminate\Http\Request;
+use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class CartService
@@ -20,17 +22,20 @@ class CartService implements CartServiceInterface
     protected $productService;
     protected $productVariantRepository;
     protected $promotionRepository;
+    protected $orderRepository;
 
     public function __construct(
         ProductRepository $productRepository,
         ProductService $productService,
         ProductVariantRepository $productVariantRepository,
         PromotionRepository $promotionRepository,
+        OrderRepository $orderRepository,
     ) {
         $this->productRepository = $productRepository;
         $this->productService = $productService;
         $this->productVariantRepository = $productVariantRepository;
         $this->promotionRepository = $promotionRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     public function create($request, $language = 1)
@@ -117,6 +122,102 @@ class CartService implements CartServiceInterface
             die;
             return false;
         }
+    }
+
+    public function order($request)
+    {
+        DB::beginTransaction();
+        try {
+            $payload = $this->request($request);
+            $order = $this->orderRepository->create($payload);
+
+            if ($order->id > 0) {
+                $this->createOrderProduct($payload, $order);
+                // $this->paymentOnline($payload['method']);
+                // Cart::instance('shopping')->destroy();
+            }
+
+            DB::commit();
+            return [
+                'order' => $order,
+                'flag' => true
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return [
+                'order' => null,
+                'flag' => false
+            ];
+        }
+    }
+
+    private function paymentOnline($method = '')
+    {
+        switch ($method) {
+            case 'zalo':
+                $this->zaloPay();
+                break;
+            case 'momo':
+                $this->momoPay();
+                break;
+            case 'shopee':
+                $this->shopeePay();
+                break;
+            case 'vnpay':
+                $this->momoPay();
+                break;
+            case 'paypal':
+                $this->paypal();
+                break;  
+        }
+    }
+
+    private function createOrderProduct($payload, $order)
+    {
+        $temp = [];
+
+        if (!is_null($payload['cart']['detail'])) {
+            foreach ($payload['cart']['detail'] as $val) {
+                $extract = explode('_', $val->id);
+                $temp[] = [
+                    'product_id' => $extract[0],
+                    'uuid' => $extract[1] ?? null,
+                    'name' => $val->name,
+                    'qty' => $val->qty,
+                    'price' => $val->price,
+                    'priceOriginal' => $val->priceOriginal,
+                    'option' => json_encode($val->options)
+                ];
+            }
+        }
+
+        $order->products()->sync($temp);
+    }
+
+    private function request($request)
+    {
+        $carts = Cart::instance('shopping')->content();
+        $carts = $this->remakeCart($carts);
+        $cartCaculate = $this->reCaculateCart();
+        $cartPromotion = $this->cartPromotion($cartCaculate['cartTotal']);
+
+        $payload = $request->except('_token', 'create', 'voucher');
+        $payload['code'] = 'DH-'.time();
+        $payload['cart'] = $cartCaculate;
+        $payload['cart']['detail'] = $carts;
+        $payload['promotion']['discount'] = $cartPromotion['discount'];
+        $payload['promotion']['name'] = $cartPromotion['selectPromotion']->name ?? null;
+        $payload['promotion']['code'] = $cartPromotion['selectPromotion']->code ?? null;
+        $payload['promotion']['startDate'] = $cartPromotion['selectPromotion']->startDate ?? null;
+        $payload['promotion']['endDate'] = $cartPromotion['selectPromotion']->endDate ?? null;
+        $payload['confirm'] = 'pending';
+        $payload['delivery'] = 'pending';
+        $payload['payment'] = 'unpaid';
+
+        return $payload;
     }
 
     private function cartAndPromotion()

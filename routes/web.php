@@ -56,6 +56,9 @@ Route::get('{canonical}/trang-{page}', [RouterController::class, 'page'])
     ->where('canonical', '^(?!admin$)[a-zA-Z0-9-]+')
     ->where('page', '[0-9]')
     ->name('router.page');
+Route::post('cart/store', [CartController::class, 'store'])->name('cart.store');
+Route::get('cart/success/{code}', [CartController::class, 'success'])->where(['id' => '[0-9]+'])->name('cart.success');
+
 // Đường dẫn có thêm .html
 // Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])
 //     ->where('canonical', '[a-zA-Z0-9-]+')

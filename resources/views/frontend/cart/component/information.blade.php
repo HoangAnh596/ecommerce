@@ -18,7 +18,7 @@
                     placeholder="Nhập vào Số điện thoại">
             </div>
         </div>
-        <div class="form-row mb20">
+        <div class="uk-width-large-1-2 form-row mb20">
             <input type="text"
                 name="email"
                 class="input-text"
