@@ -40,6 +40,17 @@ return [
             ]
         ],
         [
+            'title' => 'QL Đơn Hàng',
+            'icon' => 'fa fa-shopping-bag',
+            'name' => ['order'],
+            'subModule' => [
+                [
+                    'title' => 'QL Đơn Hàng',
+                    'route' => 'order/index',
+                ]
+            ]
+        ],
+        [
             'title' => 'QL Nhóm Khách hàng',
             'icon' => 'fa fa-user',
             'name' => ['customer'],

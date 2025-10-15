@@ -184,7 +184,7 @@
                         <tfoot>
                             <tr>
                                 <td colspan="4">Mã giảm giá</td>
-                                <td><strong>{{ $data['cartPromotion']['selectPromotion']->code }}</strong></td>
+                                <td><strong>{{ $data['cartPromotion']['selectPromotion']->code ?? '-' }}</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="4">Tổng giá trị sản phẩm</td>

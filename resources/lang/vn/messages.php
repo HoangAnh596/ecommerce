@@ -1,5 +1,14 @@
 <?php
 return [
+    'order' => [
+        'index' => [
+            'title' => 'Quản lý đơn hàng',
+            'tableHeading' => 'Danh sách đơn hàng'
+        ],
+        'detail' => [
+            'title' => 'Quản lý thông tin chi tiết đơn hàng'
+        ],
+    ],
     'customer' => [
         'index' => [
             'title' => 'Quản lý khách hàng',

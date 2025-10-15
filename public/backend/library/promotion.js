@@ -26,7 +26,6 @@
         $(document).on('click', '.chooseSource', function() {
             let _this = $(this);
             let flag = (_this.attr('id') == 'allSource') ? true : false;
-            console.log(flag);
             
             if(flag) {
                 _this.parents('.ibox-content').find('.source-wrapper').remove();

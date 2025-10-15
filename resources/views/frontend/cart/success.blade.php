@@ -74,7 +74,7 @@
                         </tr>
                         <tr class="total_payment">
                             <td colspan="4"><span>Tổng thanh toán</span></td>
-                            <td>{{ convert_price($order->cart['cartTotal'], true) }} đ</td>
+                            <td>{{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) }} đ</td>
                         </tr>
                     </tfoot>
                 </table>

@@ -72,6 +72,6 @@ class Product extends Model
             'priceOriginal',
             'promotion',
             'option'
-        )->withTimestamps();
+        );
     }
 }

@@ -169,18 +169,6 @@
         })
     }
 
-    // HT.addCommas = (nStr) => { 
-    //     nStr = String(nStr);
-    //     nStr = nStr.replace(/\./gi, "");
-    //     let str ='';
-    //     for (let i = nStr.length; i > 0; i -= 3){
-    //         let a = ( (i-3) < 0 ) ? 0 : (i-3);
-    //         str= nStr.slice(a,i) + '.' + str;
-    //     }
-    //     str= str.slice(0,str.length-1);
-    //     return str;
-    // }
-
     HT.setupDatepicker = () => {
         if ($.fn.datetimepicker) { // kiểm tra plugin có được load không
             $('.datepicker').datetimepicker({
@@ -191,6 +179,17 @@
             });
         }
     };
+
+    HT.setupDateRangePicker = () => {
+        if($('.rangepicker').length > 0) {
+            $('.rangepicker').daterangepicker({
+                timepicker: true,
+                locale: {
+                    format: 'dd-mm-yy'
+                }
+            });
+        }
+    }
 
     $(document).ready(function() {
         HT.switchery();
@@ -203,6 +202,7 @@
         HT.sortui();
         HT.int();
         HT.setupDatepicker();
+        HT.setupDateRangePicker();
     });
 })(jQuery);
 

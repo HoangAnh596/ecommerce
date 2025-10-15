@@ -101,7 +101,7 @@
                                 </a>
                             </div>
                             <div class="toolbox-item">
-                                <a href="" title="" class="uk-flex uk-flex-bottom">
+                                <div class="uk-flex uk-flex-bottom">
                                     <div class="icon">
                                         <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g>
@@ -117,9 +117,9 @@
                                         </svg>
                                         <span class="number" id="cartTotalItem">0</span>
                                     </div>
-                                    <div class="toolbox-text">Giỏ Hàng</div>
+                                    <a class="toolbox-text" href="{{ asset('thanh-toan') }}" title="">Giỏ Hàng</a>
                                 
-                                </a>
+                                </div>
                             </div>
                             <div class="toolbox-item">
                                 <a href="" title="" class="uk-flex uk-flex-bottom">

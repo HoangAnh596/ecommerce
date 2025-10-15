@@ -48,7 +48,7 @@ class Order extends Model
             'price',
             'priceOriginal',
             'option'
-        )->withTimestamps();
+        );
     }
 
     public function order_payments() {

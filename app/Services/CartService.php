@@ -139,8 +139,8 @@ class CartService implements CartServiceInterface
             if ($order->id > 0) {
                 $this->createOrderProduct($payload, $order);
                 // $this->paymentOnline($payload['method']);
-                // $this->mail($order, $system);
-                // Cart::instance('shopping')->destroy();
+                $this->mail($order, $system);
+                Cart::instance('shopping')->destroy();
             }
 
             DB::commit();
@@ -213,11 +213,11 @@ class CartService implements CartServiceInterface
         $payload = $request->except('_token', 'create', 'voucher');
         $payload['code'] = 'dh-'.time();
         $payload['cart'] = $cartCaculate;
-        $payload['promotion']['discount'] = $cartPromotion['discount'];
-        $payload['promotion']['name'] = $cartPromotion['selectPromotion']->name ?? null;
-        $payload['promotion']['code'] = $cartPromotion['selectPromotion']->code ?? null;
-        $payload['promotion']['startDate'] = $cartPromotion['selectPromotion']->startDate ?? null;
-        $payload['promotion']['endDate'] = $cartPromotion['selectPromotion']->endDate ?? null;
+        $payload['promotion']['discount'] = $cartPromotion['discount'] ?? '';
+        $payload['promotion']['name'] = $cartPromotion['selectPromotion']->name ?? '';
+        $payload['promotion']['code'] = $cartPromotion['selectPromotion']->code ?? '';
+        $payload['promotion']['startDate'] = $cartPromotion['selectPromotion']->startDate ?? '';
+        $payload['promotion']['endDate'] = $cartPromotion['selectPromotion']->endDate ?? '';
         $payload['confirm'] = 'pending';
         $payload['delivery'] = 'pending';
         $payload['payment'] = 'unpaid';

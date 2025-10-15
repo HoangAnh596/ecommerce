@@ -8,6 +8,7 @@
 <link href="{{ asset('backend/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
 <link href="{{ asset('backend/css/animate.css') }}" rel="stylesheet">
 <link href="{{ asset('backend/css/plugins/jQueryUI/jquery-ui.css') }}" rel="stylesheet">
+<link href="{{ asset('backend/css/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
 @if(isset($config['css']) && is_array($config['css']))
     @foreach($config['css'] as $key => $val)
         {!! '<link href="'.asset($val).'" rel="stylesheet">' !!}

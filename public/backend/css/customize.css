@@ -871,6 +871,110 @@ div.fix-label {
     font-size: 12px;
     font-weight: 600;
 }
+.order-table {
+    font-size: 13px;
+}
+.order-shipping, .order-total {
+    color: #2962ff;
+    font-weight: 600;
+}
+.rangepicker {
+    width: 170px;
+}
+
+.order-wrapper {
+    padding: 20px 20px 40px;
+    margin: 0 auto;
+    max-width: 1036px;
+    color: #000;
+}
+.table-order {
+    width: 100%;
+    border-collapse: collapse;
+}
+.ibox-title-left .badge {
+    margin-left: 20px;
+    background: #ffea8a;
+}
+.badge__tip {
+    width: 8px;
+    height: 8px;
+    margin: 0 3px 0 0;
+    color: #9c6f19;
+    display: inline-block;
+    background: transparent;
+    border-radius: 50%;
+    border: 0.2rem solid currentColor;
+}
+.badge-text {
+    display: inline-block;
+}
+.order-item:not(:last-child) {
+    border-bottom: 1px solid #eaeaea;
+}
+
+.table-order td {
+    padding: 6px 10px;
+    padding-left: 0;
+}
+.order-item .image {
+    width: 100%;
+    height: 75px;
+}
+.order-item-name {
+    color: #2962ff;
+    /* white-space: nowrap; */
+}
+.order-item-price, .order-item-subtotal {
+    text-align: right;
+}
+.order-item-qty {
+    text-align: left;
+}
+.table-order strong, .order-item-subtotal {
+    font-weight: 600;
+    color: #000;
+}
+.payment-confirm {
+    padding: 20px;
+    border-top: 1px solid #eaeaea;
+    background: #fff;
+}
+.payment-confirm .icon img {
+    max-width: 18px;
+}
+
+
+.payment-title {
+    margin-left: 20px;
+}
+.payment-title .text_2 {
+    font-size: 13px;
+}
+.customer-line:not(:last-child) {
+    margin-bottom: 10px;
+}
+div.edit {
+    cursor: pointer;
+}
+.order-aside label {
+    display: block !important;
+}
+
+.order-aside .select2-container {
+    width: 100% !important;
+}
+.cancel-badge {
+    padding: 3px 7px;
+    background: #000;
+    color: #fff;
+    border-radius: 50px;
+    font-weight: 500;
+    font-size: 12px;
+}
+.updateDelivery {
+    cursor: pointer;
+}
 
 
 /* Reponsive mobile */
