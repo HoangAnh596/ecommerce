@@ -35,6 +35,8 @@ use App\Http\Controllers\Backend\Promotion\PromotionController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\RouterController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\MomoController;
+use App\Http\Controllers\Frontend\VnpayController;
 
 //@@useController@@
 
@@ -60,6 +62,15 @@ Route::get('{canonical}/trang-{page}', [RouterController::class, 'page'])
     ->name('router.page');
 Route::post('cart/store', [CartController::class, 'store'])->name('cart.store');
 Route::get('cart/success/{code}', [CartController::class, 'success'])->where(['id' => '[0-9]+'])->name('cart.success');
+
+
+/* VNPAY */
+Route::get('return/vnpay', [VnpayController::class, 'vnpay_return'])->name('vnpay.vnpay_return');
+Route::get('return/vnpay_ipn', [VnpayController::class, 'vnpay_ipn'])->name('vnpay.vnpay_ipn');
+/* Momo */
+Route::get('return/momo', [MomoController::class, 'momo_return'])->name('momo.momo_return');
+Route::get('return/ipn', [MomoController::class, 'momo_ipn'])->name('momo.momo_ipn');
+
 
 // Đường dẫn có thêm .html
 // Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])

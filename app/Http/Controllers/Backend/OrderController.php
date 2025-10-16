@@ -58,7 +58,7 @@ class OrderController extends Controller
 
     public function detail($id)
     {
-        $order = $order = $this->orderRepository->getOrderById($id, ['products']);
+        $order = $this->orderRepository->getOrderById($id, ['products']);
         $order = $this->orderService->getOrderItemImage($order);
         $provinces = $this->provinceRepository->all();
 

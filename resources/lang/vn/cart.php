@@ -16,5 +16,6 @@ return [
         'none' => 'Chọn tình trạng thanh toán',
         'unpaid' => 'Chưa thanh toán',
         'paid' => 'Đã thanh toán',
+        'failed' => 'Thanh toán thất bại'
     ],
 ];

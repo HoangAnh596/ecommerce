@@ -5,7 +5,7 @@ use App\Enums\PromotionEnum;
 if (!function_exists('convert_price')) {
     function convert_price(mixed $price = '', bool $flag = false)
     {
-        if($price === null) return 0;
+        if ($price === null) return 0;
 
         return ($flag == false) ? str_replace('.', '', $price) : number_format($price, 0, ',', '.');
     }
@@ -502,5 +502,55 @@ if (!function_exists('sortAttribute')) {
         $attributeId = implode(', ', $attribute_id);
 
         return $attributeId;
+    }
+}
+
+if (!function_exists('vnpayConfig')) {
+    function vnpayConfig()
+    {
+        return [
+            'vnp_Url' => 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
+            'vnp_Returnurl' => write_url('return/vnpay'),
+            'vnp_TmnCode' => '8O181NHX',
+            'vnp_HashSecret' => 'MYX358VZT6H1LDHIT2PRZOS7J2Q885LM',
+            'vnp_apiUrl' => 'http://sandbox.vnpayment.vn/merchant_webapi/merchant.html',
+            'apiUrl' => 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
+        ];
+    }
+}
+
+if (!function_exists('momoConfig')) {
+    function momoConfig()
+    {
+        return [
+            'partnerCode' => 'MOMOBKUN20180529',
+            'accessKey' => 'klm05TvNBzhg7h7j',
+            'secretKey' => 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa',
+        ];
+    }
+}
+
+if (!function_exists('execPostRequest')) {
+    function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
     }
 }

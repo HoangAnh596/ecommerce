@@ -86,9 +86,16 @@
         <div class="checkout-box">
             <div>Tên người nhận: <span>{{ $order->fullname }}</span></div>
             <div>Email: <span>{{ $order->email }}</span></div>
-            <div>Địa chỉ: <span>{{ $order->address }} , {{ $ward['name'] }}, {{ $province['name'] }}</span></div>
+            <div>
+                Địa chỉ: <span>{{ $order->address }} , {{ $order->ward_name }}, {{ $order->district_name }}, {{ $order->province_name }}</span>
+            </div>
             <div>Số điện thoại: <span>{{ $order->phone }}</span></div>
-            <div>Hình thức thanh toán: <span>{{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? '-'}}</span></div>
+            <div>
+                Hình thức thanh toán: <span>{{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? '-'}}</span>
+            </div>
+
+            @include($template ?? '')
+
         </div>
     </div>
 </div>

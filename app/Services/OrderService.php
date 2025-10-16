@@ -85,6 +85,23 @@ class OrderService extends BaseService implements OrderServiceInterface
         }
     }
 
+    public function updatePaymentOnline($payload, $order)
+    {
+        DB::beginTransaction();
+        try {
+            $this->orderRepository->update($order->id, $payload);
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
+
     private function paginateSelect()
     {
         return [

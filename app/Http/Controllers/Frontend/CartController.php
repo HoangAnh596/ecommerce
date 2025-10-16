@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Classes\Vnpay;
+use App\Classes\Momo;
 use App\Http\Controllers\FrontendController;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 use App\Repositories\Interfaces\WardRepositoryInterface as WardRepository;
@@ -16,12 +18,16 @@ class CartController extends FrontendController
     protected $wardRepository;
     protected $orderRepository;
     protected $cartService;
+    protected $vnpay;
+    protected $momo;
 
     public function __construct(
         ProvinceRepository $provinceRepository,
         WardRepository $wardRepository,
         OrderRepository $orderRepository,
         CartService $cartService,
+        Vnpay $vnpay,
+        Momo $momo,
     ) {
         parent::__construct();
         $this->provinceRepository = $provinceRepository;
@@ -29,6 +35,8 @@ class CartController extends FrontendController
         $this->orderRepository = $orderRepository;
         $this->cartService = $cartService;
         $this->provinceRepository = $provinceRepository;
+        $this->vnpay = $vnpay;
+        $this->momo = $momo;
     }
 
     public function checkout()
@@ -67,32 +75,40 @@ class CartController extends FrontendController
         $order = $this->cartService->order($request, $system);
 
         if ($order['flag']) {
+            $response = $this->paymentMethod($order);
+            if ($response['errorCode'] == 0) {
+                return redirect()->away($response['url']);
+            }
 
-            return redirect()
-                ->route('cart.success', ['code' => $order['order']->code])
+            return redirect()->route('cart.success', ['code' => $order['order']->code])
                 ->with('success', 'Đặt hàng thành công');
         }
+
         return redirect()->route('cart.checkout')->with('errors', 'Đặt hàng không thành công. Hãy thử lại');
+    }
+
+    public function paymentMethod($order = null)
+    {
+        switch ($order['order']->method) {
+            case 'vnpay':
+                $response = $this->vnpay->payment($order['order']);
+                break;
+            case 'momo':
+                $response = $this->momo->payment($order['order']);
+                break;
+        }
+
+        return $response;
     }
 
     public function success($code)
     {
-
-        $order = $this->orderRepository->findByCondition(
-            [
-                ['code', '=', $code]
-            ],
-            false,
-            ['products']
-        );
+        $order = $this->orderRepository->getOrderByCode($code, ['products']);
 
         if (!isset($order)) {
             abort('404');
             // return view('frontend.homepage.home.404');
         }
-
-        $province = $this->provinceRepository->findById($order->province_id);
-        $ward = $this->wardRepository->findById($order->ward_id);
 
         // SEO and System
         $system = $this->system;
@@ -110,8 +126,6 @@ class CartController extends FrontendController
             'system',
             'config',
             'order',
-            'province',
-            'ward'
         ));
     }
 

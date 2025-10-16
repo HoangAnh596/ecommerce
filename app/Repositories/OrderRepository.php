@@ -49,18 +49,31 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->withQueryString()->withPath(env('APP_URL') . $extend['path']);
     }
 
-    public function getOrderById($id)
+    public function getOrderById(int $id)
     {
+        return $this->baseOrderQuery()
+            ->where('orders.id', $id)
+            ->first();
+    }
 
+    public function getOrderByCode(string $code)
+    {
+        return $this->baseOrderQuery()
+            ->where('orders.code', $code)
+            ->firstOrFail();
+    }
+
+    private function baseOrderQuery()
+    {
         return $this->model->select([
-            'orders.*',
-            'provinces.name as province_name',
-            'districts.name as district_name',
-            'wards.name as ward_name'
-        ])->leftJoin('provinces', 'orders.province_id', '=', 'provinces.code')
+                'orders.*',
+                'provinces.name as province_name',
+                'districts.name as district_name',
+                'wards.name as ward_name',
+            ])
+            ->leftJoin('provinces', 'orders.province_id', '=', 'provinces.code')
             ->leftJoin('districts', 'orders.district_id', '=', 'districts.code')
             ->leftJoin('wards', 'orders.ward_id', '=', 'wards.code')
-            ->with('products')
-            ->find($id);
+            ->with('products');
     }
 }

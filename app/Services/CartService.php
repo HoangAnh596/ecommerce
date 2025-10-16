@@ -138,9 +138,8 @@ class CartService implements CartServiceInterface
 
             if ($order->id > 0) {
                 $this->createOrderProduct($payload, $order);
-                // $this->paymentOnline($payload['method']);
-                $this->mail($order, $system);
-                Cart::instance('shopping')->destroy();
+                // $this->mail($order, $system);
+                // Cart::instance('shopping')->destroy();
             }
 
             DB::commit();
