@@ -4,7 +4,7 @@
             <th style="width: 30px">
                 <input type="checkbox" value="" id="checkAll" class="input-checkbox">
             </th>
-            <th class="text-center">{{ __('messages.tableName') }}</th>
+            <th>{{ __('messages.tableName') }}</th>
             @include('backend.dashboard.component.languageTh')
             <th class="text-center" style="width: 80px">{{ __('messages.tableOrder') }}</th>
             <th class="text-center" style="width: 100px">{{ __('messages.tableStatus') }}</th>
@@ -20,9 +20,6 @@
             </td>
             <td>
                 <div class="uk-flex uk-flex-middle">
-                    <div class="image mr5">
-                        <div class="img-cover image-list"><img src="{{ asset($attribute->image) }}" alt="{{ $attribute->name }}"></div>
-                    </div>
                     <div class="main-infor">
                         <div class="name">
                             <span class="maintitle">{{ $attribute->name }}</span>

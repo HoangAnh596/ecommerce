@@ -11,6 +11,7 @@ use App\Repositories\Interfaces\ProductVariantAttrRepositoryInterface as Product
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
 use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeRepository;
+use App\Services\Interfaces\ProductCatalogueServiceInterface as ProductCatalogueService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     protected $promotionRepository;
     protected $attCatalogueRepository;
     protected $attributeRepository;
+    protected $productCatalogueService;
 
     public function __construct(
         ProductRepository $productRepository,
@@ -40,6 +42,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         PromotionRepository $promotionRepository,
         AttributeCatalogueRepository $attCatalogueRepository,
         AttributeRepository $attributeRepository,
+        ProductCatalogueService $productCatalogueService,
     ) {
         $this->productRepository = $productRepository;
         $this->routerRepository = $routerRepository;
@@ -48,6 +51,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $this->promotionRepository = $promotionRepository;
         $this->attCatalogueRepository = $attCatalogueRepository;
         $this->attributeRepository = $attributeRepository;
+        $this->productCatalogueService = $productCatalogueService;
         $this->controllerName = 'ProductController';
     }
 
@@ -106,6 +110,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                 if ($request->input('attribute')) {
                     $this->createVariant($product, $request, $languageId);
                 }
+                $this->productCatalogueService->setAttribute($product);
             }
 
             DB::commit();
@@ -138,6 +143,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                 if ($request->input('attribute')) {
                     $this->createVariant($product, $request, $languageId);
                 }
+                $this->productCatalogueService->setAttribute($product);
             }
 
             DB::commit();

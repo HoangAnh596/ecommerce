@@ -18,6 +18,7 @@ class ProductCatalogue extends Model
         'lft',
         'rgt',
         'level',
+        'attribute',
         'image',
         'icon',
         'album',
@@ -25,6 +26,10 @@ class ProductCatalogue extends Model
         'follow',
         'order',
         'user_id',
+    ];
+
+    protected $casts = [
+        'attribute' => 'json'
     ];
 
     public function languages()

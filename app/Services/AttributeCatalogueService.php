@@ -130,6 +130,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
     private function createAttributeCatalogue($request) {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);
+        $payload['publish'] = config('apps.general.public');
         $payload['user_id'] = Auth::id();
 
         return $this->attributeCatalogueRepository->create($payload);;

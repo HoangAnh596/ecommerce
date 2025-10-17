@@ -148,6 +148,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
 
     private function createAttribute($request) {
         $payload = $request->only($this->payload());
+        $payload['publish'] = config('apps.general.public');
         $payload['user_id'] = Auth::id();
         $payload['album'] = $this->formatAlbum($request);
 

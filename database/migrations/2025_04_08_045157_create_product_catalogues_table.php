@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('lft')->default(0);
             $table->integer('rgt')->default(0);
             $table->integer('level')->default(0);
+            $table->json('attribute')->nullable();
             $table->string('image')->nullable();
             $table->string('icon')->nullable();
             $table->text('album')->nullable();
